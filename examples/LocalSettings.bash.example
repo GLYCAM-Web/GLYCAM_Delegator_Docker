@@ -10,3 +10,7 @@
 
 export CONTAINER_NAME="my-custom-name"
 export GEMS_MD_TEST_WORKFLOW='True'  
+export INPUTS_PATH="/path/to/my/inputs/"
+export WORK_PATH="/path/to/my/work/"
+export TESTS_PATH="/path/to/my/tests/"
+export OUTPUTS_PATH="/path/to/my/outputs/"

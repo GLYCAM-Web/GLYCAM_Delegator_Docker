@@ -27,13 +27,13 @@ RUN apt-get update \
 	&& dpkg-reconfigure -f \
 		noninteractive tzdata;
 
-ENV GEMSHOME=/programs/gems \
-	PYTHON_HOME=/usr/local/include/python3.9 \
-	PYTHONPATH=/programs/gems \
-	LD_LIBRARY_PATH=/programs/gems/gmml2/lib:/programs/gems/gmml/lib \
-	GEMSMAKEPROCS=4 \
-	PYTHONUNBUFFERED=1 \
-        GEMS_FORCE_SERIAL_EXECUTION="True"
+#ENV GEMSHOME=/programs/gems \
+	#PYTHON_HOME=/usr/local/include/python3.9 \
+	#PYTHONPATH=/programs/gems \
+	#LD_LIBRARY_PATH=/programs/gems/gmml2/lib:/programs/gems/gmml/lib \
+	#GEMSMAKEPROCS=4 \
+	#PYTHONUNBUFFERED=1 \
+        #GEMS_FORCE_SERIAL_EXECUTION="True"
 
 
 #get archive sig, p sure fing print is: 6084 F3CF 814B 57C1 CF12 EFD5 15CF 4D18 AF4F 7421
@@ -76,18 +76,28 @@ USER ${IMG_USER_NAME}
 ### Installing AmberTools
 ##  https://ambermd.org/GetAmber.php
 
+## We need to be using bash for this
+SHELL ["/bin/bash", "-c"]
+
 ## Install Conda using MiniForge
 RUN mkdir /programs/src \
         && cd /programs/src \
         && wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" \
-        && bash Miniforge3.sh -b -p "/programs/conda"
+        && bash Miniforge3.sh -b -p "/programs/conda/" 
 
 ## Install AmberTools using Conda
-RUN conda create --name AmberTools25 python=3.12 \
+RUN source "/programs/conda/etc/profile.d/conda.sh" \
+        && conda create --name AmberTools25 python=3.12 \
         && conda activate AmberTools25 \
         && conda config --add channels conda-forge \
         && conda config --set channel_priority strict \
         && conda install dacase::ambertools-dac=25 \
         && conda deactivate
 
-
+ENV GEMSHOME=/programs/gems \
+	PYTHON_HOME=/usr/local/include/python3.9 \
+	PYTHONPATH=/programs/gems \
+	LD_LIBRARY_PATH=/programs/gems/gmml2/lib:/programs/gems/gmml/lib \
+	GEMSMAKEPROCS=4 \
+	PYTHONUNBUFFERED=1 \
+        GEMS_FORCE_SERIAL_EXECUTION="True"

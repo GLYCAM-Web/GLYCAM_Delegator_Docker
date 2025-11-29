@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-source ./settings.sh
-source ./etc/functions.sh
+source ./settings.bash
+source ./etc/functions.bash
 
 #########################################
 #		     Ensure Directories				#
@@ -9,7 +9,6 @@ source ./etc/functions.sh
 DelegatorDirectories=(
 	./env/
 	./logs/
-	../Web_Data/userdata/
 	)
 for directory in ${DelegatorDirectories[@]} ; do
 	check_make_directory ${directory}

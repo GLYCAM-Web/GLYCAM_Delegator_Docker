@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./settings.sh
+source ./settings.bash
 
 rm 	${DELEGATOR_ENV_FILE} \
 	./logs/*.log

@@ -15,6 +15,6 @@ services:
         PYTHON_IMAGE: ${FROM_IMAGE}
         USER_ID: ${USER_UID}
         GROUP_ID: ${USER_GID}
-    image: ${IMAGE_NAME}:${TAG_NAME}
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
 
 

@@ -53,18 +53,18 @@ do
 done
 
 
-source ./settings.sh
-source ./etc/functions.sh
+source ./settings.bash
+source ./etc/functions.bash
 
-if ! bash ./bin/setup.sh; then
-	print_error_and_exit "Something happened when running the setup.sh script. Exiting..."
+if ! bash ./bin/setup.bash; then
+	print_error_and_exit "Something happened when running the setup.bash script. Exiting..."
 fi
 
 # Check if the Delegator Image is already built.
-if does_image_exist "${IMAGE_NAME}:${TAG_NAME}"; then
+if does_image_exist "${IMAGE_NAME}:${IMAGE_TAG}"; then
 	echo "The Glycam Web Delegator Docker Image is already built on your machine."
 	echo "If you want to force it to be rebuilt, use the following and re-run this script."
-	echo "    docker rmi ${IMAGE_NAME}:${TAG_NAME}"
+	echo "    docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
 	exit 0
 fi
 
@@ -87,7 +87,7 @@ echo "Building Glycam Web Delegator Docker Image on: $( hostname ) with command:
 echo ${DOCKER_COMMAND}
 if [ "${TEST}" != "Y" ]; then
 	eval ${DOCKER_COMMAND}
-	if ! does_image_exist "${IMAGE_NAME}:${TAG_NAME}"; then
+	if ! does_image_exist "${IMAGE_NAME}:${IMAGE_TAG}"; then
 		print_error_and_exit "Something went wrong building the Delegator Docker Image. See ${STDERR_FILE} and/or ${STDOUT_FILE} for more information. Exiting..."
 	fi
 fi

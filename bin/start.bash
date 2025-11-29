@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-source ./settings.sh
-source ./etc/functions.sh
+source ./settings.bash
+source ./etc/functions.bash
 
 
-if ! bash ./bin/setup.sh; then
+if ! bash ./bin/setup.bash; then
 	print_error_and_exit
 fi
 
-if ! bash ./bin/build.sh; then
+if ! bash ./bin/build.bash; then
 	print_error_and_exit
 fi
 

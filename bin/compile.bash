@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 
-# USAGE: bash ./bin/compile.sh [ OPTIONS ]
+# USAGE: bash ./bin/compile.bash [ OPTIONS ]
 #
 # OPTIONS:
 # 		clean	Make sure to clean the repositories before compiling.
 
-source ./settings.sh
-source ./etc/functions.sh
-if [ ! -f ./ENVIRONMENT.sh ] ; then
-	bash ./bin/set-environment.sh
-fi
-source ./ENVIRONMENT.sh
+source ./settings.bash
+source ./etc/functions.bash
 
 ################################################################
 ##########               Print help message         ############
@@ -85,7 +81,7 @@ done
 
 # First check to make sure the GRPC Delegator Docker Image is built.
 # If not, we will just informt he user and exit.
-does_image_exist "${IMAGE_NAME}:${TAG_NAME}" || {  pretty_error_exit "ERROR IN COMPILE.SH, THE DELEGATOR DOCKER IMAGE DOESNT EXIST" ; }
+does_image_exist "${IMAGE_NAME}:${IMAGE_TAG}" || {  pretty_error_exit "ERROR IN COMPILE.SH, THE DELEGATOR DOCKER IMAGE DOESNT EXIST" ; }
 
 #update our the command that will be used to actually compile the GEMS/gmml code
 GEMS_COMMAND="cd /programs/gems && bash make.sh -j ${COMPILE_JOBS} -o ${BUILD_LEVEL} ${CLEAN}"

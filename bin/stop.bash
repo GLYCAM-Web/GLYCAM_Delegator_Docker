@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-source ./settings.sh
-source ./etc/functions.sh
+source ./settings.bash
+source ./etc/functions.bash
 
 DATE="$( date +%Y-%m-%d-%H-%M-%S )"
 STDERR_FILE="./logs/stop_STDERR_${DATE}.log"

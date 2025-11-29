@@ -1,12 +1,9 @@
-#########################################################
-#           GLYCAM-Web Delegator Stack                  #
-#########################################################
 services:
   #########################################################
-  #         GLYCAM-Web Delegator Service                  #
+  #        GLYCAM-Web Delegator Service                   #
   #########################################################
   delegator:
-    image: ${IMAGE_NAME}:${TAG_NAME}
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
     hostname: ${CONTAINER_NAME}
     container_name: ${CONTAINER_NAME}
     user: ${IMG_USER_NAME}:${IMG_GROUP_NAME}
@@ -19,6 +16,6 @@ services:
       - ${WORK_PATH}:/work/
       - ${TESTS_PATH}:/tests/
       - ${OUTPUTS_PATH}:/outputs/
-    command: [ "bash", "/print_usage.bash" ]
+    command: bash -c "${GEMS_COMMAND}"
 
 

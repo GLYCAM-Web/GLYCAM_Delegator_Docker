@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+#  variable_is_empty VARIABLE
+variable_is_empty() {
+        if [ "${1}zzz" == "zzz" ] ; then
+                true
+        else
+                false
+        fi
+}
+
 check_make_directory() {
         if variable_is_empty ${1} ; then
                 print_error_and_exit "You must provide a directory name to check_make_directory."
@@ -21,8 +30,6 @@ print_error_and_exit() {
         fi
         exit 1
 }
-
-
 
 does_image_exist() {
         if [ "$( docker images --format {{.Repository}}:{{.Tag}} | grep -c ${1} )" -eq "0" ]; then
