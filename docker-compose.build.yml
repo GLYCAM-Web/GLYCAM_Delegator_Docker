@@ -1,0 +1,20 @@
+
+#########################################################
+#          GLYCAM-Web Delegator Stack                   #
+#########################################################
+services:
+  #########################################################
+  #        GLYCAM-Web Delegator Service                   #
+  #########################################################
+  delegator:
+    build:
+      context: ${DOCKERFILE_DIR}
+      dockerfile: ${DOCKERFILE}
+      args:
+        BUILD_PROCS: ${BUILD_PROCS:-4}
+        PYTHON_IMAGE: ${FROM_IMAGE}
+        USER_ID: ${USER_UID}
+        GROUP_ID: ${USER_GID}
+    image: ${IMAGE_NAME}:${TAG_NAME}
+
+

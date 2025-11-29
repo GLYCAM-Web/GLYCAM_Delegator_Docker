@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+### Sample Local Settings File
+#
+# You can override anything from settings.bash here.
+# 
+# Be aware of dependencies. For example, changing 'PREFIX' will not
+# automatically change 'CONTAINER_PREFIX'.
+#
+
+export CONTAINER_NAME="my-custom-name"
+export GEMS_MD_TEST_WORKFLOW='True'  
