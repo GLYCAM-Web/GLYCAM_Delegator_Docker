@@ -33,8 +33,9 @@ export PREFIX=${USER_NAME}
 ##
 SERVICE="delegator"
 CONTAINER_PREFIX="${PREFIX}-${SERVICE}"
-DOCKER_COMPOSE_BUILD_FILE="./docker-compose.build.yml"
-DOCKER_COMPOSE_RUN_FILE="./docker-compose.run.yml"
+DOCKER_COMPOSE_BUILD_FILE="./compose/docker-compose.build.yml"
+DOCKER_COMPOSE_COMPILE_FILE="./compose/docker-compose.compile.yml"
+DOCKER_COMPOSE_RUN_FILE="./compose/docker-compose.run.yml"
 ##
 export FROM_IMAGE="python:3.9.17-bullseye"
 export IMAGE_NAME="glycam-web-${SERVICE}"

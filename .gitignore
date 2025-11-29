@@ -3,6 +3,7 @@
 logs/*
 *.pid
 *.pyc
+*.swp
 *LocalSettings.bash
 *_autogen_*
 *.vscode*

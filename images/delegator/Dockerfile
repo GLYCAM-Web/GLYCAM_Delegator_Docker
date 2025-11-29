@@ -62,11 +62,32 @@ RUN groupadd \
 		${IMG_GROUP_NAME} ;
 
 RUN useradd \
-		--home-dir /home/glycam -o \
+		--home-dir /home/${IMG_USER_NAME} -o \
 		--shell /bin/bash \
 		--create-home \
 		--uid $USER_ID \
 		--gid $GROUP_ID \
 		${IMG_USER_NAME} ;
 
+RUN mkdir /programs && chown -R  ${IMG_USER_NAME}:${IMG_GROUP_NAME} /programs
+
 USER ${IMG_USER_NAME}
+
+### Installing AmberTools
+##  https://ambermd.org/GetAmber.php
+
+## Install Conda using MiniForge
+RUN mkdir /programs/src \
+        && cd /programs/src \
+        && wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" \
+        && bash Miniforge3.sh -b -p "/programs/conda"
+
+## Install AmberTools using Conda
+RUN conda create --name AmberTools25 python=3.12 \
+        && conda activate AmberTools25 \
+        && conda config --add channels conda-forge \
+        && conda config --set channel_priority strict \
+        && conda install dacase::ambertools-dac=25 \
+        && conda deactivate
+
+
