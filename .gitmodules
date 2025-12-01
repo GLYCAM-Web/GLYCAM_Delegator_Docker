@@ -1,3 +1,0 @@
-[submodule "deps/gems"]
-	path = deps/gems
-	url = https://github.com/GLYCAM-Web/gems.git
