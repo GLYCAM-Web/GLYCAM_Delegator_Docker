@@ -16,8 +16,7 @@ logs/*
 # directories that should not be tracked
 #
 ##   managed by the installation software
-deps/conda  
-deps/src
+deps  
 mounts/containerUser
 ##
 ##   managed at runtime; might be created at initialization
