@@ -83,9 +83,16 @@ done
 # If not, we will just informt he user and exit.
 does_image_exist "${IMAGE_NAME}:${IMAGE_TAG}" || {  pretty_error_exit "ERROR IN COMPILE.SH, THE DELEGATOR DOCKER IMAGE DOESNT EXIST" ; }
 
+if [ ! -d './deps/gems/External/MD_Utils/' ] ; then
+	echo "It appears that you have not pulled in the submodules for this repo."
+	echo "Please see the README.md file for information. Exiting."
+	exit 1
+fi
+
+
 #update our the command that will be used to actually compile the GEMS/gmml code
-GEMS_COMMAND="cd /programs/gems && bash make.sh -j ${COMPILE_JOBS} -o ${BUILD_LEVEL} ${CLEAN}"
-export GEMS_COMMAND
+COMPILER_COMMAND="cd /programs/gems && bash make.sh -j ${COMPILE_JOBS} -o ${BUILD_LEVEL} ${CLEAN}"
+export COMPILER_COMMAND
 
 set -o pipefail
 # Second, run docker compose up to compile everything.

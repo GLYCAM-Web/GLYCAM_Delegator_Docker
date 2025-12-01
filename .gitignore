@@ -1,15 +1,29 @@
+# general patterns
 *.env
 *.log
-logs/*
 *.pid
 *.pyc
 *.swp
-*LocalSettings.bash
 *_autogen_*
 *.vscode*
 *.obsidian*
+
+# code-specific patterns
+*LocalSettings.bash
+logs/*
 *git-ignore-me*
 
+# directories that should not be tracked
+#
+##   managed by the installation software
+deps/conda  
+deps/src
+mounts/containerUser
+##
+##   managed at runtime; might be created at initialization
+input-output
+
+# typical output to ignore
 *slurm*.out
 *slurm*.err
 *slurm_submit.sh
