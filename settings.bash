@@ -47,6 +47,7 @@ export IMAGE_NAME="glycam-web-${SERVICE}"
 export IMAGE_TAG="1.0_blf_2025-11-26-00" 
 export DOCKERFILE_DIR="./images/delegator"
 export DOCKERFILE="Dockerfile"
+export HOST_NAME="${CONTAINER_PREFIX}"
 export CONTAINER_NAME="${CONTAINER_PREFIX}"
 export DELEGATOR_ENV_FILE="./env/delegator.env"
 export IMG_USER_NAME='glycam'

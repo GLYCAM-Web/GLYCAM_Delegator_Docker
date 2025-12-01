@@ -81,7 +81,7 @@ done
 
 # First check to make sure the GRPC Delegator Docker Image is built.
 # If not, we will just informt he user and exit.
-does_image_exist "${IMAGE_NAME}:${IMAGE_TAG}" || {  pretty_error_exit "ERROR IN COMPILE.SH, THE DELEGATOR DOCKER IMAGE DOESNT EXIST" ; }
+does_image_exist "${IMAGE_NAME}:${IMAGE_TAG}" || {  print_error_and_exit "ERROR IN COMPILE.SH, THE DELEGATOR DOCKER IMAGE DOESNT EXIST" ; }
 
 if [ ! -d './deps/gems/External/MD_Utils/' ] ; then
 	echo "It appears that you have not pulled in the submodules for this repo."
@@ -94,14 +94,14 @@ fi
 COMPILER_COMMAND="cd /programs/gems && bash make.sh -j ${COMPILE_JOBS} -o ${BUILD_LEVEL} ${CLEAN}"
 export COMPILER_COMMAND
 
-set -o pipefail
 # Second, run docker compose up to compile everything.
-COMMAND="docker compose --file ${DOCKER_COMPOSE_COMPILE_FILE} up --exit-code-from glycam_delegator_compiler"
-( ${COMMAND} | grep -i --color=always -e '^' -e 'error.*' | GREP_COLOR='01;35' grep -i --color=always -e '^' -e 'warning.*' | GREP_COLOR='01;36' grep -i --color=always -e '^' -e 'note.*' ; ) || {  pretty_error_exit "ERROR UPPING COMPILE IMAGE IN COMPILE.SH" ; } 
+COMMAND="docker compose --file ${DOCKER_COMPOSE_COMPILE_FILE} up --exit-code-from delegator"
+( ${COMMAND} ) || {  print_error_and_exit "ERROR UPPING COMPILE IMAGE IN COMPILE.SH" ; } 
+#( ${COMMAND} | grep -i --color=always -e '^' -e 'error.*' | GREP_COLOR='01;35' grep -i --color=always -e '^' -e 'warning.*' | GREP_COLOR='01;36' grep -i --color=always -e '^' -e 'note.*' ; ) || {  print_error_and_exit "ERROR UPPING COMPILE IMAGE IN COMPILE.SH" ; } 
 
 # Third, once done compiling then run docker compose down.
 COMMAND="docker compose --file ${DOCKER_COMPOSE_COMPILE_FILE} down"
-( ${COMMAND} ) || {  pretty_error_exit "ERROR DOWNING COMPILE IMAGE IN COMPILE.SH" ; }
+( ${COMMAND} ) || {  print_error_and_exit "ERROR DOWNING COMPILE IMAGE IN COMPILE.SH" ; }
 
 # EXIT_SUCCESS
 exit 0
