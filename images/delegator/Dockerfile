@@ -18,8 +18,8 @@ RUN apt-get update \
 	&& apt-get upgrade --yes \
 	&& apt-get autoremove --yes; \
 	pip install \
-	   -r requirements.txt \
-	   --upgrade; \
+	    -r requirements.txt \
+	    --upgrade; \
 	rm -rf /var/lib/apt/lists/*; \
 	ln -s -f \
 		/usr/share/zoneinfo/${TIMEZONE} \
@@ -38,6 +38,7 @@ RUN echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-15 main" >> 
 		graphviz-dev \
 		libeigen3-dev \
 		swig4.0 \
+                zip \
 	&& rm -rf /var/lib/apt/lists/*
 
 
