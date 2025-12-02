@@ -2,6 +2,8 @@
 
 ## Variables that control the behavior of the molecular modeling tools.
 ##
+## See also the git-settings.bash file regarding the code versions that are used.
+##
 export GEMS_LOGGING_LEVEL='error'
 ## Logging level options: error, info, debug
 ##
@@ -31,6 +33,7 @@ export USER_UID="$( id -u )"
 export USER_GID="$( id -g )"
 export USER_NAME="$( id -un )"
 export PREFIX=${USER_NAME}
+export DEPENDENCIES_PATH="./deps/"
 export INPUTS_PATH="./input-output/inputs/"
 export WORK_PATH="./input-output/work/"
 export TESTS_PATH="./input-output/tests/"
