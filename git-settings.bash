@@ -22,6 +22,8 @@ declare -A Repo_Branches                # The specific branch to pull.
 ## For now, only a few are pulled. This list can be altered in the local git settings file.
 ## Available repos:  gems gmml gmml2 md gm gmwebtool glycomimetics gwt-md 
 ##
+## NOTE! Ensure that submodules appear after their parent.
+##
 ## Repos to manage:
 Repos=( gems gmml gmml2 md )
 

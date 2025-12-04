@@ -7,8 +7,15 @@ source ./etc/functions.bash
 #		     Ensure Directories				#
 #########################################
 DelegatorDirectories=(
+	./config_history/
+	./deps/
 	./env/
 	./logs/
+	./mounts/containerUser/
+	./input-output/inputs/
+	./input-output/tests/
+	./input-output/outputs/
+	./input-output/work/
 	)
 for directory in ${DelegatorDirectories[@]} ; do
 	check_make_directory ${directory}
@@ -26,6 +33,19 @@ GEMS_OUTPUT_PATH='/work/'
 USE_AMBER_CONDA='True'
 """ > ${DELEGATOR_ENV_FILE}
 
+echo """#!/usr/bin/env bash
+#########  Added by GLYCAM Delegator Docker setup  #########
+export PATH=/programs/bin:/programs/gems/bin:${PATH}
+if [[ \"\${PYTHONPATH}\" == *\"/programs/gems\"* ]] ; then
+	:
+elif [ -z \"\${PYTHONPATH}\" ] ; then
+	PYTHONPATH=/programs/gems
+else
+	PYTHONPATH=/programs/gems:\${PYTHONPATH}
+fi
+export PYTHONPATH
+############################################################
+""" > ./mounts/containerUser/.bashrc
 
 # EXIT_SUCESS
 exit 0

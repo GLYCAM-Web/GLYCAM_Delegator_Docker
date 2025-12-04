@@ -3,8 +3,8 @@ ARG PYTHON_IMAGE=python:3.9.17-bullseye
 
 FROM ${PYTHON_IMAGE}
 
-#Get the image build procs and then switch it to an enviroment var so it can be
-#actually used in our script
+# Get the image build procs and then switch it to an enviroment var so it can be
+# actually used in our script
 ARG GRPC_IMAGE_BUILD_PROCS
 ENV GRPC_IMAGE_BUILD_PROCS=${GRPC_IMAGE_BUILD_PROCS}
 
@@ -45,7 +45,7 @@ RUN echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-15 main" >> 
 # Creating a USER and GROUP to be used.  Prefer to fail rather than give wrong IDs.
 ARG USER_ID
 ARG GROUP_ID
-# The name and group are only used internally and usually will not matter
+# User and group names are only used internally and usually will not matter, but can be changed.
 ARG IMG_USER_NAME=glycam
 ARG IMG_GROUP_NAME=glycam
 

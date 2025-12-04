@@ -4,19 +4,22 @@
 *.pid
 *.pyc
 *.swp
-*_autogen_*
 *.vscode*
 *.obsidian*
 
 # code-specific patterns
+*_autogen*
 *LocalSettings.bash
+*LocalGitSettings.bash
 logs/*
 *git-ignore-me*
+SessionSettings.bash
 
 # directories that should not be tracked
 #
 ##   managed by the installation software
 deps  
+deps/sysetc/_autogen_config.bash
 mounts/containerUser
 ##
 ##   managed at runtime; might be created at initialization
