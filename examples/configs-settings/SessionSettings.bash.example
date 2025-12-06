@@ -1,0 +1,17 @@
+# Example SessionSettings.bash file
+
+# change the subdirectory for the output (the leading paths will not change)
+export OUT_SUBDIR="YYYYMMDHHMM_test"
+
+# instruct the code to overwrite any existing output
+export OVERWRITE_OUTPUT="False"
+
+# Set the suffix indicating that minimization did not occur. Set to "" to have no indication in the file name.
+# Default: "_un-min"
+export UNMIN_SUFFIX="_un-minimized"
+
+# When updating the database of PDB generation attempts, use strict matching.
+#   Strict matching uses Basename,Sequence,sequence_id 
+#   Permissive matching uses only Basename
+# Default: False
+export PDB_DB_STRICT_MATCHING="True"

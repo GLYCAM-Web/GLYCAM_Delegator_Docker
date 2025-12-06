@@ -65,10 +65,11 @@ RUN mkdir /programs && chown -R  ${IMG_USER_NAME}:${IMG_GROUP_NAME} /programs
 
 USER ${IMG_USER_NAME}
 
-ENV GEMSHOME=/programs/gems \
-	PYTHON_HOME=/usr/local/include/python3.9 \
-	PYTHONPATH=/programs/gems \
-	LD_LIBRARY_PATH=/programs/gems/gmml2/lib:/programs/gems/gmml/lib \
-	GEMSMAKEPROCS=4 \
-	PYTHONUNBUFFERED=1 \
-        GEMS_FORCE_SERIAL_EXECUTION="True"
+ENV GEMSHOME=/programs/gems 
+ENV PYTHON_HOME=/usr/local/include/python3.9 
+ENV PYTHONPATH=/programs/gems 
+ENV LD_LIBRARY_PATH=/programs/gems/gmml2/lib:/programs/gems/gmml/lib 
+ENV GEMSMAKEPROCS=4 
+ENV PYTHONUNBUFFERED=1 
+ENV GEMS_FORCE_SERIAL_EXECUTION="True"
+ENV PATH="/programs/bin:/programs/gems/bin:${PATH}"

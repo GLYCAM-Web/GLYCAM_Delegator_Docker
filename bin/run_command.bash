@@ -13,11 +13,22 @@ if [ ! -d './deps/gems/External/MD_Utils/' ] ; then
 	exit 1
 fi
 
-export RUN_COMMAND="${1}"
+# Iterate over all positional arguments
+theCommand=""
+for arg in "$@"; do
+#  echo "Adding: $arg"
+        theCommand="${theCommand} ${arg}"
+done
+
+echo "Using this as the command given to docker compose:"
+echo "${theCommand}"
+
+
+export RUN_COMMAND="${theCommand}"
 export CONTAINER_NAME="${CONTAINER_NAME}_running-command"
 
 # Second, run docker compose up.
-COMMAND="docker compose --file ${DOCKER_COMPOSE_RUN_FILE} up delegator"
+COMMAND="docker compose --file ${DOCKER_COMPOSE_RUN_FILE}  up delegator"
 ( ${COMMAND} ) || {  print_error_and_exit "ERROR UPPING RUN command IMAGE" ; } 
 echo "container is up"
 

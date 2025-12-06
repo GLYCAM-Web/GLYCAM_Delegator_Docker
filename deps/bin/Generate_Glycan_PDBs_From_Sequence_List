@@ -1,0 +1,433 @@
+#!/usr/bin/env bash
+
+## This should rightly be in Python, but for now it is in BASH
+
+source /programs/sysetc/settings.bash
+source /programs/sysetc/functions.bash
+DATENOW="$(date +%Y-%m-%d-%H-%M)"
+ScriptName="$(basename ${0})"
+
+#######################################
+##          I/O And Usage Documentation
+#######################################
+
+USAGE="""
+Generate a set of PDB files containing 3D structures of glycans based on a list of sequences.
+
+   List format: comma-separated table containing:
+  
+     Filename Basename (*) , Glycan Sequence in Glycam Condensed IUPAC Format (*) 
+   
+       -  !! The first line is ignored. Use it for headers or leave it blank.
+          -  If it helps your other programs, comment out the first line, etc. This script ignores it entirely.
+       -  (*) = Both fields are required. 
+       -  Avoid spaces
+       -  Basenames:
+          -  Keep it *NIX friendly (e.g., no spaces in the Basename)
+          -  Use only the Basename, no 'pdb' suffix - or your files will be named 'Basename.pdb.pdb'
+   
+       Sample first few lines of input:
+
+          \"glytoucan_ac\",\"sequence_glycam_iupac\"
+          \"G00024MO\",\"DGlcpb1-3DGlcpb1-3DGlcpb1-OH\"
+          \"G00025MO\",\"DGlcpb1-4DGlcpb1-4DGlcpb1-4DGlcpb1-OH\"
+          \"G00027MO\",\"DManpa1-3[DManpa1-6]DManpb1-4DGlcpNAcb1-OH\"
+
+   Outputs: various files
+  
+    Mostly, you will be interested in: 
+    - PDB files : \${OUTPUTS_DIR}/sequence/cb/\${OUT_SUBDIR}/PDB/
+
+    Note that inside the Docker container:
+    - INPUTS_DIR is always '/inputs/'.
+    - OUTPUTS_DIR is always '/outputs/'.
+    - WORK_DIR is always '/work/'.
+   
+    Also there are:
+    - Provenance trail: \${OUTPUTS_DIR}/sequence/cb/\$OUT_SUBDIR/provenance/
+    - Build DB: \${OUTPUTS_DIR}/sequence/cb/\$OUT_SUBDIR/${ScriptName}_DB.csv  
+      - where \"${ScriptName}\" is the name of this script.
+      - This will contain sufficient information to easily determine where to find the structure's provenance.
+      - This provenance info is also in the \${responseJSON} in the provenance directory, but that's not as easy to read.
+      - Contents:
+        - Comma-separated table of:
+          - Basename , Sequence_Provided , Sequence_Processed , sequence_ID , pUUID , conformerID , Result , date-time added , Note
+            - where:
+	      - The actual table does not have spaces surroundign the commas. Those area added here for readability.
+              - 'sequence_id' = Our internal sequence ID. It is the name of the Sequence directory in \${WORK_DIR}/sequence/cb/Sequences
+              - 'pUUID' = The project ID for the build. It is in \${WORK_DIR}/sequence/cb/Builds
+              - 'conformerID' = The specific conformer used for the build. Possible values:
+                - The string 'structure', meaning that there is only one dominant conformer.
+                - Our internal code for the conformer, if that code is less than 33 characters long.
+                - The UUID hash of our internal code for the conformer, if the code is 33 chars or more.
+              - 'Note' indicates success or failure, possibly with some explanatory text
+"""
+
+#######################################
+##   Code With Procedural Documentation
+#######################################
+
+#############################
+##                  Functions
+#############################
+
+## Define the function that will check for preexistence of PDB file, 
+##
+### - PDB files : /outputs/sequence/cb/${OUT_SUBDIR}/ <-- this is the OutputDir
+### - If file exists
+### - Check if OVERWRITE_OUTPUT==True (env or settings)
+### - Write messages to detailed log file and respond accordingly
+generate_new_pdb_file() {
+	# $1 is the directory where the file should be (OutputDir)
+	# $2 is the Basename for the PDB file
+	if [ -e "${1}/${2}.pdb" ] ; then
+		echo "Found existing file '${1}/${2}.pdb'" >> ${LOGFILE}
+		if [ "${OVERWRITE_OUTPUT}" == "True" ] ; then
+			echo "Overwriting existing file" >> ${LOGFILE}
+			return 0
+		else
+			echo "Not overwriting existing file" >> ${LOGFILE}
+			return 1
+		fi
+	else
+		echo "Attempting to create brand-new file '${1}/${2}.pdb'" >> ${LOGFILE}
+		return 0
+	fi
+}
+
+## Define the function that will write the JSON evaluation file for the sequence
+write_json_evaluation_file() {
+	# $1 is the Basename
+	# $2 is the glycan sequence
+	# $3 is the jsonFileName to use for output
+	FileTop="""{
+    \"entity\": {
+        \"type\": \"Sequence\",
+        \"services\":
+            {
+                \"build\": {
+                    \"type\": \"Evaluate\",
+                    \"givenName\": \"${1}\"
+                }
+            },
+        \"inputs\":
+            {
+                \"sequence\": {
+                    \"payload\": \"${2}\"
+                },
+                \"resources\" :[]
+            }"""
+
+	FileBottom="""
+    },
+    \"prettyPrint\" : true,
+    \"mdMinimize\" : true
+}
+""" 
+
+## To test reads of a failure with a notice??
+## This setting gets clobbered despite being in the input.
+# TEST_NOTICED_FAILURE="True" ## won't work; not sure why
+#if [ "${TEST_NOTICED_FAILURE}" == "True" ] ; then
+#	FileBottom=""",
+#	\"procedural_options\": {
+#           \"number_structures_hard_limit\": 0
+#        }
+#    },
+#    \"prettyPrint\" : true,
+#    \"mdMinimize\" : true
+#}
+#""" 
+#fi
+echo "Writing JSON input for generating structure files to: ${3}" >> $LOGFILE
+theFile="${FileTop}${FileBottom}"
+echo "${theFile}" > ${3}
+
+} # closes the function - is not part of the json
+
+## Define the function that will handle the management of the output
+manage_evaluation_output() {
+	##  ${1} is the json reponse file
+	##  ${2} is the output directory
+	##  ${3} is the sequence provided by the user
+	dbOutputFile_RELATIVE=${ScriptName}_DB.csv 
+	if [ "${DATE_BUILD_DATABASE}" == "True" ] ; then
+		dbOutputFile_RELATIVE=${DATENOW}_${ScriptName}_DB.csv 
+	fi
+	dbOutputFile=${OutputDir}/${dbOutputFile_RELATIVE}
+	echo "[INFO] : $(date) : Build DB filename: ${dbOutputFile_RELATIVE}" >> $STATUSFILE
+	echo "Build DB filename, relative to build directory: ${dbOutputFile_RELATIVE}" >> $LOGFILE
+	if [ ! -e "${dbOutputFile}" ] ; then
+        	##  - Basename , Sequence_Provided , Sequence_Processed , sequence_id , pUUID , conformerID , Result , Date_Time , Note
+		echo "#Basename,Sequence_Provided,Sequence_Processed,sequence_id,pUUID,conformerID,Result,Date_Time,Note" > "${dbOutputFile}"
+	fi
+	Sequence_Provided="${3}"
+
+##### To get the value out of a pretty-printed json file, use something like:	
+#####	grep sequence_id G00024MO_response.json | cut -d '"' -f 4
+
+AllGood="True"
+### - From ${responseJSON} grab:
+	###   - givenName (Basename)
+	command="grep givenName ${2} | cut -d '\"' -f 4"
+	givenName="$( eval ${command} )"
+	# expect 'null' if bad, but check for empty
+	if [ "${givenName}" == "null" ] || [ -z "${givenName}" ] ; then
+		echo "grep result for givenName is >>>${givenName}<<<" >> $LOGFILE
+		givenName="missing"
+		AllGood="False"
+	fi
+	###   - indexOrdered (sequence)
+	command="grep -w indexOrdered ${2} | cut -d '\"' -f 4"
+	Sequence_Processed="$( eval ${command} )"
+	# expect empty if bad
+	if [ "${Sequence_Processed}" == "null" ] || [ -z "${Sequence_Processed}" ] ; then
+		echo "grep result for indexOrdered ('Sequence_Processed') is >>>${indexOrdered}<<<" >> $LOGFILE
+		Sequence_Processed="missing"
+		AllGood="False"
+	fi
+	###   - sequence_id
+	command="grep sequence_id ${2} | cut -d '\"' -f 4"
+	sequence_id="$( eval ${command} )"
+	# expect empty if bad
+	if [ "${sequence_id}" == "null" ] || [ -z "${sequence_id}" ] ; then
+		echo "grep result for sequence_id is >>>${sequence_id}<<<" >> $LOGFILE
+		sequence_id="missing"
+		AllGood="False"
+	fi
+	###   - pUUID
+	command="grep -m1 pUUID ${2} | cut -d '\"' -f 4"
+	pUUID="$( eval ${command} )"
+	# expect empty if bad
+	if [ "${pUUID}" == "null" ] || [ -z "${pUUID}" ] ; then
+		echo "grep result for pUUID is >>>${pUUID}<<<" >> $LOGFILE
+		pUUID="missing"
+		AllGood="False"
+	fi
+	###   - conformerID
+	command="grep conformerID ${2} | cut -d '\"' -f 4"
+	conformerID="$( eval ${command} )"
+	# expect empty if bad
+	if [ "${conformerID}" == "null" ] || [ -z "${conformerID}" ] ; then
+		echo "grep result for conformerID is >>>${conformerID}<<<" >> $LOGFILE
+		conformerID="missing"
+		AllGood="False"
+	fi
+
+	if [ "${AllGood}" == "False" ] ; then
+		###   - Set empty values to 'missing' and consider that a failed build
+		###   - Check for these (which will be in a notice if they exist):
+		###       set -m1 and only report the first one (V1)
+		###     - Set Result=the value for '"brief":' in the notice
+		echo "[ERROR] : $(date) : Something went wrong generating PDB file for ${Basename}" >> $STATUSFILE
+		echo "[INFO] : $(date) : Attempting to determine cause of issue with ${Basename}" >> $STATUSFILE
+		echo "Checking for notices related to failure of ${Basename}" >> $LOGFILE
+		command="grep -m1 '\"brief\":' ${2} | cut -d '\"' -f 4"
+		brief="$( eval ${command} )"
+        	if [ ! -z "${brief}" ] ; then
+			Result="Failure: ${brief}"
+			echo "Found a notice brief: ${brief}" >> $LOGFILE
+		else
+			Result="Failure: unspecified reason"
+			echo "Could not find a notice brief." >> $LOGFILE
+		fi
+		###     - Set the Note to '"message":' or to hint or to the filename
+		command="grep -m1 '\"message\":' ${2} | cut -d '\"' -f 4"
+		message="$( eval ${command} )"
+        	if [ ! -z "${message}" ] ; then
+			Note="${message}"
+			echo "Found a notice message: ${message}" >> $LOGFILE
+		else
+			echo "Could not find a notice message." >> $LOGFILE
+		fi
+		command="grep -m1 '\"hint\":' ${2} | cut -d '\"' -f 4"
+		hint="$( eval ${command} )"
+        	if [ ! -z "${hint}" ] ; then
+			Note="${Note}; Hint: ${hint}"
+			echo "Found a notice hint: ${hint}" >> $LOGFILE
+		else
+			echo "Could not find a notice hint." >> $LOGFILE
+		fi
+        	if [ -z "${Note}" ] ; then
+			echo "Could not find information." >> $LOGFILE
+			echo "Please see JSON Response: ${2}" >> $LOGFILE
+			Note="See ${2}"
+		fi
+	else
+		### - Try to copy 
+		###     - /work/sequence/cb/Builds/Requested_Builds/${pUUID}/${conformer}/min-gas.pdb 
+		###     - to ${OutputDir}/PDB/${Basename}.pdb
+		command="cp /work/sequence/cb/Builds/${pUUID}/Requested_Builds/${conformerID}/min-gas.pdb ${OutputDir}/PDB/${Basename}.pdb >> $LOGFILE 2>&1"
+		eval "${command}"
+		result="$?"
+		if [ "${result}" == "0" ] ; then
+			###   - set Result to "Finished normally"
+			Result="Finished normally"
+			###   - set Note to "-"
+			Note="-"
+	        else
+			### - If not, try the same thing with:
+			command="cp /work/sequence/cb/Builds/${pUUID}/Requested_Builds/${conformerID}/structure.pdb ${OutputDir}/PDB/${Basename}${UNMIN_SUFFIX}.pdb >> $LOGFILE 2>&1"
+			eval "${command}"
+			result="$?"
+			if [ "${result}" == "0" ] ; then
+				Result="Finished incompletely"
+				Note="Minimization failed"
+			else
+				Result="JSON normal but no PDB"
+				Note="See /work/sequence/cb/Builds/${pUUID}/${conformerID}/Sequence_Prep_*.log"
+			fi
+		fi
+	fi
+	if [[ "${Result}" == *"Failure"* ]] ; then
+		echo "[ERROR] : $(date) : Error generating PDB file ${Basename}." | tee -a $STATUSFILE
+	elif [[ "${Result}" != "Finished normally" ]] ; then
+		echo "[WARNING] : $(date) : Abnormal completion of ${Basename} PDB file generation." | tee -a $STATUSFILE
+	fi
+	if [ "${Result}" == "Finished normally" ] ; then
+		echo "[INFO] : $(date) : PDB file generation for ${Basename} finished normally." | tee -a $STATUSFILE
+	fi
+	###   - copy the column entries to the DB
+	Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
+	entryString="${Basename}"
+	if [ "${PDB_DB_STRICT_MATCHING}" == "True" ] ; then
+		entryString="${Basename},${Sequence},${sequence_id}"
+	fi
+	command="grep -c '${entryString}' ${dbOutputFile} 2>%1"
+	#echo "the command is:"
+	#echo "${command}"
+	entryExists="$( eval ${command} )"
+	#echo "entryExists = >>>${entryExists}<<<"
+	if [[ "${entryExists}" -gt '1' ]] ; then
+		echo "[WARNING] : $(date) : Removing duplicate entries found in database file" >> $STATUSFILE
+		echo "More than one entry for: ${entryString} found in ${dbOutputFile}" >> $LOGFILE
+		echo "Here are the entries plus any error messages: " >> $LOGFILE
+		command="grep '${entryString}{Basename},${Sequence},${sequence_id}' ${dbOutputFile} >> $LOGFILE 2>&1"
+		command="sed -i '/${entryString}/d' ${dbOutputFile} >> $LOGFILE 2>&1"
+		eval "${command}"
+		result="$?"
+		if [ "${result}" != "0" ] ; then
+			echo "[WARNING] : $(date) : Error removing duplicate entries found in database file" >> $STATUSFILE
+		fi
+		echo "Removing them. End of duplicate entries data." >> $LOGFILE
+	elif [[ "${entryExists}" -eq '1' ]] ; then
+		echo "[INFO] : $(date) : Removing previous entry found in database file" >> $STATUSFILE
+		echo "Found and removing the previous entry for: ${entryString} found in ${dbOutputFile}" >> $LOGFILE
+		command="sed -i '/${entryString}/d' ${dbOutputFile} >> $LOGFILE 2>&1"
+		eval "${command}"
+		result="$?"
+		if [ "${result}" != "0" ] ; then
+			echo "[WARNING] : $(date) : Error removing duplicate entry found in database file" >> $STATUSFILE
+		fi
+		echo "Removing them. End of duplicate entries data." >> $LOGFILE
+	fi
+	echo "${Basename},${Sequence_Provided},${Sequence_Processed},${sequence_id},${pUUID},${conformerID},${Result},${Date_Time},${Note}" >> "${dbOutputFile}"
+}
+
+#############################
+##           Setup And Checks
+#############################
+
+## Check that an input file is specified on the command line
+##
+### - If not, print a statement and exit 1.
+if [ -z "${1}" ] ; then
+	echo "${USAGE}"
+	print_error_and_exit "Command-line argument required. Exiting."
+else
+	InputFile="${1}"
+fi
+
+## Set I/O settings 
+##
+### - Read from ./${AUTOGENERATED_FILE_PREFIX}_config.sh and SessionSettings.bash in /programs/share/
+### - Needs:
+###   - $OUT_SUBDIR
+###   - $OVERWRITE_OUTPUT
+### - Record session/config info in provenance directory per date-time.
+if [ -e "/programs/sysetc/${AUTOGENERATED_FILE_PREFIX}_config.bash" ] ; then
+	echo "sourcing config: /programs/sysetc/${AUTOGENERATED_FILE_PREFIX}_config.bash"
+	source "/programs/sysetc/${AUTOGENERATED_FILE_PREFIX}_config.bash"
+fi
+if [ -e "/programs/share/SessionSettings.bash" ] ; then
+	echo "sourcing session settings: /programs/share/SessionSettings.bash" 
+	source "/programs/share/SessionSettings.bash"
+fi
+if [ -z "${OUT_SUBDIR}" ] ; then
+	print_error_and_exit "OUT_SUBDIR not specified. Exiting. Re-run script with no arguments for USAGE."
+fi
+OutputDir="/outputs/sequence/cb/${OUT_SUBDIR}"
+mkdir -p "${OutputDir}/logs" || print_error_and_exit "Unable to create directory: ${OutputDir}/logs. Exiting."
+mkdir -p "${OutputDir}/provenance" || print_error_and_exit "Unable to create directory: ${OutputDir}/provenance. Exiting."
+mkdir -p "${OutputDir}/PDB" || print_error_and_exit "Unable to create directory: ${OutputDir}/PDB. Exiting."
+export LOGFILE="${OutputDir}/logs/details_${DATENOW}_${ScriptName}.log"
+export LOGFILE_RELATIVE="logs/details_${DATENOW}_${ScriptName}.log"
+export STATUSFILE="${OutputDir}/logs/status_${DATENOW}_${ScriptName}.log"
+export STATUSFILE_RELATIVE="logs/status_${DATENOW}_${ScriptName}.log"
+echo "Details file for ${ScriptName} begun on $(date)" > ${LOGFILE}
+echo "[INFO] : $(date) : Status file for ${ScriptName} begun" > ${STATUSFILE}
+if [ -z "${OVERWRITE_OUTPUT}" ] ; then
+	echo "OVERWRITE_OUTPUT not found in input files. Using 'False'." >> ${LOGFILE}
+fi
+
+#############################
+##                  Procedure
+#############################
+count=0
+## Loop over the input file contents
+while IFS= read -r line; do
+	#echo "line is >>>${line}<<<"
+	### Ignore first line
+	if [ "${count}" == "0" ] ; then
+		#echo "ignoring line and reading next"
+		count="$((count+1))"
+		continue
+	fi
+## Split line into args
+	linetosplit="${line//,/ }"
+	#echo "linetosplit is >>>${linetosplit}<<<"
+ 	set -- ${linetosplit}
+
+	### Check for preexistence, if desired, and respond accordingly
+	Basename="${1//\"/}"
+	Sequence="${2//\"/}"
+	if [ -z "${Sequence}" ] ; then
+		echo "[ERROR] : $(date) : Sequence is empty for ${Basename}. Ending processing. More info: ${LOGFILE_RELATIVE}." | tee -a $STATUSFILE
+		echo "The following line does not contain a Sequence. It is enclosed in triple arrows like so: >>>line<<<." >> $LOGFILE
+		echo "        >>>${line}<<<" >> $LOGFILE
+		echo "Ensure that there are no unexpected commas or stray double-quotes. Here is the line ready to be parsed:" >> $LOGFILE
+		echo "        >>>${linetosplit}<<<" >> $LOGFILE
+		echo "The Sequence is the second space-delimited entry, with enclosing double-quotes removed."  >> $LOGFILE
+		continue
+	fi
+	echo "[INFO] : $(date) : Starting PDB file generation for Basename=${Basename}." >> ${STATUSFILE}
+	if generate_new_pdb_file ${OutputDir} ${Basename} ; then
+	### Run the single sequence evaluation
+		jsonFileName="${OutputDir}/provenance/${Basename}_request.json"
+		write_json_evaluation_file ${Basename} ${Sequence} ${jsonFileName}
+		jsonResponse="$(delegate ${jsonFileName} 2>&1)"
+		result="$?"
+		#result="0"
+		if [ ${result} != "0" ] ; then
+			echo "[ERROR] : $(date) : Build failed for Basename=${Basename}. Pressing on." >> ${STATUSFILE}
+			echo "Build failed for Basename=${Basename} & Glycan=${Sequence}." >> ${LOGFILE}
+			echo """The response returned, if any, appears between the rows of equals signs below.
+===============================================================================
+${jsonResponse}
+===============================================================================
+Trying the next one.
+""" >> ${LOGFILE}
+			continue
+		else
+			jsonResponseFileName="${OutputDir}/provenance/${Basename}_response.json"
+			echo "${jsonResponse}" > "${jsonResponseFileName}"
+ 		fi
+		manage_evaluation_output "${OutputDir}" "${jsonResponseFileName}" "${Sequence}"
+		##  ${2} is the json reponse file
+		##  ${1} is the output directory
+	fi
+	echo "[INFO] : $(date) : Completed attepmt to generate PDB file." >> ${STATUSFILE}
+	count="$((count+1))"
+done < "${InputFile}"
+### Manage the output from the sequence evaluation, 
+
