@@ -16,7 +16,7 @@ necessarily run anywhere except in the environment of the container. It's just v
 
 ## Prerequisites
 
-Although not strictly required, a **Linux operating system** will be easier for you and we will have an easier 
+Although not strictly required, a **Linux operating system** will be easier for you, and we will have an easier 
 time helping you if you have trouble.
 
 You need to install:
@@ -66,22 +66,22 @@ the containers at runtime.  The directories containing input and output are also
 
 _Important:_ The paths inside the container are not the same as they are outside (on the host machine).
 
-In the following table, all paths are relative to the `GLYCAM_Delegator_Docker` directory.
+In the following table, all host-machine paths are relative to the `GLYCAM_Delegator_Docker` directory.
 
-| Path on Host Machine     | Change? | Inside Container | Used for                                              | 
-|--------------------------|---------|------------------|-------------------------------------------------------|
-| ./deps/                  | No      | /programs/       | Dependencies that should not be part of the main repo |
-| ./input-output/inputs/   | Yes     | /inputs/         | User-supplied inputs                                  |
-| ./input-output/outputs/  | Yes     | /outputs/        | Outputs from wrapper scripts and post-processors      |
-| ./input-output/tests/    | Yes     | /tests/          | A convenient place to test custom user scripts, etc.  |
-| ./input-output/work/     | Yes     | /work/           | Where the website engine saves its output             |
-| ./mounts/installers/     | No      | /installers/     | Code used to install non-image dependencies           |
-| ./mounts/sysetc/         | No      | /sysetc/         | Information useful to scripts provided by the repo    |
-| ./mounts/sysbin/         | No      | /sysbin/         | Scripts provided by the repo                          |
-| 
+| Path on Host Machine     | Can Change? | Inside Container | Used for                                              | 
+|--------------------------|-------------|------------------|-------------------------------------------------------|
+| ./deps/                  | No          | /programs/       | Dependencies that should not be part of the main repo |
+| ./input-output/inputs/   | Yes         | /inputs/         | User-supplied inputs                                  |
+| ./input-output/outputs/  | Yes         | /outputs/        | Outputs from wrapper scripts and post-processors      |
+| ./input-output/tests/    | Yes         | /tests/          | A convenient place to test custom user scripts, etc.  |
+| ./input-output/work/     | Yes         | /work/           | Where the website engine saves its output             |
+| ./mounts/installers/     | No          | /installers/     | Code used to install non-image dependencies           |
+| ./mounts/sysetc/         | No          | /sysetc/         | Information useful to scripts provided by the repo    |
+| ./mounts/sysbin/         | No          | /sysbin/         | Scripts provided by the repo                          |
 
-If desired, the locations of all the input-output subdirectories can be configured by the user. The user can also
-place custom scripts and code inside the subdirectories of `./deps/`. 
+
+If desired, the locations on the host machine of all the input-output subdirectories can be configured by 
+the user. The user can also place custom scripts and code inside the subdirectories of `./deps/`. 
 
 The important thing to note is that if a file, for example `marco.json`, is visible at this location outside the container:
 
@@ -254,7 +254,8 @@ $ ./bin/run_command.bash Generate_Glycan_PDBs_From_Sequence_List /inputs/short_g
 ###########
 must push gems change before these can work
 
-``###########`
+```
+###########
 ###########
 PUSH THE GEMS CHANGES!
 ###########
@@ -453,6 +454,7 @@ But, here it is. It's large, but nowhere near the size of the response!
 
 Near the end, notice the part that contains this information:
 
+
 ```
     "indexOrderedLabel": "16",
     "linkageLabel": "16",
@@ -496,11 +498,98 @@ To recap, we are about to request 3D models for four conformers that the followi
 
 DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-2[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-4]DManpa1-3[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-2[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-6]DManpa1-6]DManpb1-4DGlcpNAcb1-4DGlcpNAcb1-OH
 
+
 To make the request, do:
 
 ```
-$ ./bin/run_command.bash delegate /inputs/multi-conformer-evaluation-response.json
+$ ./bin/run_command.bash delegate /inputs/multi-conformer-build.json
 ```
+
+That will result in a lot of output, but you don't need to try to save it.
+
+It will begin and end something like so:
+
+```
+$ ./bin/run_command.bash delegate /inputs/multi-conformer-build.json
+Using this as the command given to docker compose:
+ delegate /inputs/multi-conformer-build.json
+[+] up 2/2
+ ✔ Network glycam_delegator_docker_default     Created                                                                                                                                      0.1s 
+ ✔ Container lachele-delegator_running-command Created                                                                                                                                      0.1s 
+Attaching to lachele-delegator_running-command
+lachele-delegator_running-command  | {
+lachele-delegator_running-command  |   "timestamp": "2025-12-07_06:02:45",
+lachele-delegator_running-command  |   "entity": {
+lachele-delegator_running-command  |     "type": "Sequence",
+lachele-delegator_running-command  |     "requestID": null,
+lachele-delegator_running-command  |     "services": {
+lachele-delegator_running-command  |       "build": {
+lachele-delegator_running-command  |         "type": "Build3DStructure",
+
+
+[snip]
+
+
+lachele-delegator_running-command  |     "indexOrderedSequence": "DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-2[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-4]DManpa1-3[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-2[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-6]DManpa1-6]DManpb1-4DGlcpNAcb1-4DGlcpNAcb1-OH",
+lachele-delegator_running-command  |     "seqID": "00e7d454-06dd-5067-b6c9-441dd52db586",
+lachele-delegator_running-command  |     "selected_rotamers": ""
+lachele-delegator_running-command  |   },
+lachele-delegator_running-command  |   "prettyPrint": true,
+lachele-delegator_running-command  |   "mdMinimize": true,
+lachele-delegator_running-command  |   "options": null,
+lachele-delegator_running-command  |   "notices": []
+lachele-delegator_running-command  | }
+lachele-delegator_running-command exited with code 0
+container is up
+[+] down 1/2
+ ✔ Container lachele-delegator_running-command Removed                                                                                                                                      0.0s 
+ ⠋ Network glycam_delegator_docker_default     Removing 
+```
+
+#### Inspect the output
+
+Somewhere not far up from the bottom of the output, you should find an entry for `project_dir`. It will
+look like the following but (almost certainly) with a different hash after 'Builds'.
+
+```
+"project_dir": "/work/sequence/cb/Builds/a6f7b3f3-8ed0-4ea6-9fc8-5f1b36e6376e",
+```
+
+This tells you that the output is visible to you at:
+
+```
+./input-output/work/sequence/cb/Builds/a6f7b3f3-8ed0-4ea6-9fc8-5f1b36e6376e/
+```
+
+Change to that directory and inspect the directory tree (installing 'tree' makes doing that easy):
+
+```
+cd ./input-output/work/sequence/cb/Builds/a6f7b3f3-8ed0-4ea6-9fc8-5f1b36e6376e/
+$ tree -L 2
+.
+├── CB_project_a6f7b3f3_all.zip
+├── default -> Existing_Builds/e6c2e2e8-758b-58b8-b5ff-d138da38dd22
+├── Existing_Builds
+│   ├── [if you have something here, that's a relatively harmless bug. please ignore.]
+│   └── logs
+├── logs
+│   ├── ProjectLog.json
+│   ├── request-initialized.json
+│   ├── request-raw.json
+│   └── response.json
+├── New_Builds
+│   ├── e6c2e2e8-758b-58b8-b5ff-d138da38dd22
+AND THIS IS A SERIOUS BUG...
+│   └── logs
+├── Requested_Builds
+│   └── e6c2e2e8-758b-58b8-b5ff-d138da38dd22 -> ../New_Builds/e6c2e2e8-758b-58b8-b5ff-d138da38dd22
+├── Sequence_Repository -> ../../Sequences/00e7d454-06dd-5067-b6c9-441dd52db586
+├── zip_details.log
+└── zip_status.log
+```
+
+
+
 
 
 
