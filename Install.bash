@@ -48,6 +48,7 @@ COM="bash bin/build_conda-amber.bash"
 rclr "Installing AmberTools using Conda" "${COM}" "(${NUM}) - AmberTools installation"
 NUM="$((NUM+1))"
 
+## Template for adding more
 #STEP="short-name"
 #LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
 #COM="bash bin/.bash"
