@@ -14,6 +14,8 @@ services:
       - ./deps/:/programs/
       - ./mounts/containerUser/:/home/${IMG_USER_NAME}/
       - ./mounts/installers/:/installers/
+      - ./mounts/sysetc/:/sysetc/
+      - ./mounts/sysbin/:/sysbin/
       - ${INPUTS_PATH}:/inputs/
       - ${WORK_PATH}:/work/
       - ${TESTS_PATH}:/tests/

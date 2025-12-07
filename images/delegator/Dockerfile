@@ -72,4 +72,4 @@ ENV LD_LIBRARY_PATH=/programs/gems/gmml2/lib:/programs/gems/gmml/lib
 ENV GEMSMAKEPROCS=4 
 ENV PYTHONUNBUFFERED=1 
 ENV GEMS_FORCE_SERIAL_EXECUTION="True"
-ENV PATH="/programs/bin:/programs/gems/bin:${PATH}"
+ENV PATH="/programs/bin:/sysbin/:/programs/gems/bin:${PATH}"

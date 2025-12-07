@@ -10,6 +10,9 @@
 source ./settings.bash
 source ./etc/functions.bash
 
+## Remove any previously existing traces of conda/amber
+bash bin/clean_conda-amber.bash
+
 # First check to make sure the GLYCAM Delegator Docker Image is built.
 # If not, we will just informt he user and exit.
 does_image_exist "${IMAGE_NAME}:${IMAGE_TAG}" || {  print_error_and_exit "ERROR IN ${0}, THE DELEGATOR DOCKER IMAGE DOESNT EXIST" ; }

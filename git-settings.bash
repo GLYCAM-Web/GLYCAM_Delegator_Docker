@@ -27,15 +27,18 @@ declare -A Repo_Branches                # The specific branch to pull.
 ## Repos to manage:
 Repos=( gems gmml gmml2 md )
 
+####
+## If the repo is a parent, then give path relative to the main installation directory (where Install.bash is).
+## If it is a submodule, give the path relative to the parent.
 Repo_Directories=(
 	["gems"]="${DEPENDENCIES_PATH}/gems"
-	["gmml"]="${DEPENDENCIES_PATH}/gems/gmml"
-	["gmml2"]="${DEPENDENCIES_PATH}/gems/gmml2"
-	["md"]="${DEPENDENCIES_PATH}/gems/External/MD_Utils"
-	["gm"]="${DEPENDENCIES_PATH}/gems/External/GM_Utils"
+	["gmml"]="gmml"
+	["gmml2"]="gmml2"
+	["md"]="External/MD_Utils"
+	["gm"]="External/GM_Utils"
 	["gmwebtool"]="${DEPENDENCIES_PATH}/glycomimeticsWebtool"
-	["glycomimetics"]="${DEPENDENCIES_PATH}/glycomimeticsWebtool/internal/glycomimetics"
-	["gwt-md"]="${DEPENDENCIES_PATH}/glycomimeticsWebtool/internal/MD_Utils"
+	["glycomimetics"]="internal/glycomimetics"
+	["gwt-md"]="internal/MD_Utils"
 )
 Repo_Is_Submodule_Of=(
 	["gems"]="None"
