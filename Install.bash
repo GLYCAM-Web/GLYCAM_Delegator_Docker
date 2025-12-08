@@ -30,6 +30,12 @@ echo "[INFO] : $(date) : Finished setup." >> ${STATUSFILE}
 NUM="$((NUM+1))"
 source ./etc/functions.bash
 
+echo """
+Some of these processes can take a while.
+    To check status or follow along, look at files in the logs directory.
+    You can also check a process monitor (e.g., 'top') if the logs seem quiet.
+"""
+
 echo "Building the image. If this is the first time, it could take a while."
 
 STEP="build-image"
@@ -46,7 +52,7 @@ COM="bash bin/clone_repos.bash"
 rclr "Cloning the repositories listed in git-settings.bash." "${COM}" "(${NUM}) - Repository initialization"
 NUM="$((NUM+1))"
 
-echo "Installig gems, gmml and gmml2. This can also take a while."
+echo "Installing gems, gmml and gmml2. This can also take a while."
 
 STEP="install-gems-gmml"
 LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
