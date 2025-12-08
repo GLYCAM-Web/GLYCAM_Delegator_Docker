@@ -3,7 +3,7 @@
 This software provides a standalone version of the engine used by GLYCAM Web [[glycam.org]] to build 
 molecular models. 
 
-_Prithee gentle Docker aficionados, read this:_
+## **Prithee gentle Docker aficionados, read this:**
 
 This software uses Docker in a non-standard manner. Its makers fully understand and appreciate the beauty 
 of packaging all requirements for a task into a single image. Our needs and workflows do not necessarily
@@ -102,7 +102,7 @@ See [Configuration.md](./docs/Configuration.md) for details.
 
 ### Examples
 
-Numerous sample inputs and configuration examples are available in the `examples` subdirectory.
+Numerous sample inputs and configurations are available in the `examples` subdirectory.
 
 ### Logs
 
@@ -149,7 +149,7 @@ container is up
 glycam@lachele-delegator:/$ 
 ```
 
-In the above, 'lachele' will be replaced by your username.
+In the above, and elsewhere in this doc, 'lachele' will be replaced by your username.
 
 Try running marco-polo. Enter this command:
 
@@ -219,8 +219,8 @@ container is up
 ### Use A Wrapper Script 
 
 In this section, we will use a provided wrapper script to generate PDB files for some glycans in a list.
-
 The wrapper file that we will use is called `Generate_Glycan_PDBs_From_Sequence_List`. It needs an input file.
+
 Put one of the example input files into the inputs directory:
 
 ```
@@ -251,20 +251,13 @@ path inside the container!
 
 ```
 $ ./bin/run_command.bash Generate_Glycan_PDBs_From_Sequence_List /inputs/short_glycan_input.csv
-###########
-must push gems change before these can work
-
 ```
-###########
-###########
-PUSH THE GEMS CHANGES!
-###########
 
 #### Find the output
 
 The wrapper script makes it easy for you to request a build and then to retrieve only the results that
 interest you. But, the modeling engine does the same amount of work nonetheless. This output is stored in
-the `/work/` directory in a tree with this structure:
+the `/work/` directory in a tree with this general structure:
 
 ```
 work/
@@ -282,13 +275,16 @@ work/
 ```
 
 The Builds directories contain individual requests for a 3D model. The Sequences directories contain 
-information about unique sequences. Of course, there might be many Builds for each Sequence.
+information about unique sequences. Of course, there might be many Builds for each Sequence. In this 
+case, you are likely to have the same number of Builds directories as Sequence directories because
+each build only asked for one structure, and each build was run only once. If you run the same script
+again, you should see twice as many Builds directories as Sequence directories.
 
 For consistency and organizational reasons, the output from the wrapper script mimics the organization
 of the output from the Sequence Entity.  The specific nature of the output will vary depending on the 
-task, so the correlation isn't 1-to-1. In the current example, the wrapper script only collected the
-minmized PDB files for the default conformer. It copied them from the relevant place in the `work` tree
-and put them into the PDB directory in the `outputs` tree.
+task, so the correlation isn't 1-to-1. In the current example, the wrapper script only collects the
+minmized PDB files for the default conformer. It copies them from the relevant place in the `work` tree
+and puts them into the PDB directory in the `outputs` tree.
 
 By default, service directories under 'outputs' are named for the date and time when they were requested. 
 Users can override this behavior.
@@ -306,11 +302,12 @@ outputs/
 ```
 
 In the tree above, the directory named `2025-12-07-02-12` represents the user's request for the service.
-The csv file just beneath contains a summary of the status of the requested PDB files. The logs directory
-contains details that can be useful for troubleshooting. As mentioned above, the PDB directory contains
-the PDB files. The provenance directory contains the json request objects that were sent to Delegator and 
-the json objects that were returned in response. If the process needs to be repeated, it should only be
-necessary to send the request json once more to Delegator. This procedure is the next example.
+The `2025-12-07-02-12_Generate_Glycan_PDBs_From_Sequence_List_DB.csv` file just beneath contains a summary 
+of the status of the requested PDB files. The `logs` directory contains details that can be useful for 
+troubleshooting. As mentioned above, the `PDB` directory contains the PDB files. The `provenance` directory 
+contains the json request objects that were sent to Delegator and the json objects that were received in 
+response. If a specific build process needs to be repeated, it should only be necessary to send the request 
+json once more to Delegator. This procedure is the next example.
 
 ### Delegate a Build
 
@@ -499,7 +496,8 @@ To recap, we are about to request 3D models for four conformers that the followi
 DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-2[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-4]DManpa1-3[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-2[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-6]DManpa1-6]DManpb1-4DGlcpNAcb1-4DGlcpNAcb1-OH
 
 
-To make the request, do:
+To make the request, run the following command. It might take a little longer than the previous requests
+you have made so far.
 
 ```
 $ ./bin/run_command.bash delegate /inputs/multi-conformer-build.json
@@ -518,7 +516,7 @@ Using this as the command given to docker compose:
  ✔ Container lachele-delegator_running-command Created                                                                                                                                      0.1s 
 Attaching to lachele-delegator_running-command
 lachele-delegator_running-command  | {
-lachele-delegator_running-command  |   "timestamp": "2025-12-07_06:02:45",
+lachele-delegator_running-command  |   "timestamp": "2025-12-07_23:23:39",
 lachele-delegator_running-command  |   "entity": {
 lachele-delegator_running-command  |     "type": "Sequence",
 lachele-delegator_running-command  |     "requestID": null,
@@ -530,20 +528,23 @@ lachele-delegator_running-command  |         "type": "Build3DStructure",
 [snip]
 
 
-lachele-delegator_running-command  |     "indexOrderedSequence": "DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-2[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-4]DManpa1-3[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-2[DNeup5Aca2-6DGalpb1-4DGlcpNAcb1-6]DManpa1-6]DManpb1-4DGlcpNAcb1-4DGlcpNAcb1-OH",
-lachele-delegator_running-command  |     "seqID": "00e7d454-06dd-5067-b6c9-441dd52db586",
-lachele-delegator_running-command  |     "selected_rotamers": ""
-lachele-delegator_running-command  |   },
-lachele-delegator_running-command  |   "prettyPrint": true,
-lachele-delegator_running-command  |   "mdMinimize": true,
-lachele-delegator_running-command  |   "options": null,
-lachele-delegator_running-command  |   "notices": []
-lachele-delegator_running-command  | }
+lachele-delegator_running-command  |             "structureDirectoryName": "e6c2e2e8-758b-58b8-b5ff-d138da38dd22",
+lachele-delegator_running-command  |             "filesystem_path": "/work/",
+lachele-delegator_running-command  |             "host_url_base_path": "",
+lachele-delegator_running-command  |             "conformer_path": "/work/sequence/cb/Builds/a632246c-5e72-4503-8ccf-9fe9726365e0/Requested_Builds/e6c2e2e8-758b-58b8-b5ff-d138da38dd22",
+lachele-delegator_running-command  |             "absolute_conformer_path": "/work/sequence/cb/Builds/a632246c-5e72-4503-8ccf-9fe9726365e0/New_Builds/e6c2e2e8-758b-58b8-b5ff-d138da38dd22",
+lachele-delegator_running-command  |             "downloadUrlPath": "/json/download/sequence/cb/a632246c-5e72-4503-8ccf-9fe9726365e0/e6c2e2e8-758b-58b8-b5ff-d138da38dd22/",
+lachele-delegator_running-command  |             "forceField": "See Build Directory Files"
+lachele-delegator_running-command  |           },
+lachele-delegator_running-command  |           {
+lachele-delegator_running-command  |             "date": "2025-12-07T23:23:40.158201",
+lachele-delegator_running-command  |             "status": "new",
 lachele-delegator_running-command exited with code 0
+lachele-delegator_running-command  |             "payload": "",
 container is up
 [+] down 1/2
  ✔ Container lachele-delegator_running-command Removed                                                                                                                                      0.0s 
- ⠋ Network glycam_delegator_docker_default     Removing 
+ ⠋ Network glycam_delegator_docker_default     Removing   
 ```
 
 #### Inspect the output
@@ -552,25 +553,29 @@ Somewhere not far up from the bottom of the output, you should find an entry for
 look like the following but (almost certainly) with a different hash after 'Builds'.
 
 ```
-"project_dir": "/work/sequence/cb/Builds/a6f7b3f3-8ed0-4ea6-9fc8-5f1b36e6376e",
+"project_dir": "/work/sequence/cb/Builds/a632246c-5e72-4503-8ccf-9fe9726365e0",
 ```
+
+If you can't find this entry (sometimes the entire json doesn't print to the screen), see if you can find
+anything containing "work/sequence/cb/Builds". The entry after that is the build's pUUID.
 
 This tells you that the output is visible to you at:
 
 ```
-./input-output/work/sequence/cb/Builds/a6f7b3f3-8ed0-4ea6-9fc8-5f1b36e6376e/
+./input-output/work/sequence/cb/Builds/a632246c-5e72-4503-8ccf-9fe9726365e0
 ```
+
+If you could not find any of that, use `ls -lhart ./input-output/work/sequence/cb/Builds/`. The last
+directorys listed should be the one.
 
 Change to that directory and inspect the directory tree (installing 'tree' makes doing that easy):
 
 ```
-cd ./input-output/work/sequence/cb/Builds/a6f7b3f3-8ed0-4ea6-9fc8-5f1b36e6376e/
+cd ./input-output/work/sequence/cb/Builds/a632246c-5e72-4503-8ccf-9fe9726365e0
 $ tree -L 2
 .
-├── CB_project_a6f7b3f3_all.zip
-├── default -> Existing_Builds/e6c2e2e8-758b-58b8-b5ff-d138da38dd22
+├── default -> New_Builds/e6c2e2e8-758b-58b8-b5ff-d138da38dd22
 ├── Existing_Builds
-│   ├── [if you have something here, that's a relatively harmless bug. please ignore.]
 │   └── logs
 ├── logs
 │   ├── ProjectLog.json
@@ -578,48 +583,72 @@ $ tree -L 2
 │   ├── request-raw.json
 │   └── response.json
 ├── New_Builds
+│   ├── b90a4d30-822c-5aba-ae5a-10a9ddb1a227
+│   ├── c408f40d-28e0-5e8d-86a3-221b74da42f7
+│   ├── ce32017d-6663-5ecc-b282-9e9812986d1c
 │   ├── e6c2e2e8-758b-58b8-b5ff-d138da38dd22
-AND THIS IS A SERIOUS BUG...
 │   └── logs
 ├── Requested_Builds
+│   ├── b90a4d30-822c-5aba-ae5a-10a9ddb1a227 -> ../New_Builds/b90a4d30-822c-5aba-ae5a-10a9ddb1a227
+│   ├── c408f40d-28e0-5e8d-86a3-221b74da42f7 -> ../New_Builds/c408f40d-28e0-5e8d-86a3-221b74da42f7
+│   ├── ce32017d-6663-5ecc-b282-9e9812986d1c -> ../New_Builds/ce32017d-6663-5ecc-b282-9e9812986d1c
 │   └── e6c2e2e8-758b-58b8-b5ff-d138da38dd22 -> ../New_Builds/e6c2e2e8-758b-58b8-b5ff-d138da38dd22
 ├── Sequence_Repository -> ../../Sequences/00e7d454-06dd-5067-b6c9-441dd52db586
 ├── zip_details.log
 └── zip_status.log
 ```
 
+Starting from the top:
+- `default` - this is a convenience. It is a symbolic link to one of the directories. It simplifies
+  automated displays of a 'default' structure.
+- `Existing_Builds` - If any of the conformers that you requested had already been built, there would
+  be symbolic links to their build directories in this directory. Because it only contains a 'logs' 
+  subdirectory, none of the conformers you requested were already built.
+- `logs` - ProjectLog.json contains various metadata about the overall build process.
+- `New_Builds` - Any requested conformers that were not already built will be here. Since all four of
+  the ones you requested were new, there are four build directories. See below for a brief about the
+  meaning of the conformer directory name.
+- `Requested_Builds` - this directory provides symbolic links to all builds that you requested, whether
+  they already existed or not.
+- `Sequence_Repository` - This provides a symbolic link to the sequence repository, a directory that 
+  stores information about all new builds related to the sequence. 
+- `zip_details.log` and `zip_status.log` - these provide details about the generation of a zip file
+  containing all the builds in the directory. Since there is not a zip file for this directory,
+  something has gone wrong. I'll get that fixed soon. 
 
 
+## Upcoming capabilities
 
+The next easy capability will be the GlycoProtein Builder. You are welcome to try it now, but it has not
+been tested for use in this manner - that is, using this engine while it is not serving a website.
+A more complete list of available capabilities appears below.
 
-
-START: MOVE MOST OF THIS ELSEWHERE
+### First a little about our organizational strategy
 
 The Delegator Entity was introduced above, as well as the delegate Service that it provides (Entity and 
 Service are capitalized here to make plain that these are special terms used in the source code). When you
-build the 3D structure of a glycan based on its sequence, it is the Sequence Entity that provides that 
+base a build of the 3D structure of a glycan on its sequence, it is the Sequence Entity that provides that 
 Service. Because there are multiple Entities, each with one or more Services, output from GEMS, by default,
 is grouped by Entity and Service. Sometimes Entities are grouped together into a meta-entity.
 
-Consider the following tree (somewhat aspirational) of Entities and Services:
+### The list of Entities and Services currently available in GEMS
 
 ```
 ├── complex         # Entities that create complexes between separate molecules
 │   ├── ad            # Antibody-Glycan Docking 
-│   └── gm            # Glycomimetics
-├── conjugate       # Entities that chemically join two moieties
-│   └── gp            # Glycoprotein 
+│   ├── gm            # Glycomimetics
+│   └── gp (+)        # Glycoprotein (technically a 'conjugate', not a 'complex'). 
 ├── mmservice       # Entities that perform generic molecular modeling Services
 │   └── md            # Molecular Dynamics 
 ├── sequence        # The Entity that performs Services based on a molecular Sequence
-│   └── cb            # Build 2D Models
+│   └── cb (*)        # Build 3D Models
 ├── structurefile   # The Entity that performs Services on files containing molecular structures
 │   └── pdb           # Process PDB files in various ways
 ├── query           # Entities that perform queries of datasets/databases
 │   └── gf            # GlyFinder (search the wwPDB)
 ```
 
-END: MOVE MOST OF THIS ELSEWHERE
-
+`(*)` - This capability is mature.
+`(+)` - This capability is coming soon.
 
 
