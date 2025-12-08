@@ -486,7 +486,7 @@ least not on a regular basis. It helps computers present friendlier versions of 
 By the way, if you want to see it, the complete evaluation response object (that contains the labeled sequence) is in:
 
 ```
-./examples/Sequence/inputs/multi-conformer-evaluation-response.json 
+./examples/Sequence/outputs/multi-conformer-evaluation-response.json 
 ```
 
 #### Request the build

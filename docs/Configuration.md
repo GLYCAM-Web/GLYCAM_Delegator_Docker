@@ -5,6 +5,12 @@ a few that are likely to be of interest.
 
 Configuration is handled by allowing the user to add files that are not tracked by the repository.
 
+Example files can be found here:
+
+```
+./examples/configs-settings/
+```
+
 ## Example: Multiple containers for the same user
 
 If you want to run multiple instances of this software on the same machine and as one user, then the

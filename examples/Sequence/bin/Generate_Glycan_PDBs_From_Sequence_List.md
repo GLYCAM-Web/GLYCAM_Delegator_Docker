@@ -9,8 +9,13 @@ Generate a set of PDB files containing 3D structures of glycans based on a list 
 1. Place the proper inputs in the directory that appears at `/inputs/` inside the Docker container.
 2. If desired, specify your output subdirectory, and any other desired custom settings, in the 
    SessionSettings.bash file.
-3. TODO - write this and fill it in...  how to run the thing.
+3. Run it using something like:
 
+```
+./bin/run_command.bash Generate_Glycan_PDBs_From_Sequence_List /inputs/mylist.csv
+```
+
+You can also run it interactively. See the top-level README.md for more.
 
 ## Summary of mechanism
 
@@ -103,12 +108,5 @@ The log files:
 By default, these live in the `inputs-outputs` directory.  As with all capabilities of this software, you 
 can override these locations. Keep in mind that the script doing the processing has no idea where on your 
 host these directories reside.
-
-
-
-
-
-
-
 
 
