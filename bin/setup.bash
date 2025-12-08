@@ -8,10 +8,13 @@ source ./etc/functions.bash
 #########################################
 DelegatorDirectories=(
 	./config_history/
-	./deps/
+	./deps/share
+	./deps/src
 	./env/
 	./logs/
 	./mounts/containerUser/
+	./mounts/sysetc/
+	./mounts/sysbin/
 	./input-output/inputs/
 	./input-output/tests/
 	./input-output/outputs/
@@ -35,7 +38,7 @@ USE_AMBER_CONDA='True'
 
 echo """#!/usr/bin/env bash
 #########  Added by GLYCAM Delegator Docker setup  #########
-export PATH=/programs/bin:/programs/gems/bin:${PATH}
+export PATH=/programs/bin:/sysbin:/programs/gems/bin:\${PATH}
 if [[ \"\${PYTHONPATH}\" == *\"/programs/gems\"* ]] ; then
 	:
 elif [ -z \"\${PYTHONPATH}\" ] ; then
@@ -47,5 +50,32 @@ export PYTHONPATH
 ############################################################
 """ > ./mounts/containerUser/.bashrc
 
+echo """
+if [ -z \"\${DATENOW}\" ] ; then
+        OUT_SUBDIR=\"GenericDirectory\"
+else
+        OUT_SUBDIR=\"\${DATENOW}\"
+fi
+
+export OUT_SUBDIR  
+export OVERWRITE_OUTPUT=\"False\"
+export UNMIN_SUFFIX=\"_un-min\"
+export DATE_BUILD_DATABASE=\"True\"
+
 # EXIT_SUCESS
 exit 0
+""" > ./mounts/sysetc/_autogen_config.bash
+
+ln -s ./mounts/sysetc/_autogen_config.bash
+
+echo """
+## SessionSettings.bash
+##
+## See example at: ./examples/configs-settings/SessionSettings.bash.example
+##
+## Also see: ./docs/Configuration.md
+""" > ./deps/share/SessionSettings.bash
+
+ln -s ./deps/share/SessionSettings.bash
+
+ln -s ./mounts/sysetc etc
