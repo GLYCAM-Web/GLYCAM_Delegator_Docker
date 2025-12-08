@@ -12,35 +12,49 @@
 #
 # Want to make this even less repetitive? Go for it.
 
+source ./settings.bash
+
 DATE="$( date +%Y-%m-%d-%H-%M-%S )"
 STATUSFILE="./logs/status_${DATE}.log"
 NUM="1"
 # Uncomment the next if you want a dry run to show what will happen.
 # TEST="True"
 
-STEP="setup"
+echo "Setting up"
+
+# Setup is special 
 LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
 COM="bash bin/setup.bash"
-rclr "Ensure that directories exist and that required environment settings are in place." "${COM}" "(${NUM}) - Setup"
+eval "${COM}" 
+echo "[INFO] : $(date) : Finished setup." >> ${STATUSFILE}
 NUM="$((NUM+1))"
+source ./etc/functions.bash
+
+echo "Building the image. If this is the first time, it could take a while."
 
 STEP="build-image"
 LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
-COM="bash bin/build-image.bash"
+COM="bash bin/build_image.bash"
 rclr "Building the Docker image used for all operations." "${COM}" "(${NUM}) - Docker image build"
 NUM="$((NUM+1))"
 
+echo "Cloning the repos"
+
 STEP="clone-repos"
 LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
-COM="bash bin/clone-repos.bash"
+COM="bash bin/clone_repos.bash"
 rclr "Cloning the repositories listed in git-settings.bash." "${COM}" "(${NUM}) - Repository initialization"
 NUM="$((NUM+1))"
 
+echo "Installig gems, gmml and gmml2. This can also take a while."
+
 STEP="install-gems-gmml"
 LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
-COM="bash bin/build_gems_gmml_gmml2.bash.bash"
+COM="bash bin/build_gems_gmml_gmml2.bash"
 rclr "Building GMML and GMML2 and wrapping with SWIG for use in GEMS." "${COM}" "(${NUM}) - GEMS/GMMLs builds"
 NUM="$((NUM+1))"
+
+echo "Installing AmberTools using Conda. This isn't the longest task, but it is the last one."
 
 STEP="install-amber-conda"
 LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"

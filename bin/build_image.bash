@@ -56,9 +56,9 @@ done
 source ./settings.bash
 source ./etc/functions.bash
 
-if ! bash ./bin/setup.bash; then
-	print_error_and_exit "Something happened when running the setup.bash script. Exiting..."
-fi
+#if ! bash ./bin/setup.bash; then
+#	print_error_and_exit "Something happened when running the setup.bash script. Exiting..."
+#fi
 
 # Check if the Delegator Image is already built.
 if does_image_exist "${IMAGE_NAME}:${IMAGE_TAG}"; then
