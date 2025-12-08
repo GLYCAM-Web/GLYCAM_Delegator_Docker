@@ -1,36 +1,30 @@
 # Standalone GLYCAM Website Modeling Engine Using Docker
 
-This software provides a standalone version of the engine used by GLYCAM Web [[glycam.org]] to build 
+This software provides a standalone version of the engine used by [GLYCAM Web](www.glycam.org) to build 
 molecular models. 
-
-## **Prithee gentle Docker aficionados, read this:**
-
-This software uses Docker in a non-standard manner. Its makers fully understand and appreciate the beauty 
-of packaging all requirements for a task into a single image. Our needs and workflows do not necessarily
-benefit from complete encapsulation. Aside from the fact that a fully-self-contained image for this project
-would top 10 GB, it also means that we must spin up a container every time we need to look into the code
-to figure out what went wrong and what to fix. Science is messy and its software is a moving target. That 
-is why the Docker image contains all the stable requirements, but the scientific parts are mounted into
-the running container rather than being part of it. Note that the code outside the container will not 
-necessarily run anywhere except in the environment of the container. It's just visible outside.
 
 ## Prerequisites
 
 Although not strictly required, a **Linux operating system** will be easier for you, and we will have an easier 
 time helping you if you have trouble.
 
-You need to install:
-
-- [Docker Engine](https://docs.docker.com/engine/install/), preferred, or [Docker Desktop](https://docs.docker.com/desktop/)
-  if Docker Engine is not feasible for you.
 - [BASH](https://en.wikipedia.org/wiki/Bash_(Unix_shell)). This is usually preinstalled in all Linux variants and
   is easily obtainable in most MacOS and Windows installations.
 - [Git](https://git-scm.com/install/), which is available for most every system.
+- [Docker Engine](https://docs.docker.com/engine/install/), preferred, or [Docker Desktop](https://docs.docker.com/desktop/)
+  if Docker Engine is not feasible for you. Version: >=v28 so that docker compose is available.
+
+Your docker engine version must contain docker compose (>=28)
+```Bash 
+docker compose version
+```
+Bad output: docker: 'compose' is not a docker command.  
+Good output: Docker Compose version v2.39.1
 
 Although the software will take care of most Docker actions for you, it will be helpful if you learn the basics of Docker. It
 is always useful to know Git and BASH, but you need more knowledge of BASH than Git.
 
-## Obtaining 
+## Obtaining GLYCAM Delegator Docker 
 
 Use this command, in a terminal, or its equivalent for your system:
 
@@ -95,7 +89,7 @@ When starting commands to be run inside the container, please be aware of these 
 
 ### Configurable Settings
 
-Many settings, indeed most of them, can be overridden by the user. Be sure to consult any custom settings you might
+Many settings can be overridden by the user. Be sure to consult any custom settings you might
 have set when things behave differently that what you expect.
 
 See [Configuration.md](./docs/Configuration.md) for details.
@@ -104,9 +98,9 @@ See [Configuration.md](./docs/Configuration.md) for details.
 
 Numerous sample inputs and configurations are available in the `examples` subdirectory.
 
-### Logs
+### Troubleshooting
 
-If things do not go as expected, consult the contents of the `./logs/` subdirectory.
+If things do not go as expected, consult the contents of the `./logs/` subdirectory. Please attach logs when reporting issues to us.
 
 ## Using
 
@@ -121,104 +115,9 @@ These are the commands you are most likely to use:
 You must run them from the `GLYCAM_Delegator_Docker` directory. If you change to the `GLYCAM_Delegator_Docker/bin`
 directory, they are not guaranteed to work.
 
-### Test Basic Function
+### QuickStart: Generate PDB files from a list of sequences
 
-In this section, we will run a simple command two different ways.
-
-#### Copy in an input file
-
-`cp ./examples/marco_polo.json ./input-output/inputs`
-
-For GEMS, the `marco` service is sort-of like `ping`. It is the way to know that you are successfull getting json
-to GEMS and that GEMS is able to return output. If succesful, you should get a json object containing the message 'polo'.
-
-#### Try the interactive shell
-
-To enter the interactive shell, simply enter this command:
-
-`./bin/run_interactive.bash`
-
-If all goes well, you will see something like this:
-
-```
-$ ./bin/run_interactive.bash 
-[+] up 2/2
- ✔ Network glycam_delegator_docker_default Created 
- ✔ Container lachele-delegator_interactive Created 
-container is up
-glycam@lachele-delegator:/$ 
-```
-
-In the above, and elsewhere in this doc, 'lachele' will be replaced by your username.
-
-Try running marco-polo. Enter this command:
-
-```
-delegate /inputs/marco_polo.json 
-```
-
-Now you know why it is called `GLYCAM_Delegator_Docker`! 
-
-GEMS is designed to have a simple and consistent interface. The `delegate` command takes in, and returns, 
-only json objects. The command is called 'delegate' because the Delegator service inspects the json object 
-and decides which `gemsModule` should be tasked with fulfilling the requested service.
-
-If things go well, the interaction should look like this:
-
-```
-glycam@lachele-delegator:/$ delegate /inputs/marco_polo.json 
-{"entity": {"type": "Delegator", "services": {"Default_Marco": {"type": "Marco", "myUuid": "20a8d10c-0a6e-4533-90a5-6f4c5bc18b78", "inputs": {"entity": null, "who_I_am": null}}}, "responses": {"Default_Marco": {"type": "Marco", "myUuid": "20a8d10c-0a6e-4533-90a5-6f4c5bc18b78", "outputs": {"message": "Polo", "info": null}}}, "procedural_options": {"context": "default", "force_serial_execution": true, "pretty_print": false, "md_minimize": false}}, "notices": {}}glycam@lachele-delegator:/$ 
-glycam@lachele-delegator:/$ 
-```
-
-Note that the json object does not terminate with a new-line. That is expected; just hit enter again. Look at the json and find the 'Polo' response.
-
-Now exit the container by entering:
-
-```
-exit
-```
-
-Doing that might take longer than you expect. The result should look like:
-
-```
-glycam@lachele-delegator:/$ exit
-exit
-exiting container and stopping service
-[+] down 2/2
- ✔ Container lachele-delegator_interactive Removed  
- ✔ Network glycam_delegator_docker_default Removed 
-```
-
-#### Do that same thing from the command line
-
-To run marco from the command line:
-
-```
-./bin/run_command.bash delegate /inputs/marco_polo.json
-```
-
-The process should look like:
-
-```
-$ ./bin/run_command.bash delegate /inputs/marco_polo.json
-Using this as the command given to docker compose:
- delegate /inputs/marco_polo.json
-[+] up 2/2
- ✔ Network glycam_delegator_docker_default     Created 
- ✔ Container lachele-delegator_running-command Created 
-Attaching to lachele-delegator_running-command
-lachele-delegator_running-command  | {"entity": {"type": "Delegator", "services": {"Default_Marco": {"type": "Marco", "myUuid": "b0bcee54-0a71-418b-9c05-244b590ddd56", "inputs": {"entity": null, "who_I_am": null}}}, "responses": {"Default_Marco": {"type": "Marco", "myUuid": "b0bcee54-0a71-418b-9c05-244b590ddd56", "outputs": {"message": "Polo", "info": null}}}, "procedural_options": {"context": "default", "force_serial_execution": true, "pretty_print": false, "md_minimize": false}}, "notices": {}}
-lachele-delegator_running-command exited with code 0
-container is up
-[+] down 2/2
- ✔ Container lachele-delegator_running-command Removed 
- ✔ Network glycam_delegator_docker_default     Removed 
-```
-
-### Use A Wrapper Script 
-
-In this section, we will use a provided wrapper script to generate PDB files for some glycans in a list.
+Use a provided wrapper script to generate PDB files for some glycans in a list.
 The wrapper file that we will use is called `Generate_Glycan_PDBs_From_Sequence_List`. It needs an input file.
 
 Put one of the example input files into the inputs directory:
@@ -227,7 +126,7 @@ Put one of the example input files into the inputs directory:
 cp ./examples/Sequence/inputs/short_glycan_input.csv ./input-output/inputs/
 ```
 
-The file contains the [GlyTouCan](https://glytoucan.org/) accession number and the GLYCAM condensed IUPAC 
+This input file contains the [GlyTouCan](https://glytoucan.org/) accession number and the GLYCAM condensed IUPAC 
 notation for nine common glycans. 
 
 If you want to view the file, `cat` is easy:
@@ -275,13 +174,13 @@ work/
 ```
 
 The Builds directories contain individual requests for a 3D model. The Sequences directories contain 
-information about unique sequences. Of course, there might be many Builds for each Sequence. In this 
+information about unique sequences. There can be multiple Builds for each Sequence. In this 
 case, you are likely to have the same number of Builds directories as Sequence directories because
 each build only asked for one structure, and each build was run only once. If you run the same script
 again, you should see twice as many Builds directories as Sequence directories.
 
 For consistency and organizational reasons, the output from the wrapper script mimics the organization
-of the output from the Sequence Entity.  The specific nature of the output will vary depending on the 
+of the output from the Sequence Entity. The specific nature of the output will vary depending on the 
 task, so the correlation isn't 1-to-1. In the current example, the wrapper script only collects the
 minmized PDB files for the default conformer. It copies them from the relevant place in the `work` tree
 and puts them into the PDB directory in the `outputs` tree.
@@ -309,10 +208,10 @@ contains the json request objects that were sent to Delegator and the json objec
 response. If a specific build process needs to be repeated, it should only be necessary to send the request 
 json once more to Delegator. This procedure is the next example.
 
-### Delegate a Build
+## Build multiple shapes for a glycan sequence
 
 In this section, we will send to the Delegator a json object requesting that the 3D structures for several 
-sequence conformers be built.  We will inspect the input json and the resulting directory tree.
+conformers be built. We will inspect the input json and the resulting directory tree.
 
 #### Copy and inspect the request json
 
@@ -480,10 +379,10 @@ About the linkage - In an evaluation step, this would have been present in the r
 ```
 
 This is our way of labeling the residues and linkages in a sequence. We mimic a method used in html. 
-Look for `&Label=link-16;` - that is linkage 16. Of course, this is not intended for humans to read, at
-least not on a regular basis. It helps computers present friendlier versions of the information.
+Look for `&Label=link-16;` - that is linkage 16. This is not intended for humans to read, at
+least not on a regular basis. It helps the website present friendlier versions of the information.
 
-By the way, if you want to see it, the complete evaluation response object (that contains the labeled sequence) is in:
+If you want to see it, the complete evaluation response object (that contains the labeled sequence) is in:
 
 ```
 ./examples/Sequence/outputs/multi-conformer-evaluation-response.json 
@@ -550,7 +449,7 @@ container is up
 #### Inspect the output
 
 Somewhere not far up from the bottom of the output, you should find an entry for `project_dir`. It will
-look like the following but (almost certainly) with a different hash after 'Builds'.
+look like the following (but with a different hash after 'Builds').
 
 ```
 "project_dir": "/work/sequence/cb/Builds/a632246c-5e72-4503-8ccf-9fe9726365e0",
@@ -598,7 +497,7 @@ $ tree -L 2
 └── zip_status.log
 ```
 
-Starting from the top:
+## Folder contents:
 - `default` - this is a convenience. It is a symbolic link to one of the directories. It simplifies
   automated displays of a 'default' structure.
 - `Existing_Builds` - If any of the conformers that you requested had already been built, there would
@@ -616,6 +515,111 @@ Starting from the top:
   containing all the builds in the directory. Since there is not a zip file for this directory,
   something has gone wrong. I'll get that fixed soon. 
 
+## Troubleshooting 
+
+You will run a simple command two different ways to ensure basic functionality.
+
+#### Copy in a minimal input file
+
+`cp ./examples/marco_polo.json ./input-output/inputs`
+
+For GEMS, the `marco` service is sort-of like `ping`. It is the way to know that you are successfull getting json
+to GEMS and that GEMS is able to return output. If succesful, you should get a json object containing the message 'polo'.
+
+#### Try the interactive shell
+
+To enter the interactive shell, simply enter this command:
+
+`./bin/run_interactive.bash`
+
+If all goes well, you will see something like this:
+
+```
+$ ./bin/run_interactive.bash 
+[+] up 2/2
+ ✔ Network glycam_delegator_docker_default Created 
+ ✔ Container lachele-delegator_interactive Created 
+container is up
+glycam@lachele-delegator:/$ 
+```
+
+In the above, and elsewhere in this doc, 'lachele' will be replaced by your username.
+
+Try running marco-polo. Enter this command:
+
+```
+delegate /inputs/marco_polo.json 
+```
+
+Now you know why it is called `GLYCAM_Delegator_Docker`! 
+
+GEMS is designed to have a simple and consistent interface. The `delegate` command takes in, and returns, 
+only json objects. The command is called 'delegate' because the Delegator service inspects the json object 
+and decides which `gemsModule` should be tasked with fulfilling the requested service.
+
+If things go well, the interaction should look like this:
+
+```
+glycam@lachele-delegator:/$ delegate /inputs/marco_polo.json 
+{"entity": {"type": "Delegator", "services": {"Default_Marco": {"type": "Marco", "myUuid": "20a8d10c-0a6e-4533-90a5-6f4c5bc18b78", "inputs": {"entity": null, "who_I_am": null}}}, "responses": {"Default_Marco": {"type": "Marco", "myUuid": "20a8d10c-0a6e-4533-90a5-6f4c5bc18b78", "outputs": {"message": "Polo", "info": null}}}, "procedural_options": {"context": "default", "force_serial_execution": true, "pretty_print": false, "md_minimize": false}}, "notices": {}}glycam@lachele-delegator:/$ 
+glycam@lachele-delegator:/$ 
+```
+
+Note that the json object does not terminate with a new-line. That is expected; just hit enter again. Look at the json and find the 'Polo' response.
+
+Now exit the container by entering:
+
+```
+exit
+```
+
+Doing that might take longer than you expect. The result should look like:
+
+```
+glycam@lachele-delegator:/$ exit
+exit
+exiting container and stopping service
+[+] down 2/2
+ ✔ Container lachele-delegator_interactive Removed  
+ ✔ Network glycam_delegator_docker_default Removed 
+```
+
+#### Do that same thing from the command line
+
+To run marco from the command line:
+
+```
+./bin/run_command.bash delegate /inputs/marco_polo.json
+```
+
+The process should look like:
+
+```
+$ ./bin/run_command.bash delegate /inputs/marco_polo.json
+Using this as the command given to docker compose:
+ delegate /inputs/marco_polo.json
+[+] up 2/2
+ ✔ Network glycam_delegator_docker_default     Created 
+ ✔ Container lachele-delegator_running-command Created 
+Attaching to lachele-delegator_running-command
+lachele-delegator_running-command  | {"entity": {"type": "Delegator", "services": {"Default_Marco": {"type": "Marco", "myUuid": "b0bcee54-0a71-418b-9c05-244b590ddd56", "inputs": {"entity": null, "who_I_am": null}}}, "responses": {"Default_Marco": {"type": "Marco", "myUuid": "b0bcee54-0a71-418b-9c05-244b590ddd56", "outputs": {"message": "Polo", "info": null}}}, "procedural_options": {"context": "default", "force_serial_execution": true, "pretty_print": false, "md_minimize": false}}, "notices": {}}
+lachele-delegator_running-command exited with code 0
+container is up
+[+] down 2/2
+ ✔ Container lachele-delegator_running-command Removed 
+ ✔ Network glycam_delegator_docker_default     Removed 
+```
+
+## **A note on Docker usage:**
+
+This software uses Docker in a non-standard manner. Its makers fully understand and appreciate the beauty 
+of packaging all requirements for a task into a single image. Our needs and workflows do not necessarily
+benefit from complete encapsulation. Aside from the fact that a fully-self-contained image for this project
+would top 10 GB, it also means that we must spin up a container every time we need to look into the code
+to figure out what went wrong and what to fix. Science is messy and its software is a moving target. That 
+is why the Docker image contains all the stable requirements, but the scientific parts are mounted into
+the running container rather than being part of it. Note that the code outside the container will not 
+necessarily run anywhere except in the environment of the container. It's just visible outside.
 
 ## Upcoming capabilities
 
