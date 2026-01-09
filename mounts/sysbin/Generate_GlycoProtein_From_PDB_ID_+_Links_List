@@ -1,0 +1,729 @@
+#!/usr/bin/env bash
+
+## This should rightly be in Python, but for now it is in BASH
+
+source /sysetc/settings.bash
+source /sysetc/functions.bash
+DATENOW="$(date +%Y-%m-%d-%H-%M)"
+ScriptName="$(basename ${0})"
+
+declare -a RequiredHeaders  ## These are ordered as they appear in the USAGE statement
+RequiredHeaders=("pdb_id" "amino_acid_chain" "glycosylation_site_pdb" "sequence_glycam_iupac")
+declare -a ParsedHeaders  ## These are in the order of the treated input file
+ParsedHeaders=("project_id" "uniprotkb_canonical_ac" "pdb_id" "amino_acid_chain" "glycosylation_site_pdb" "insertion_code" "amino_acid_pdb" "glycosylation_type" "sequence_glycam_iupac")
+
+#######################################
+##          I/O And Usage Documentation
+#######################################
+
+USAGE="""
+USAGE:
+
+   ${ScriptName} <Input-File>
+
+Generate a set of PDB files containing 3D structures of glycoproteins based on a list of PDB IDs, linkage sites, and sequences.
+
+    Input-File format: 
+   
+        Comma-separated table containing columns with the parsed headers, in any order. 
+ 
+          -  !! The first line must contain headers.
+          -  If a header entry starts with a hash ('#'), the hash will be removed before processing. 
+
+	Parsed headers: 
+
+	    -  Headers can be in any order. Non-parsed headers can be present.
+	    -  Parsed headers must be spelled as shown below.
+	    -  For convenience below, parsed headers are listed in order of requirement status.
+
+            (*) : required column
+            (!) : possibly required column
+            (+) : recommended column
+            (-) : optional column
+        
+            pdb_id (*) : The PDB ID used in the wwPDB at rcsb.org.
+
+	    amino_acid_chain (*) : The Chain ID (typically a capital letter) for the chain containing the residue to glycosylate.
+
+            glycosylation_site_pdb (*) : The Residue Number of the residue to be glycosylated.
+
+            sequence_glycam_iupac (*) : The glycan to place at the site in GLYCAM Condensed IUPAC format.
+
+	    insertion_code (!) : The Insertion Code (IC) of the residue to be glycosylated. Might be required.
+	      -  If none of your residues have insertion codes, this column can be omitted.
+	      -  If your residues contain insertion codes, they MUST BE GIVEN. The residue cannot be uniquely
+	         identified without the IC.
+		 -  Here is a nice explanation of ICs:
+		    https://bioinformatics.stackexchange.com/questions/11587/what-is-the-aim-of-insertion-codes-in-the-pdb-file-format
+
+            start_aa || amino_acid_pdb (+) : The PDB-style three-letter-code for the amino acid to glycosylate. Recommended.
+              -  Header can have either name. It will be 'amino_acid_pdb' in outputs.
+              -  This is not used. If you get an error message about the site, it might be useful to have this handy.
+
+            glycosylation_type (+) : The type of linkage to the amino acid. Recommended.
+              -  This is not used. If you get an error message about the site, it might be useful to have this handy.
+
+            project_id (-) : Preferred key to identify a glycoprotein build. Also called the Basename. Optional.
+              -  Keep it *NIX friendly (e.g., no spaces, asterisks, etc.)
+              -  Use only the Basename you want for output files, no 'pdb' suffix - or your files will be named 'Basename.pdb.pdb'
+              -  This name will also be used for error outputs, histories, results db, etc.
+              -  IF MISSING - the basename/project_id will be the pdb_id. See also notes on filenames.
+
+            uniprotkb_canonical_ac (-) : Uniprot Knowledgebase Canonical Accession identifier. 
+              -  If this IS present, and if the project_id is NOT present, then the project_id will be: 'uniprotkb_canonical_ac'_'pdb_id'
+	         -  For example, if uniprotkb_canonical_ac='P13671-1' and pdb_id='3T5O', project_id='P13671-1_3T5O'
+	      -  If the project_id column is populated, that project_id will not be overwritten.
+
+	Notes on input file parsing:
+
+	  -  Input errors include:
+	     -  Required Headers columns are missing. 
+	        -  This will cause the entire process to stop. No lines will be processed.
+	     -  Duplicate lines : The associated project_id will not be processed. 
+	     -  More than one pdb_id per uniprotkb_canonical_ac : The relationship must be 1:1. The associated project_id will not be processed.
+	        - If you want to have multiple pdb_id's associated with a single uniprotkb_canonical_ac, you must use the project_id field to
+		  separate them into distinct projects.
+	     -  The presence of a project_id column, but the column contains one or more entries that are empty or 'null'.
+	        -  This will cause the entire process to stop. No lines will be processed.
+	  -  The lines in the file will be sorted. 
+	     -  This simplifies finding other input errors.
+	     -  It also means that the order of the outputs will be sorted by the first Parsed Header column in the input.
+	  -  The modified data are always written to the Treated_Input subdirectory.
+	  -  Errors and non-trivial / non-documented changes will be logged in detail.
+	     -  Example : Your file contains duplicate lines.
+	        -  The status log file will contain only a reference to the situation.
+		-  The main log file (the 'details' log) will contain a listing of all lines that were not processed.
+		   - This includes all lines associated with the project, duplicated or not.
+		   - The duplicated line(s) and the number of duplicates for each line will be noted.
+	  -  Documented and trivial changes will be logged only tersely.
+	     -  Example : Your file contains uniprotkb_canonical_ac and pdb_id but NOT project_id:
+	        -  The log files will note that the project_id is being assigned based on uniprotkb_canonical_ac and pdb_id.
+		-  They will not enumerate every new project_id because those are visible in Treated_Input/.
+
+     
+        Samples of first few lines of input:
+
+	  Minimal input file:
+	    -  Note that if any glycosylation site has an insertion code as part of its name, it must be included!
+	       This example does not include the insertion code.
+
+pdb_id,amino_acid_chain,glycosylation_site_pdb,sequence_glycam_iupac
+3T5O,A,17,DGlcpb1-3LFucpa1-OH
+4E0S,B,17,DGlcpb1-3LFucpa1-OH
+3VN4,A,115,DGlcpb1-3LFucpa1-OH
+6RUR,A,65,DGlcpb1-3LFucpa1-OH
+6RUR,C,65,DGlcpb1-3LFucpa1-OH
+6RUR,D,18,DGlcpb1-3LFucpa1-OH
+6RUR,B,18,DGlcpb1-3LFucpa1-OH
+
+	  Input file with other columns (parsed and not parsed):
+
+#project_id,glycosylation_type,pdb_id,my_special_column,amino_acid_chain,glycosylation_site_pdb,start_aa,sequence_glycam_iupac
+my_gp_1,O-linked,3T5O,my_info,A,17,THR,DGlcpb1-3LFucpa1-OH
+my_gp_2,O-linked,4E0S,my_info,B,17,THR,DGlcpb1-3LFucpa1-OH
+my_gp_3,O-linked,3VN4,my_info,A,115,SER,DGlcpb1-3LFucpa1-OH
+my_gp_4,O-linked,6RUR,my_info,A,65,THR,DGlcpb1-3LFucpa1-OH
+my_gp_4,O-linked,6RUR,my_info,C,65,THR,DGlcpb1-3LFucpa1-OH
+my_gp_4,O-linked,6RUR,my_info,D,18,THR,DGlcpb1-3LFucpa1-OH
+my_gp_4,O-linked,6RUR,my_info,B,18,THR,DGlcpb1-3LFucpa1-OH
+
+          Sample input file error: 
+            -  Here, a Uniprot ID is used as the project_id. but it refers to two different PDB IDs. This will cause an error.
+ 
+!!   #project_id,glycosylation_type,pdb_id,my_special_column,amino_acid_chain,glycosylation_site_pdb,start_aa,sequence_glycam_iupac
+!!   P13671-1,38,Thr,G36855WW,O-linked,3T5O,pdb_00003t5o,A,17,38,38,THR,THR,T,DGlcpb1-3LFucpa1-OH
+!!   P13671-1,38,Thr,G36855WW,O-linked,4E0S,pdb_00004e0s,B,17,38,38,THR,THR,T,DGlcpb1-3LFucpa1-OH
+ 
+   Outputs: various files
+  
+    Mostly, you will be interested in: 
+    - PDB files : \${OUTPUTS_DIR}/conjugate/gp/\${OUT_SUBDIR}/PDB/
+    - Treated input files, if any : \${OUTPUTS_DIR}/conjugate/gp/\${OUT_SUBDIR}/Treated_Inputs
+
+    Note that inside the Docker container:
+    - INPUTS_DIR is always '/inputs/'.
+    - OUTPUTS_DIR is always '/outputs/'.
+    - WORK_DIR is always '/work/'.
+   
+    Also there are:
+    - Provenance trail: \${OUTPUTS_DIR}/conjugate/gp/\$OUT_SUBDIR/provenance/
+    - Build DB: \${OUTPUTS_DIR}/conjugate/gp/\$OUT_SUBDIR/${ScriptName}_DB.csv  
+      - Where \"${ScriptName}\" is the name of this script.
+      - This will contain sufficient information to easily determine where to find the structure's provenance.
+      - This provenance info is also in the \${responseJSON} in the provenance directory, but that's not as easy to read.
+      - Contents:
+        - Comma-separated table of: (still TBD)
+"""
+
+echo "${USAGE}"
+exit 0
+
+#######################################
+##   Code With Procedural Documentation
+#######################################
+
+#############################
+##                  Functions
+#############################
+
+
+## Define the function that will write the JSON evaluation file for the sequence
+write_json_evaluation_file() {
+	# $1 is the Basename
+	# $2 is the glycan sequence
+	# $3 is the jsonFileName to use for output
+	FileTop="""{
+    \"entity\": {
+        \"type\": \"Sequence\",
+        \"services\":
+            {
+                \"build\": {
+                    \"type\": \"Evaluate\",
+                    \"givenName\": \"${1}\"
+                }
+            },
+        \"inputs\":
+            {
+                \"sequence\": {
+                    \"payload\": \"${2}\"
+                },
+                \"resources\" :[]
+            }"""
+
+	FileBottom="""
+    },
+    \"prettyPrint\" : true,
+    \"mdMinimize\" : true
+}
+""" 
+
+## To test reads of a failure with a notice??
+## This setting gets clobbered despite being in the input.
+# TEST_NOTICED_FAILURE="True" ## won't work; not sure why
+#if [ "${TEST_NOTICED_FAILURE}" == "True" ] ; then
+#	FileBottom=""",
+#	\"procedural_options\": {
+#           \"number_structures_hard_limit\": 0
+#        }
+#    },
+#    \"prettyPrint\" : true,
+#    \"mdMinimize\" : true
+#}
+#""" 
+#fi
+echo "Writing JSON input for generating structure files to: ${3}" >> $LOGFILE
+theFile="${FileTop}${FileBottom}"
+echo "${theFile}" > ${3}
+
+} # closes the function - is not part of the json
+
+## Define the function that will handle the management of the output
+manage_evaluation_output() {
+	##  ${1} is the json reponse file
+	##  ${2} is the output directory
+	##  ${3} is the sequence provided by the user
+	dbOutputFile_RELATIVE=${ScriptName}_DB.csv 
+	if [ "${DATE_BUILD_DATABASE}" == "True" ] ; then
+		dbOutputFile_RELATIVE=${DATENOW}_${ScriptName}_DB.csv 
+	fi
+	dbOutputFile=${OutputDir}/${dbOutputFile_RELATIVE}
+	echo "[INFO] : $(date) : Build DB filename: ${dbOutputFile_RELATIVE}" >> $STATUSFILE
+	echo "Build DB filename, relative to build directory: ${dbOutputFile_RELATIVE}" >> $LOGFILE
+	if [ ! -e "${dbOutputFile}" ] ; then
+        	##  - Basename , Sequence_Provided , Sequence_Processed , sequence_id , pUUID , conformerID , Result , Date_Time , Note
+		echo "#Basename,Sequence_Provided,Sequence_Processed,sequence_id,pUUID,conformerID,Result,Date_Time,Note" > "${dbOutputFile}"
+	fi
+	Sequence_Provided="${3}"
+
+##### To get the value out of a pretty-printed json file, use something like:	
+#####	grep sequence_id G00024MO_response.json | cut -d '"' -f 4
+
+AllGood="True"
+### - From ${responseJSON} grab:
+	###   - givenName (Basename)
+	command="grep givenName ${2} | cut -d '\"' -f 4"
+	givenName="$( eval ${command} )"
+	# expect 'null' if bad, but check for empty
+	if [ "${givenName}" == "null" ] || [ -z "${givenName}" ] ; then
+		echo "grep result for givenName is >>>${givenName}<<<" >> $LOGFILE
+		givenName="missing"
+		AllGood="False"
+	fi
+	###   - indexOrdered (sequence)
+	command="grep -w indexOrdered ${2} | cut -d '\"' -f 4"
+	Sequence_Processed="$( eval ${command} )"
+	# expect empty if bad
+	if [ "${Sequence_Processed}" == "null" ] || [ -z "${Sequence_Processed}" ] ; then
+		echo "grep result for indexOrdered ('Sequence_Processed') is >>>${indexOrdered}<<<" >> $LOGFILE
+		Sequence_Processed="missing"
+		AllGood="False"
+	fi
+	###   - sequence_id
+	command="grep sequence_id ${2} | cut -d '\"' -f 4"
+	sequence_id="$( eval ${command} )"
+	# expect empty if bad
+	if [ "${sequence_id}" == "null" ] || [ -z "${sequence_id}" ] ; then
+		echo "grep result for sequence_id is >>>${sequence_id}<<<" >> $LOGFILE
+		sequence_id="missing"
+		AllGood="False"
+	fi
+	###   - pUUID
+	command="grep -m1 pUUID ${2} | cut -d '\"' -f 4"
+	pUUID="$( eval ${command} )"
+	# expect empty if bad
+	if [ "${pUUID}" == "null" ] || [ -z "${pUUID}" ] ; then
+		echo "grep result for pUUID is >>>${pUUID}<<<" >> $LOGFILE
+		pUUID="missing"
+		AllGood="False"
+	fi
+	###   - conformerID
+	command="grep conformerID ${2} | cut -d '\"' -f 4"
+	conformerID="$( eval ${command} )"
+	# expect empty if bad
+	if [ "${conformerID}" == "null" ] || [ -z "${conformerID}" ] ; then
+		echo "grep result for conformerID is >>>${conformerID}<<<" >> $LOGFILE
+		conformerID="missing"
+		AllGood="False"
+	fi
+
+	if [ "${AllGood}" == "False" ] ; then
+		###   - Set empty values to 'missing' and consider that a failed build
+		###   - Check for these (which will be in a notice if they exist):
+		###       set -m1 and only report the first one (V1)
+		###     - Set Result=the value for '"brief":' in the notice
+		echo "[ERROR] : $(date) : Something went wrong generating PDB file for ${Basename}" >> $STATUSFILE
+		echo "[INFO] : $(date) : Attempting to determine cause of issue with ${Basename}" >> $STATUSFILE
+		echo "Checking for notices related to failure of ${Basename}" >> $LOGFILE
+		command="grep -m1 '\"brief\":' ${2} | cut -d '\"' -f 4"
+		brief="$( eval ${command} )"
+        	if [ ! -z "${brief}" ] ; then
+			Result="Failure: ${brief}"
+			echo "Found a notice brief: ${brief}" >> $LOGFILE
+		else
+			Result="Failure: unspecified reason"
+			echo "Could not find a notice brief." >> $LOGFILE
+		fi
+		###     - Set the Note to '"message":' or to hint or to the filename
+		command="grep -m1 '\"message\":' ${2} | cut -d '\"' -f 4"
+		message="$( eval ${command} )"
+        	if [ ! -z "${message}" ] ; then
+			Note="${message}"
+			echo "Found a notice message: ${message}" >> $LOGFILE
+		else
+			echo "Could not find a notice message." >> $LOGFILE
+		fi
+		command="grep -m1 '\"hint\":' ${2} | cut -d '\"' -f 4"
+		hint="$( eval ${command} )"
+        	if [ ! -z "${hint}" ] ; then
+			Note="${Note}; Hint: ${hint}"
+			echo "Found a notice hint: ${hint}" >> $LOGFILE
+		else
+			echo "Could not find a notice hint." >> $LOGFILE
+		fi
+        	if [ -z "${Note}" ] ; then
+			echo "Could not find information." >> $LOGFILE
+			echo "Please see JSON Response: ${2}" >> $LOGFILE
+			Note="See ${2}"
+		fi
+	else
+		### - Try to copy 
+		###     - /work/conjugate/gp/Builds/Requested_Builds/${pUUID}/${conformer}/min-gas.pdb 
+		###     - to ${OutputDir}/PDB/${Basename}.pdb
+		command="cp /work/conjugate/gp/Builds/${pUUID}/Requested_Builds/${conformerID}/min-gas.pdb ${OutputDir}/PDB/${Basename}.pdb >> $LOGFILE 2>&1"
+		eval "${command}"
+		result="$?"
+		if [ "${result}" == "0" ] ; then
+			###   - set Result to "Finished normally"
+			Result="Finished normally"
+			###   - set Note to "-"
+			Note="-"
+	        else
+			### - If not, try the same thing with:
+			command="cp /work/conjugate/gp/Builds/${pUUID}/Requested_Builds/${conformerID}/structure.pdb ${OutputDir}/PDB/${Basename}${UNMIN_SUFFIX}.pdb >> $LOGFILE 2>&1"
+			eval "${command}"
+			result="$?"
+			if [ "${result}" == "0" ] ; then
+				Result="Finished incompletely"
+				Note="Minimization failed"
+			else
+				Result="JSON normal but no PDB"
+				Note="See /work/conjugate/gp/Builds/${pUUID}/${conformerID}/Sequence_Prep_*.log"
+			fi
+		fi
+	fi
+	if [[ "${Result}" == *"Failure"* ]] ; then
+		echo "[ERROR] : $(date) : Error generating PDB file ${Basename}." | tee -a $STATUSFILE
+	elif [[ "${Result}" != "Finished normally" ]] ; then
+		echo "[WARNING] : $(date) : Abnormal completion of ${Basename} PDB file generation." | tee -a $STATUSFILE
+	fi
+	if [ "${Result}" == "Finished normally" ] ; then
+		echo "[INFO] : $(date) : PDB file generation for ${Basename} finished normally." | tee -a $STATUSFILE
+	fi
+	###   - copy the column entries to the DB
+	Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
+	entryString="${Basename}"
+	if [ "${PDB_DB_STRICT_MATCHING}" == "True" ] ; then
+		entryString="${Basename},${Sequence},${sequence_id}"
+	fi
+	command="grep -c '${entryString}' ${dbOutputFile} 2>&1"
+	#echo "the command is:"
+	#echo "${command}"
+	entryExists="$( eval ${command} )"
+	#echo "entryExists = >>>${entryExists}<<<"
+	if [[ "${entryExists}" -gt '1' ]] ; then
+		echo "[WARNING] : $(date) : Removing duplicate entries found in database file" >> $STATUSFILE
+		echo "More than one entry for: ${entryString} found in ${dbOutputFile}" >> $LOGFILE
+		echo "Here are the entries plus any error messages: " >> $LOGFILE
+		command="grep '${entryString}{Basename},${Sequence},${sequence_id}' ${dbOutputFile} >> $LOGFILE 2>&1"
+		command="sed -i '/${entryString}/d' ${dbOutputFile} >> $LOGFILE 2>&1"
+		eval "${command}"
+		result="$?"
+		if [ "${result}" != "0" ] ; then
+			echo "[WARNING] : $(date) : Error removing duplicate entries found in database file" >> $STATUSFILE
+		fi
+		echo "Removing them. End of duplicate entries data." >> $LOGFILE
+	elif [[ "${entryExists}" -eq '1' ]] ; then
+		echo "[INFO] : $(date) : Removing previous entry found in database file" >> $STATUSFILE
+		echo "Found and removing the previous entry for: ${entryString} found in ${dbOutputFile}" >> $LOGFILE
+		command="sed -i '/${entryString}/d' ${dbOutputFile} >> $LOGFILE 2>&1"
+		eval "${command}"
+		result="$?"
+		if [ "${result}" != "0" ] ; then
+			echo "[WARNING] : $(date) : Error removing duplicate entry found in database file" >> $STATUSFILE
+		fi
+		echo "Removing them. End of duplicate entries data." >> $LOGFILE
+	fi
+	echo "${Basename},${Sequence_Provided},${Sequence_Processed},${sequence_id},${pUUID},${conformerID},${Result},${Date_Time},${Note}" >> "${dbOutputFile}"
+}
+
+#############################
+##           Setup And Checks
+#############################
+
+## Check that an input file is specified on the command line
+##
+### - If not, print a statement and exit 1.
+if [ -z "${1}" ] ; then
+	echo "${USAGE}"
+	print_error_and_exit "Command-line argument required. Exiting."
+else
+	InputFile="${1}"
+fi
+
+## Set I/O settings 
+##
+### - Read from ./${AUTOGENERATED_FILE_PREFIX}_config.sh and SessionSettings.bash in /programs/share/
+### - Needs:
+###   - $OUT_SUBDIR
+###   - $OVERWRITE_OUTPUT
+### - Record session/config info in provenance directory per date-time.
+if [ -e "/sysetc/${AUTOGENERATED_FILE_PREFIX}_config.bash" ] ; then
+	echo "sourcing config: /sysetc/${AUTOGENERATED_FILE_PREFIX}_config.bash"
+	source "/sysetc/${AUTOGENERATED_FILE_PREFIX}_config.bash"
+fi
+if [ -e "/programs/share/SessionSettings.bash" ] ; then
+	echo "sourcing session settings: /programs/share/SessionSettings.bash" 
+	source "/programs/share/SessionSettings.bash"
+fi
+if [ -z "${OUT_SUBDIR}" ] ; then
+	print_error_and_exit "OUT_SUBDIR not specified. Exiting. Re-run script with no arguments for USAGE."
+fi
+OutputDir="/outputs/conjugate/gp/${OUT_SUBDIR}"
+mkdir -p "${OutputDir}/logs" || print_error_and_exit "Unable to create directory: ${OutputDir}/logs. Exiting."
+mkdir -p "${OutputDir}/provenance" || print_error_and_exit "Unable to create directory: ${OutputDir}/provenance. Exiting."
+mkdir -p "${OutputDir}/PDB" || print_error_and_exit "Unable to create directory: ${OutputDir}/PDB. Exiting."
+mkdir -p "${OutputDir}/Treated_Inputs" || print_error_and_exit "Unable to create directory: ${OutputDir}/Treated_Inputs. Exiting."
+export LOGFILE="${OutputDir}/logs/details_${DATENOW}_${ScriptName}.log"
+export LOGFILE_RELATIVE="logs/details_${DATENOW}_${ScriptName}.log"
+export STATUSFILE="${OutputDir}/logs/status_${DATENOW}_${ScriptName}.log"
+export STATUSFILE_RELATIVE="logs/status_${DATENOW}_${ScriptName}.log"
+echo "Details file for ${ScriptName} begun on $(date)" > ${LOGFILE}
+echo "[INFO] : $(date) : Status file for ${ScriptName} begun" > ${STATUSFILE}
+if [ -z "${OVERWRITE_OUTPUT}" ] ; then
+	echo "OVERWRITE_OUTPUT not found in input files. Using 'False'." >> ${LOGFILE}
+fi
+
+#############################
+##                  Procedure
+#############################
+
+## Read in line 1 of the input file:
+declare -a HEADERS
+tmphead="$(head -n 1 short.csv)"
+IFS=, read -ra HEADERS <<< "${tmphead}"
+
+## Ensure that all the RequiredHeaders are present
+# RequiredHeaders="pdb_id amino_acid_chain glycosylation_site_pdb sequence_glycam_iupac"
+allthere="True"
+for rheader in ${RequiredHeaders[@]} ; do 
+	if [[ "${HEADERS[@]}" != *"${rheader}"* ]] ; then
+		allthere="False"
+	fi
+done
+if [ "${allthere}" == "False" ] ; then
+	echo "These are the Required Headers:"
+	echo "${RequiredHeaders[@]}"
+	echo "These are your headers:"
+	echo "${HEADERS[@]}"
+	print_error_and_exit "All required headers are not present in the input file."
+fi
+
+# If 'start_aa' was used rather than 'amino_acid', change the value in
+if [[ "${HEADERS[@]}" == *"start_aa"* ]] ; then
+	echo "[INFO] : $(date) : start aa was found - changing it to the standard 'amino_acid_pdb'" | tee -a $LOGFILE
+        HEADERS=( "${HEADERS[@]/start_aa/amino_acid_pdb}" )
+fi
+
+## Note which ParsedHeaders are present in the user inputs
+# ParsedHeaders="project_id uniprotkb_canonical_ac pdb_id amino_acid_chain glycosylation_site_pdb insertion_code amino_acid_pdb glycosylation_type project_id sequence_glycam_iupac"
+declare -A ParsedHeadersPresent
+for pheader in ${ParsedHeaders[@]} ; do 
+	if [[ "${HEADERS[@]}" == *"${pheader}"* ]] ; then
+		ParsedHeadersPresent["${pheader}"]="True"
+	else
+		ParsedHeadersPresent["${pheader}"]="False"
+	fi
+done
+
+## Determine what to use for the 'project_id'.
+if [[ "${HEADERS[@]}" != *"project_id"* ]] ; then
+	echo "[INFO] : $(date) : Column 'project_id' not found in input file." | tee -a $STATUSFILE
+	ProjectIDBase='pdb_id'
+	if [[ "uniprotkb_canonical_ac" == *"${HEADERS}"* ]] ; then
+		ProjectIDBase='uniprotkb_canonical_ac'
+		echo "[INFO] : $(date) : Using uniprotkb_canonical_ac and pdb_id to form project_id." | tee -a $STATUSFILE
+	else
+		echo "[INFO] : $(date) : Using pdb_id as project_id." | tee -a $STATUSFILE
+	fi
+else
+	ProjectIDBase='project_id'
+	echo "[INFO] : $(date) : A column for 'project_id' is found in the input file." | tee -a $STATUSFILE
+	# $ csvstat -c project_id --null new.csv
+	# True  ## True if there are null entries for project_id in the incoming file
+	nullPIDs="$(csvstat -c project_id --null ${InputFile})"
+	if [ "${nullPIDs}" == "True" ] ; then
+		echo "[ERROR] : $(date) : The 'project_id' column contains empty or null entries. Exiting." | tee -a $STATUSFILE
+		echo "[ERROR] : $(date) : Here are stats regarding empty/null entries for project_id:" | tee -a $LOGFILE
+		csvstat -c project_id "${InputFile}" | tee -a $LOGFILE
+		print_error_and_exit "project_id entries cannot be null or empty"
+	fi
+fi
+
+## 
+## Generate the Treated Input file
+##
+##
+## First, generate a temporary version of the Treated File that contains only the Parsed Headers
+#
+# Make a list of the parsed headers is in the input file so that they can be handed to csvcut
+first="true"
+cutCols=""
+for pheader in ${ParsedHeaders[@]} ; do 
+	if [ "${ParsedHeadersPresent["${pheader}"]}" == "True" ] ; then
+		if [ "${first}" == "true" ] ; then
+			cutCols="${pheader}"
+			first="false"
+		else
+			cutCols="${cutCols},${pheader}"
+		fi
+	fi
+done
+#
+# Use csvcut to extract the columns into a temporary file
+#    csvcut -c column_c,column_a,column_z data.csv > new.csv
+TmpUUID="$(uuidgen -r)"
+TmpTreatedFileName="${pUUID:0:5}.csv"
+TmpTreatedFilePath="/tmp"
+if [ "${KEEP_TEMPORARY_FILES}" == true ] ; then
+	TmpTreatedFilePath="${OutputDir}/logs"
+	echo "[INFO] : $(date) : The temporary (and intermediate) Treated_Input file will be saved in:" | tee -a $LOGFILE
+	echo "[INFO] : $(date) :     ${TmpTreatedFilePath}" | tee -a $LOGFILE
+fi
+TmpTreatedFileOut="${TmpTreatedFilePath}/${TmpTreatedFileName}"
+COMMAND="csvcut -c ${cutCols} ${InputFile} > ${TmpTreatedFileOut}"
+rclr "Writing a temporary input file containing Parsed Headers in a standard order" "${COMMAND}" "Temporary treated input file write."
+#
+## Sort the file so that various statistics can be generated
+#
+# Use csvsort to avoid using tail (but write in a 'large file' feature if that becomes a problem)
+TmpTreatedFileNameSorted="${TmpTreatedFileName}_sorted"
+TmpTreatedFileOutSorted="${TmpTreatedFilePath}/${TmpTreatedFileNameSorted}"
+COMMAND="csvsort ${TmpTreatedFileOut} > ${TmpTreatedFileOutSorted}"
+rclr "Sorting the temporary input file." "${COMMAND}" "Temporary treated input file sort"
+#
+## Count and list the non-unique lines.
+#
+TmpDuplicatesFileName="${TmpTreatedFileName}_duplicates"
+TmpDuplicatesFileOut="${TmpTreatedFilePath}/${TmpDuplicatesFileOut}"
+COMMAND="cat ${TmpTreatedFileOutSorted} | uniq -cd > ${TmpDuplicatesFileOut}"
+rclr "Checking for duplicate entries in the input file." "${COMMAND}" "Duplicate entries check"
+#  cat some_file_with_duplicates.csv | sort | uniq -cd  ## not exactly the workflow here, but shows the output
+#       3 P00451-1,2137,Asn,G22768VO,N-linked,6MF0,pdb_00006mf0,A,1253,2137,2137,ASN,ASN,N,DManpa1-3[DManpa1-6]DManpb1-4DGlcpNAcb1-4DGlcpNAcb1-OH
+#       3 P00451-1,2137,Asn,G56014GC,N-linked,6MF0,pdb_00006mf0,B,1253,2137,2137,ASN,ASN,N,DManpa1-2DManpa1-3[DManpa1-6]DManpb1-4DGlcpNAcb1-4DGlcpNAcb1-OH
+#       3 P01023-1,396,Asn,G22573RC,N-linked,6TAV,pdb_00006tav,A,396,396,396,ASN,ASN,N,DManpa1-6DManpb1-4DGlcpNAcb1-4DGlcpNAcb1-OH
+#       3 P01023-1,55,Asn,G22573RC,N-linked,6TAV,pdb_00006tav,A,55,55,55,ASN,ASN,N,DManpa1-6DManpb1-4DGlcpNAcb1-4DGlcpNAcb1-OH
+numDups="$(wc -l ${TmpDuplicatesFileOut} | cut -d ' ' -f1)"
+result="$?"
+if [ "${result}" != "0" ] ; then
+	print_error_and_exit "Unable to count the number of duplicate entries in the sorted temporary file."
+fi
+#
+# Copy the current result to a temporary 'final' file containing user-supplied input. If there are dups, it is not really final yet.
+TmpFinalFileOut="${TmpTreatedFilePath}/${TmpTreatedFileName}_final_user_directives"
+cp "${TmpTreatedFileOutSorted}" "${TmpFinalFileOut}"
+#
+## If there are duplicate lines, record that info in provenance and remove those lines from the sorted temporary input.
+#
+if [ "${numDups}" != "0" ] ; then
+	COMMAND="cp ${TmpDuplicatesFileOut} ${OutputDir}/provenance/User_Input_Duplicates.txt"
+	rclr "Duplicate lines found. Copying their stats to provenance." "${COMMAND}" "Recording duplicates info."
+	#
+	## Remove any project containing duplicated lines
+	# 
+	# Read the project info from duplicates record 
+	# For each line, take the second entry (dealing with mix of commas and spaces as separators)
+	# Then remove all lines beginning with that string from the interim treated input file.
+	#
+	# Loop over the input file contents
+       	while IFS=, read -ra line; do
+               	# get the second entry (the first is the duplicates count)
+		# ...but there is complication by a mix of separating characters (space, comma)
+               	# echo "the line is:"
+               	# echo "${line[@]}"
+               	sedTarget="${line[0]##* }"
+               	COMMAND="sed -i '/^${sedTarget}/d' ${TmpFinalFileOut}"
+		rclr "Removing all requests related to project ${sedTarget} with duplicate directive lines." "${COMMAND}" "${sedTarget} duplicates removal"
+	done < "${TmpDuplicatesFileOut}"
+fi
+#
+## If there is not a project_id column, and there is a uniprot ID, ensure that there is a 1:1 correspondence between uniprot ID and pdb_id
+if [[ "${HEADERS[@]}" != *"project_id"* ]] ; then
+	if [[ "${HEADERS[@]}" == *"uniprotkb_canonical_ac"* ]] ; then
+		TmpUniPDBTestOut="${TmpTreatedFilePath}/${TmpTreatedFileName}_non-unique_uniprot_pdb"
+		COMMAND="csvcut -c uniprotkb_canonical_ac,pdb_id ${TmpFinalFileOut} | csvsort | uniq -cd > ${TmpUniPDBTestOut}"
+		rclr "Checking for uniprotID:pdbID not being 1:1 when project_id not specified." "${COMMAND}" "Duplicate uniprot-pdb per project check"
+		numDups="$(wc -l ${TmpUniPDBTestOut} | cut -d ' ' -f1)"
+		result="$?"
+		if [ "${result}" != "0" ] ; then
+			print_error_and_exit "Unable to count the number of duplicate entries in the sorted temporary file."
+		fi
+		#
+		## If there are duplicate lines, record that info in provenance and remove those lines from the sorted temporary input.
+		if [ "${numDups}" != "0" ] ; then
+			COMMAND="cp ${TmpUniPDBTestOut} ${OutputDir}/provenance/User_Inputs_Duplicate_Uniprot-PDB.txt"
+			rclr "Duplicate lines found. Copying their stats to provenance." "${COMMAND}" "Recording duplicates info."
+			#
+			## Remove any project containing duplicated uniprot:pdb
+start here...
+       			while IFS=, read -ra line; do
+               			# get the second entry (the first is the duplicates count)
+				# ...but there is complication by a mix of separating characters (space, comma)
+               			# echo "the line is:"
+               			# echo "${line[@]}"
+               			sedTarget="${line[0]##* }"
+               			COMMAND="sed -i '/^${sedTarget}/d' ${TmpFinalFileOut}"
+				rclr "Removing all requests related to project ${sedTarget} with duplicate directive lines." "${COMMAND}" "${sedTarget} duplicates removal"
+			done < "${TmpDuplicatesFileOut}"
+		fi
+	fi
+fi
+
+
+
+
+
+## Generate the final Treated Inputs file
+#
+# Loop over the treated user-input file contents
+count=0
+while IFS=, read -ra line; do
+        # echo "the line is:"
+        # echo "${line[@]}"
+	# If this is the first line, just add the new header
+	if [ "${count}" == "0" ] ; then
+		count="$((count+1))"
+	fi
+	#
+	## Ensure that there is a project_id.
+	if [ "${ProjectIDBase}" != "project_id" ] ; then
+	#        ProjectIDBase='pdb_id'
+	#        ProjectIDBase='uniprotkb_canonical_ac'
+	fi
+# ParsedHeaders="project_id uniprotkb_canonical_ac pdb_id amino_acid_chain glycosylation_site_pdb insertion_code amino_acid_pdb glycosylation_type sequence_glycam_iupac"
+for pheader in ${ParsedHeaders[@]} ; do 
+	if [ "${ParsedHeadersPresent["${pheader}"]}" == "True" ] ; then
+		if [ "${first}" == "true" ] ; then
+			cutCols="${pheader}"
+			first="false"
+		else
+			cutCols="${cutCols},${pheader}"
+		fi
+	fi
+done
+done < "${TmpFinalFileOut}"
+
+
+
+## Record the number of unique build requests that the treated data request (bc untreated isn't reasonable to query)
+numRequestedBuilds="$(csvstat -c ${ProjectIDBase} --unique ${InputFile})"
+.... finish me ....  echo "[ERROR] : $(date) : Sequence is empty for ${Basename}. Ending processing. More info: ${LOGFILE_RELATIVE}." | tee -a $STATUSFILE
+
+
+count=0
+## Loop over the input file contents
+while IFS= read -ra line; do
+	#echo "line is >>>${line}<<<"
+	### Ignore first line
+	if [ "${count}" == "0" ] ; then
+		#echo "ignoring line and reading next"
+		count="$((count+1))"
+		continue
+	fi
+## Split line into args
+	linetosplit="${line//,/ }"
+	#echo "linetosplit is >>>${linetosplit}<<<"
+ 	set -- ${linetosplit}
+
+	### Check for preexistence, if desired, and respond accordingly
+	Basename="${1//\"/}"
+	Sequence="${2//\"/}"
+	if [ -z "${Sequence}" ] ; then
+		echo "[ERROR] : $(date) : Sequence is empty for ${Basename}. Ending processing. More info: ${LOGFILE_RELATIVE}." | tee -a $STATUSFILE
+		echo "The following line does not contain a Sequence. It is enclosed in triple arrows like so: >>>line<<<." >> $LOGFILE
+		echo "        >>>${line}<<<" >> $LOGFILE
+		echo "Ensure that there are no unexpected commas or stray double-quotes. Here is the line ready to be parsed:" >> $LOGFILE
+		echo "        >>>${linetosplit}<<<" >> $LOGFILE
+		echo "The Sequence is the second space-delimited entry, with enclosing double-quotes removed."  >> $LOGFILE
+		continue
+	fi
+	echo "[INFO] : $(date) : Starting PDB file generation for Basename=${Basename}." >> ${STATUSFILE}
+	if generate_new_pdb_file ${OutputDir} ${Basename} ; then
+	### Run the single sequence evaluation
+		jsonFileName="${OutputDir}/provenance/${Basename}_request.json"
+		write_json_evaluation_file ${Basename} ${Sequence} ${jsonFileName}
+		jsonResponse="$(delegate ${jsonFileName} 2>&1)"
+		result="$?"
+		#result="0"
+		if [ ${result} != "0" ] ; then
+			echo "[ERROR] : $(date) : Build failed for Basename=${Basename}. Pressing on." >> ${STATUSFILE}
+			echo "Build failed for Basename=${Basename} & Glycan=${Sequence}." >> ${LOGFILE}
+			echo """The response returned, if any, appears between the rows of equals signs below.
+===============================================================================
+${jsonResponse}
+===============================================================================
+Trying the next one.
+""" >> ${LOGFILE}
+			continue
+		else
+			jsonResponseFileName="${OutputDir}/provenance/${Basename}_response.json"
+			echo "${jsonResponse}" > "${jsonResponseFileName}"
+ 		fi
+		manage_evaluation_output "${OutputDir}" "${jsonResponseFileName}" "${Sequence}"
+		##  ${2} is the json reponse file
+		##  ${1} is the output directory
+	fi
+	echo "[INFO] : $(date) : Completed attepmt to generate PDB file." >> ${STATUSFILE}
+	count="$((count+1))"
+done < "${InputFile}"
+### Manage the output from the sequence evaluation, 
+

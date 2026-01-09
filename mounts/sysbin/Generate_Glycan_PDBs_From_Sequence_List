@@ -12,10 +12,14 @@ ScriptName="$(basename ${0})"
 #######################################
 
 USAGE="""
-Generate a set of PDB files containing 3D structures of glycans based on a list of sequences.
+USAGE:
 
-   List format: comma-separated table containing:
-  
+   ${ScriptName} <Input-File>
+
+Generate a set of PDB files containing 3D structures of glycoproteins based on a list of PDB IDs, linkage sites, and sequences.
+
+   Input-File format: comma-separated table containing:
+
      Filename Basename (*) , Glycan Sequence in Glycam Condensed IUPAC Format (*) 
    
        -  !! The first line is ignored. Use it for headers or leave it blank.

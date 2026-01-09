@@ -1,0 +1,9 @@
+project_id,pdb_id,amino_acid_chain,glycosylation_site_pdb,start_aa,sequence_glycam_iupac
+,3T5O,A,17,THR,DGlcpb1-3LFucpa1-OH
+,3VN4,A,115,SER,DGlcpb1-3LFucpa1-OH
+my_cool_id,3VN4,A,115,SER,DGlcpb1-3LFucpa1-OH
+,4E0S,B,17,THR,DGlcpb1-3LFucpa1-OH
+,6RUR,A,65,THR,DGlcpb1-3LFucpa1-OH
+null,6RUR,B,18,THR,DGlcpb1-3LFucpa1-OH
+null,6RUR,C,65,THR,DGlcpb1-3LFucpa1-OH
+null,6RUR,D,18,THR,DGlcpb1-3LFucpa1-OH

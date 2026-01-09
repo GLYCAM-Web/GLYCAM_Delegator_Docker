@@ -64,3 +64,29 @@ rclr()
         	fi
 	fi
 }
+
+## Define the function that will check for preexistence of PDB file,
+##
+### - PDB files : /outputs/conjugate/gp/${OUT_SUBDIR}/ <-- this is the OutputDir
+### - If file exists
+### - Check if OVERWRITE_OUTPUT==True (env or settings)
+### - Write messages to detailed log file and respond accordingly
+generate_new_pdb_file() {
+        # $1 is the directory where the file should be (OutputDir)
+        # $2 is the Basename for the PDB file
+	# $LOGFILE must be defined by the calling script
+        if [ -e "${1}/${2}.pdb" ] ; then
+                echo "Found existing file '${1}/${2}.pdb'" >> ${LOGFILE}
+                if [ "${OVERWRITE_OUTPUT}" == "True" ] ; then
+                        echo "Overwriting existing file" >> ${LOGFILE}
+                        return 0
+                else
+                        echo "Not overwriting existing file" >> ${LOGFILE}
+                        return 1
+                fi
+        else
+                echo "Attempting to create brand-new file '${1}/${2}.pdb'" >> ${LOGFILE}
+                return 0
+        fi
+}
+
