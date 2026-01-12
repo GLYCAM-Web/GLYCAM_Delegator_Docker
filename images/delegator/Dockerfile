@@ -32,6 +32,8 @@ RUN echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-15 main" >> 
         && wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
         && apt-get update \
         && apt-get install --yes --no-install-recommends --no-install-suggests \
+		csvkit \
+		uuid-runtime \
 		cmake \
 		libboost-all-dev \
 		graphviz \
