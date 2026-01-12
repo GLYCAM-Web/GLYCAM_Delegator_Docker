@@ -489,7 +489,7 @@ done
 if [[ "${HEADERS[@]}" != *"project_id"* ]] ; then
 	echo "[INFO] : $(date) : Column 'project_id' not found in input file." | tee -a $STATUSFILE
 	ProjectIDBase='pdb_id'
-	if [[ "uniprotkb_canonical_ac" == *"${HEADERS}"* ]] ; then
+	if [[ "${HEADERS}" == *"uniprotkb_canonical_ac"* ]] ; then
 		ProjectIDBase='uniprotkb_canonical_ac'
 		echo "[INFO] : $(date) : Using uniprotkb_canonical_ac and pdb_id to form project_id." | tee -a $STATUSFILE
 	else
@@ -600,7 +600,9 @@ fi
 if [[ "${HEADERS[@]}" != *"project_id"* ]] ; then
 	if [[ "${HEADERS[@]}" == *"uniprotkb_canonical_ac"* ]] ; then
 		TmpUniPDBTestOut="${TmpTreatedFilePath}/${TmpTreatedFileName}_non-unique_uniprot_pdb"
-		COMMAND="csvcut -c uniprotkb_canonical_ac,pdb_id ${TmpFinalFileOut} | csvsort | uniq -cd > ${TmpUniPDBTestOut}"
+		# !! This only counts multiple PDBs per uniprotID. It does not count multiple uniprotIDs per PDB. 
+		#    The latter does not matter to this software. If desired by users, the latter could be added.
+		COMMAND="csvcut -c uniprotkb_canonical_ac,pdb_id ${TmpFinalFileOut} | csvsort | uniq | cut -d ',' -f1 | uniq -cd > ${TmpUniPDBTestOut}"
 		rclr "Checking for uniprotID:pdbID not being 1:1 when project_id not specified." "${COMMAND}" "Duplicate uniprot-pdb per project check"
 		numDups="$(wc -l ${TmpUniPDBTestOut} | cut -d ' ' -f1)"
 		result="$?"
@@ -614,7 +616,6 @@ if [[ "${HEADERS[@]}" != *"project_id"* ]] ; then
 			rclr "Duplicate lines found. Copying their stats to provenance." "${COMMAND}" "Recording duplicates info."
 			#
 			## Remove any project containing duplicated uniprot:pdb
-start here...
        			while IFS=, read -ra line; do
                			# get the second entry (the first is the duplicates count)
 				# ...but there is complication by a mix of separating characters (space, comma)
@@ -622,51 +623,108 @@ start here...
                			# echo "${line[@]}"
                			sedTarget="${line[0]##* }"
                			COMMAND="sed -i '/^${sedTarget}/d' ${TmpFinalFileOut}"
-				rclr "Removing all requests related to project ${sedTarget} with duplicate directive lines." "${COMMAND}" "${sedTarget} duplicates removal"
-			done < "${TmpDuplicatesFileOut}"
+				rclr "Removing all requests related to project ${sedTarget} with duplicate PDBs." "${COMMAND}" "${sedTarget} duplicate PDBs removal"
+			done < "${TmpUniPDBTestOut}"
 		fi
 	fi
 fi
-
-
-
-
-
-## Generate the final Treated Inputs file
 #
-# Loop over the treated user-input file contents
-count=0
-while IFS=, read -ra line; do
-        # echo "the line is:"
-        # echo "${line[@]}"
-	# If this is the first line, just add the new header
-	if [ "${count}" == "0" ] ; then
-		count="$((count+1))"
+## Generate the final treated input file
+FinalTreatedInput="${OutputDir}/Treated_Inputs/$(basename ${InputFile}).treated.csv" 
+rowfirst="true"
+declare -a columnrow
+while IFS=, read -ra columnrow; do
+	#
+	## Get info from and do consistency checks using the first row
+	if [ "${rowfirst}" == "true" ] ; then
+		if [ "${#HEADERS[@]}" != "${#columnrow[@]}" ] ; then
+			print_error_and_exit "#HEADERS not equal to #columnrow in treated-input generation."
+		fi
+		# ProjectIDBase can be: 'uniprotkb_canonical_ac' 'project_id' 'pdb_id'
+		pdbidLoc="-1"
+		uniprotLoc="-1"
+		numInCol="${#columnrow[@]}"
+		count="0"
+		while [ "${count}" -lt "${numInCol}}" ] ; do
+			if [ "${HEADERS[${count}]}" != "${columnrow[${count}]}" ] ; then
+				print_error_and_exit "Entry ${count} not identical for HEADERS and columnrow in treated-input generation."
+			fi
+			if [ "${ProjectIDBase}" != "project_id" ] ; then
+				if [ "${columnrow[${count}]}" == "pdb_id" ] ; then
+					pdbidLoc="${count}"
+				fi
+				if [ "${columnrow[${count}]}" == "uniprotkb_canonical_ac" ] ; then
+					uniprotLoc="${count}"
+				fi
+			fi
+		done
+		colfirst="true"
+		rowOut=""
+		for pheader in ${ParsedHeaders[@]} ; do  ## this list should be equal to or longer than HEADERS???
+			if [ "${colfirst}" == "true" ] ; then
+				colfirst="false"
+				separator=""
+			else
+				separator=","
+			fi
+			rowOut="${rowOut}${separator}${pheader}"
+		done
+		echo "${rowOut}" > "${FinalTreatedInput}"
+		rowfirst="false"
+		continue
 	fi
 	#
-	## Ensure that there is a project_id.
-	if [ "${ProjectIDBase}" != "project_id" ] ; then
-	#        ProjectIDBase='pdb_id'
-	#        ProjectIDBase='uniprotkb_canonical_ac'
-	fi
-# ParsedHeaders="project_id uniprotkb_canonical_ac pdb_id amino_acid_chain glycosylation_site_pdb insertion_code amino_acid_pdb glycosylation_type sequence_glycam_iupac"
-for pheader in ${ParsedHeaders[@]} ; do 
-	if [ "${ParsedHeadersPresent["${pheader}"]}" == "True" ] ; then
-		if [ "${first}" == "true" ] ; then
-			cutCols="${pheader}"
-			first="false"
+	## For each parsed header
+	colfirst="true"
+	inColCount="0"
+	rowOut=""
+	for pheader in ${ParsedHeaders[@]} ; do  ## this list should be equal to or longer than HEADERS???
+		if [ "${colfirst}" == "true" ] ; then
+			colfirst="false"
+			separator=""
 		else
-			cutCols="${cutCols},${pheader}"
+			separator=","
 		fi
-	fi
-done
+		copymetofile=""	
+		if [ "${ParsedHeadersPresent["${pheader}"]}" == "True" ] ; then
+			# If we got here, but we're out of headers entries, write error and exit
+			if [ "${inColCount}" == "${numInCol}" ] ; then
+				print_error_and_exit "Out of present headers in generate treated-input."
+			fi
+			# Copy this one into the file
+			copymetofile="${separator}${columnrow[${inColCount}]}"
+			inColCount="$((inColCount+1))"
+		else
+			# If this is project_id, generate it 
+			if [ "${pheader}" == "project_id" ] ; then
+				tmpstring="${columnrow[${pdbidLoc}]}"
+				if [ "${ProjectIDBase}" == "uniprotkb_canonical_ac" ] ; then
+					tmpstring="${columnrow[${uniprotLoc}]}_${tmpstring}"
+				fi
+				copymetofile="${separator}${tmpstring}"
+			# Else, make this a 'null' entry
+			else  
+				copymetofile="${separator}null"
+			fi
+		fi
+		if [ "${colfirst}" == "true" ] ; then
+			colfirst="false"
+		fi
+		rowOut="${rowOut}${copymetofile}"
+	done
+	echo "${rowOut}" >> "${FinalTreatedInput}"
 done < "${TmpFinalFileOut}"
 
 
 
 ## Record the number of unique build requests that the treated data request (bc untreated isn't reasonable to query)
+##???
 numRequestedBuilds="$(csvstat -c ${ProjectIDBase} --unique ${InputFile})"
-.... finish me ....  echo "[ERROR] : $(date) : Sequence is empty for ${Basename}. Ending processing. More info: ${LOGFILE_RELATIVE}." | tee -a $STATUSFILE
+
+
+
+
+
 
 
 count=0
