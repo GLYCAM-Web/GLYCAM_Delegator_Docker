@@ -155,8 +155,8 @@ my_gp_4,O-linked,6RUR,my_info,B,18,THR,DGlcpb1-3LFucpa1-OH
         - Comma-separated table of: (still TBD)
 """
 
-echo "${USAGE}"
-exit 0
+#echo "${USAGE}"
+#exit 0
 
 #######################################
 ##   Code With Procedural Documentation
@@ -449,7 +449,7 @@ fi
 
 ## Read in line 1 of the input file:
 declare -a HEADERS
-tmphead="$(head -n 1 short.csv)"
+tmphead="$(head -n 1 ${InputFile})"
 IFS=, read -ra HEADERS <<< "${tmphead}"
 
 ## Ensure that all the RequiredHeaders are present
@@ -534,7 +534,7 @@ done
 TmpUUID="$(uuidgen -r)"
 TmpTreatedFileName="${pUUID:0:5}.csv"
 TmpTreatedFilePath="/tmp"
-if [ "${KEEP_TEMPORARY_FILES}" == true ] ; then
+if [ "${KEEP_TEMPORARY_FILES}" == "True" ; then
 	TmpTreatedFilePath="${OutputDir}/logs"
 	echo "[INFO] : $(date) : The temporary (and intermediate) Treated_Input file will be saved in:" | tee -a $LOGFILE
 	echo "[INFO] : $(date) :     ${TmpTreatedFilePath}" | tee -a $LOGFILE
@@ -718,13 +718,21 @@ done < "${TmpFinalFileOut}"
 
 
 ## Record the number of unique build requests that the treated data request (bc untreated isn't reasonable to query)
-##???
-numRequestedBuilds="$(csvstat -c ${ProjectIDBase} --unique ${InputFile})"
+numRequestedBuilds="$(csvstat -c project_id --unique ${FinalTreatedInput})"
+result="$?"
+if [ "${result}" != "0" ] ; then
+	print_error_and_exit "Unable to count the total number of GlycoProtein projects requested."
+fi
+echo "[INFO] : $(date) : A total of valid ${numRequestedBuilds} GlycoProtein projects were found." | tee -a $LOGFILE
+
+if [ "${KEEP_TEMPORARY_FILES}" == "False" ] ; then
+	removeMe="${TmpTreatedFilePath}/${TmpTreatedFileName}*"
+	COMMAND="rm ${removeMe}"
+	rclr "Removing temporary files." "${COMMAND}" "Temporary file removal"
+fi
 
 
-
-
-
+exit 0
 
 
 count=0
@@ -782,6 +790,6 @@ Trying the next one.
 	fi
 	echo "[INFO] : $(date) : Completed attepmt to generate PDB file." >> ${STATUSFILE}
 	count="$((count+1))"
-done < "${InputFile}"
+done < "${FinalTreatedInput}"
 ### Manage the output from the sequence evaluation, 
 
