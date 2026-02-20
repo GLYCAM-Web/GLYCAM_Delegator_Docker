@@ -1,0 +1,6031 @@
+{
+  "entity": {
+    "type": "GpBuilder",
+    "services": {
+      "ProjectManagement_Dep_Request": {
+        "type": "ProjectManagement",
+        "myUuid": "f237bdbe-a2e7-423e-bf16-f9ffabab2bf6",
+        "inputs": {
+          "pUUID": "<pUUID>",
+          "projectDir": "/website/userdata/complex/gp/<pUUID>",
+          "resources": [
+            {
+              "type": "Unset",
+              "locationType": "Payload",
+              "resourceFormat": "json",
+              "resourceRole": null,
+              "payload": "{\n    \"entity\": {\n        \"type\": \"GpBuilder\",\n        \"services\": {\n            \"default_Evaluate\": {\n                \"type\": \"Evaluate\",\n                \"inputs\": {\n                    \"rcsb_id\": \"1rvz\"\n                }\n            },\n            \"default_Build\": {\n                \"type\": \"Build\",\n                \"inputs\": {\n                    \"pUUID\": \"<pUUID>\",\n                    \"glycan_mappings\": [\n                        {\"Chain\": \"K\", \"ResidueNumber\": \"208\", \"InsertionCode\": \"\", \"Sequence\": \"DManpa1-OH\", \"Tags\": \"\"}\n                    ]\n                }\n            }\n        }\n    }\n}\n",
+              "options": {
+                "filename": "request.json"
+              },
+              "notices": null
+            },
+            {
+              "type": "Unset",
+              "locationType": "Payload",
+              "resourceFormat": "RCSB-ID",
+              "resourceRole": "rcsb-id",
+              "payload": "1rvz",
+              "options": {},
+              "notices": null
+            }
+          ]
+        }
+      },
+      "default_Evaluate": {
+        "type": "Evaluate",
+        "myUuid": "8d1b1b9f-8172-49e9-8eb9-52f195ef2650",
+        "inputs": {
+          "pUUID": "<pUUID>",
+          "protein_file": null,
+          "rcsb_id": "1rvz",
+          "resources": [
+            {
+              "type": "Unset",
+              "locationType": "Payload",
+              "resourceFormat": "RCSB-ID",
+              "resourceRole": "rcsb-id",
+              "payload": "1rvz",
+              "options": {},
+              "notices": null
+            }
+          ]
+        }
+      },
+      "default_Build": {
+        "type": "Build",
+        "myUuid": "b3518f00-e6a5-4f4c-92fe-6d62f55cd787",
+        "inputs": {
+          "pUUID": "<pUUID>",
+          "protein_file": "",
+          "glycan_mappings": [
+            {
+              "Chain": "K",
+              "ResidueNumber": "208",
+              "Sequence": "DManpa1-OH",
+              "SequenceContext": "",
+              "InsertionCode": "",
+              "Tags": ""
+            }
+          ],
+          "resources": [
+            {
+              "type": "Unset",
+              "locationType": "Payload",
+              "resourceFormat": "python-dict",
+              "resourceRole": "glycan-mappings",
+              "payload": [
+                {
+                  "Chain": "K",
+                  "ResidueNumber": "208",
+                  "Sequence": "DManpa1-OH",
+                  "SequenceContext": "",
+                  "InsertionCode": "",
+                  "Tags": ""
+                }
+              ],
+              "options": {},
+              "notices": null
+            }
+          ]
+        },
+        "options": {
+          "number_of_samples": "1",
+          "persist_cycles": "5",
+          "rng_seed": "17315969408259117897",
+          "overlap_rejection_threshold": "0.0",
+          "prepare_for_md": "False",
+          "use_initial_glycosite_residue_conformation": "False",
+          "move_overlapping_sidechains": "False",
+          "delete_unresolvable_glycosites": "False"
+        }
+      }
+    },
+    "responses": {
+      "ProjectManagement_Dep_Request": {
+        "type": "ProjectManagement",
+        "myUuid": "f237bdbe-a2e7-423e-bf16-f9ffabab2bf6",
+        "outputs": {
+          "resources": [
+            {
+              "type": "Unset",
+              "locationType": "filesystem-path-unix",
+              "resourceFormat": "string",
+              "resourceRole": "project-directory",
+              "payload": "/website/userdata/complex/gp/<pUUID>",
+              "options": {},
+              "notices": null
+            },
+            {
+              "type": "Unset",
+              "locationType": "filesystem-path-unix",
+              "resourceFormat": "PDB",
+              "resourceRole": "protein-file",
+              "payload": "/website/userdata/complex/gp/<pUUID>/1rvz.pdb",
+              "options": {
+                "filename": "1rvz.pdb",
+                "binary": "False"
+              },
+              "notices": null
+            }
+          ]
+        }
+      },
+      "default_Evaluate": {
+        "type": "Evaluate",
+        "myUuid": "8d1b1b9f-8172-49e9-8eb9-52f195ef2650",
+        "outputs": {
+          "csv_path": "/website/userdata/complex/gp/<pUUID>/the_glycosites.csv",
+          "glycosites": [
+            {
+              "Chain": "A",
+              "ResidueNumber": "6",
+              "InsertionCode": "",
+              "SequenceContext": "D_T_IC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "11",
+              "InsertionCode": "",
+              "SequenceContext": "IG_Y_HA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "14",
+              "InsertionCode": "",
+              "SequenceContext": "HA_N_NS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "15",
+              "InsertionCode": "",
+              "SequenceContext": "AN_N_ST",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "16",
+              "InsertionCode": "",
+              "SequenceContext": "NN_S_TD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "17",
+              "InsertionCode": "",
+              "SequenceContext": "NS_T_DT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "19",
+              "InsertionCode": "",
+              "SequenceContext": "TD_T_VD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "22",
+              "InsertionCode": "",
+              "SequenceContext": "VD_T_VL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "27",
+              "InsertionCode": "",
+              "SequenceContext": "EK_N_VT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "29",
+              "InsertionCode": "",
+              "SequenceContext": "NV_T_VT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "31",
+              "InsertionCode": "",
+              "SequenceContext": "TV_T_HS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "33",
+              "InsertionCode": "",
+              "SequenceContext": "TH_S_VN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "35",
+              "InsertionCode": "",
+              "SequenceContext": "SV_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "40",
+              "InsertionCode": "",
+              "SequenceContext": "ED_S_HN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "42",
+              "InsertionCode": "",
+              "SequenceContext": "SH_N_GK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "60",
+              "InsertionCode": "",
+              "SequenceContext": "KC_N_IA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "64",
+              "InsertionCode": "",
+              "SequenceContext": "AG_W_LL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "68",
+              "InsertionCode": "",
+              "SequenceContext": "LG_N_PE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "79",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_WS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "80",
+              "InsertionCode": "",
+              "SequenceContext": "RS_W_SY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "81",
+              "InsertionCode": "",
+              "SequenceContext": "SW_S_YI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "82",
+              "InsertionCode": "",
+              "SequenceContext": "WS_Y_IV",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "86",
+              "InsertionCode": "",
+              "SequenceContext": "VE_T_PN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "88",
+              "InsertionCode": "",
+              "SequenceContext": "TP_N_SE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "89",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_EN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "91",
+              "InsertionCode": "",
+              "SequenceContext": "SE_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "95",
+              "InsertionCode": "",
+              "SequenceContext": "IC_Y_PG",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "102",
+              "InsertionCode": "",
+              "SequenceContext": "ID_Y_EE",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "110",
+              "InsertionCode": "",
+              "SequenceContext": "QL_S_SV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "111",
+              "InsertionCode": "",
+              "SequenceContext": "LS_S_VS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "113",
+              "InsertionCode": "",
+              "SequenceContext": "SV_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "114",
+              "InsertionCode": "",
+              "SequenceContext": "VS_S_FE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "125",
+              "InsertionCode": "",
+              "SequenceContext": "KE_S_SW",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "126",
+              "InsertionCode": "",
+              "SequenceContext": "ES_S_WP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "127",
+              "InsertionCode": "",
+              "SequenceContext": "SS_W_PN",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "129",
+              "InsertionCode": "",
+              "SequenceContext": "WP_N_HN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "131",
+              "InsertionCode": "",
+              "SequenceContext": "NH_N_TN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "132",
+              "InsertionCode": "",
+              "SequenceContext": "HN_T_NG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "133",
+              "InsertionCode": "",
+              "SequenceContext": "NT_N_GV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "136",
+              "InsertionCode": "",
+              "SequenceContext": "GV_T_AA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "140",
+              "InsertionCode": "",
+              "SequenceContext": "AC_S_HE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "145",
+              "InsertionCode": "",
+              "SequenceContext": "GK_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "146",
+              "InsertionCode": "",
+              "SequenceContext": "KS_S_FY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "148",
+              "InsertionCode": "",
+              "SequenceContext": "SF_Y_RN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "150",
+              "InsertionCode": "",
+              "SequenceContext": "YR_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "153",
+              "InsertionCode": "",
+              "SequenceContext": "LL_W_LT",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "155",
+              "InsertionCode": "",
+              "SequenceContext": "WL_T_EK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "160",
+              "InsertionCode": "",
+              "SequenceContext": "EG_S_YP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "161",
+              "InsertionCode": "",
+              "SequenceContext": "GS_Y_PK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "166",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_SY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "167",
+              "InsertionCode": "",
+              "SequenceContext": "KN_S_YV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "168",
+              "InsertionCode": "",
+              "SequenceContext": "NS_Y_VN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "170",
+              "InsertionCode": "",
+              "SequenceContext": "YV_N_KK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "180",
+              "InsertionCode": "",
+              "SequenceContext": "VL_W_GI",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "187",
+              "InsertionCode": "",
+              "SequenceContext": "PP_N_SK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "188",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_KE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "193",
+              "InsertionCode": "",
+              "SequenceContext": "QQ_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "195",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "197",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_EN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "199",
+              "InsertionCode": "",
+              "SequenceContext": "NE_N_AY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "201",
+              "InsertionCode": "",
+              "SequenceContext": "NA_Y_VS",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "203",
+              "InsertionCode": "",
+              "SequenceContext": "YV_S_VV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "206",
+              "InsertionCode": "",
+              "SequenceContext": "VV_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "207",
+              "InsertionCode": "",
+              "SequenceContext": "VT_S_NY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "208",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_YN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "209",
+              "InsertionCode": "",
+              "SequenceContext": "SN_Y_NR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "210",
+              "InsertionCode": "",
+              "SequenceContext": "NY_N_RR",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "214",
+              "InsertionCode": "",
+              "SequenceContext": "RF_T_PE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "231",
+              "InsertionCode": "",
+              "SequenceContext": "RM_N_YY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "232",
+              "InsertionCode": "",
+              "SequenceContext": "MN_Y_YW",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "233",
+              "InsertionCode": "",
+              "SequenceContext": "NY_Y_WT",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "234",
+              "InsertionCode": "",
+              "SequenceContext": "YY_W_TL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "235",
+              "InsertionCode": "",
+              "SequenceContext": "YW_T_LL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "242",
+              "InsertionCode": "",
+              "SequenceContext": "GD_T_II",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "248",
+              "InsertionCode": "",
+              "SequenceContext": "EA_N_GN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "250",
+              "InsertionCode": "",
+              "SequenceContext": "NG_N_LI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "256",
+              "InsertionCode": "",
+              "SequenceContext": "PM_Y_AF",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "266",
+              "InsertionCode": "",
+              "SequenceContext": "FG_S_GI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "270",
+              "InsertionCode": "",
+              "SequenceContext": "II_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "271",
+              "InsertionCode": "",
+              "SequenceContext": "IT_S_NA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "272",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_AS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "274",
+              "InsertionCode": "",
+              "SequenceContext": "NA_S_MH",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "279",
+              "InsertionCode": "",
+              "SequenceContext": "EC_N_TK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "280",
+              "InsertionCode": "",
+              "SequenceContext": "CN_T_KC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "284",
+              "InsertionCode": "",
+              "SequenceContext": "CQ_T_PL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "290",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_SS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "291",
+              "InsertionCode": "",
+              "SequenceContext": "IN_S_SL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "292",
+              "InsertionCode": "",
+              "SequenceContext": "NS_S_LP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "295",
+              "InsertionCode": "",
+              "SequenceContext": "LP_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "297",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_IH",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "302",
+              "InsertionCode": "",
+              "SequenceContext": "PV_T_IG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "309",
+              "InsertionCode": "",
+              "SequenceContext": "PK_Y_VR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "312",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_AK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "319",
+              "InsertionCode": "",
+              "SequenceContext": "MV_T_GL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "323",
+              "InsertionCode": "",
+              "SequenceContext": "LR_N_IP",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "514",
+              "InsertionCode": "",
+              "SequenceContext": "GG_W_TG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "515",
+              "InsertionCode": "",
+              "SequenceContext": "GW_T_GM",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "521",
+              "InsertionCode": "",
+              "SequenceContext": "DG_W_YG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "522",
+              "InsertionCode": "",
+              "SequenceContext": "GW_Y_GY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "524",
+              "InsertionCode": "",
+              "SequenceContext": "YG_Y_HH",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "528",
+              "InsertionCode": "",
+              "SequenceContext": "HQ_N_EQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "532",
+              "InsertionCode": "",
+              "SequenceContext": "QG_S_GY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "534",
+              "InsertionCode": "",
+              "SequenceContext": "SG_Y_AA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "540",
+              "InsertionCode": "",
+              "SequenceContext": "QK_S_TQ",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "541",
+              "InsertionCode": "",
+              "SequenceContext": "KS_T_QN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "543",
+              "InsertionCode": "",
+              "SequenceContext": "TQ_N_AI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "546",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "549",
+              "InsertionCode": "",
+              "SequenceContext": "GI_T_NK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "550",
+              "InsertionCode": "",
+              "SequenceContext": "IT_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "553",
+              "InsertionCode": "",
+              "SequenceContext": "KV_N_SV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "554",
+              "InsertionCode": "",
+              "SequenceContext": "VN_S_VI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "560",
+              "InsertionCode": "",
+              "SequenceContext": "KM_N_IQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "564",
+              "InsertionCode": "",
+              "SequenceContext": "QF_T_AV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "571",
+              "InsertionCode": "",
+              "SequenceContext": "EF_N_KL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "579",
+              "InsertionCode": "",
+              "SequenceContext": "ME_N_LN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "581",
+              "InsertionCode": "",
+              "SequenceContext": "NL_N_NK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "582",
+              "InsertionCode": "",
+              "SequenceContext": "LN_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "592",
+              "InsertionCode": "",
+              "SequenceContext": "DI_W_TY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "593",
+              "InsertionCode": "",
+              "SequenceContext": "IW_T_YN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "594",
+              "InsertionCode": "",
+              "SequenceContext": "WT_Y_NA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "595",
+              "InsertionCode": "",
+              "SequenceContext": "TY_N_AE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "604",
+              "InsertionCode": "",
+              "SequenceContext": "LE_N_ER",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "607",
+              "InsertionCode": "",
+              "SequenceContext": "ER_T_LD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "613",
+              "InsertionCode": "",
+              "SequenceContext": "HD_S_NV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "614",
+              "InsertionCode": "",
+              "SequenceContext": "DS_N_VK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "617",
+              "InsertionCode": "",
+              "SequenceContext": "VK_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "619",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_EK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "624",
+              "InsertionCode": "",
+              "SequenceContext": "VK_S_QL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "628",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_NA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "629",
+              "InsertionCode": "",
+              "SequenceContext": "KN_N_AK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "635",
+              "InsertionCode": "",
+              "SequenceContext": "IG_N_GC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "641",
+              "InsertionCode": "",
+              "SequenceContext": "EF_Y_HK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "646",
+              "InsertionCode": "",
+              "SequenceContext": "CD_N_EC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "651",
+              "InsertionCode": "",
+              "SequenceContext": "ME_S_VR",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "654",
+              "InsertionCode": "",
+              "SequenceContext": "VR_N_GT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "656",
+              "InsertionCode": "",
+              "SequenceContext": "NG_T_YD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "657",
+              "InsertionCode": "",
+              "SequenceContext": "GT_Y_DY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "B",
+              "ResidueNumber": "659",
+              "InsertionCode": "",
+              "SequenceContext": "YD_Y_P",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "6",
+              "InsertionCode": "",
+              "SequenceContext": "D_T_IC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "11",
+              "InsertionCode": "",
+              "SequenceContext": "IG_Y_HA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "14",
+              "InsertionCode": "",
+              "SequenceContext": "HA_N_NS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "15",
+              "InsertionCode": "",
+              "SequenceContext": "AN_N_ST",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "16",
+              "InsertionCode": "",
+              "SequenceContext": "NN_S_TD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "17",
+              "InsertionCode": "",
+              "SequenceContext": "NS_T_DT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "19",
+              "InsertionCode": "",
+              "SequenceContext": "TD_T_VD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "22",
+              "InsertionCode": "",
+              "SequenceContext": "VD_T_VL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "27",
+              "InsertionCode": "",
+              "SequenceContext": "EK_N_VT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "29",
+              "InsertionCode": "",
+              "SequenceContext": "NV_T_VT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "31",
+              "InsertionCode": "",
+              "SequenceContext": "TV_T_HS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "33",
+              "InsertionCode": "",
+              "SequenceContext": "TH_S_VN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "35",
+              "InsertionCode": "",
+              "SequenceContext": "SV_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "40",
+              "InsertionCode": "",
+              "SequenceContext": "ED_S_HN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "42",
+              "InsertionCode": "",
+              "SequenceContext": "SH_N_GK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "60",
+              "InsertionCode": "",
+              "SequenceContext": "KC_N_IA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "64",
+              "InsertionCode": "",
+              "SequenceContext": "AG_W_LL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "68",
+              "InsertionCode": "",
+              "SequenceContext": "LG_N_PE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "79",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_WS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "80",
+              "InsertionCode": "",
+              "SequenceContext": "RS_W_SY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "81",
+              "InsertionCode": "",
+              "SequenceContext": "SW_S_YI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "82",
+              "InsertionCode": "",
+              "SequenceContext": "WS_Y_IV",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "86",
+              "InsertionCode": "",
+              "SequenceContext": "VE_T_PN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "88",
+              "InsertionCode": "",
+              "SequenceContext": "TP_N_SE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "89",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_EN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "91",
+              "InsertionCode": "",
+              "SequenceContext": "SE_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "95",
+              "InsertionCode": "",
+              "SequenceContext": "IC_Y_PG",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "102",
+              "InsertionCode": "",
+              "SequenceContext": "ID_Y_EE",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "110",
+              "InsertionCode": "",
+              "SequenceContext": "QL_S_SV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "111",
+              "InsertionCode": "",
+              "SequenceContext": "LS_S_VS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "113",
+              "InsertionCode": "",
+              "SequenceContext": "SV_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "114",
+              "InsertionCode": "",
+              "SequenceContext": "VS_S_FE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "125",
+              "InsertionCode": "",
+              "SequenceContext": "KE_S_SW",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "126",
+              "InsertionCode": "",
+              "SequenceContext": "ES_S_WP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "127",
+              "InsertionCode": "",
+              "SequenceContext": "SS_W_PN",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "129",
+              "InsertionCode": "",
+              "SequenceContext": "WP_N_HN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "131",
+              "InsertionCode": "",
+              "SequenceContext": "NH_N_TN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "132",
+              "InsertionCode": "",
+              "SequenceContext": "HN_T_NG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "133",
+              "InsertionCode": "",
+              "SequenceContext": "NT_N_GV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "136",
+              "InsertionCode": "",
+              "SequenceContext": "GV_T_AA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "140",
+              "InsertionCode": "",
+              "SequenceContext": "AC_S_HE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "145",
+              "InsertionCode": "",
+              "SequenceContext": "GK_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "146",
+              "InsertionCode": "",
+              "SequenceContext": "KS_S_FY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "148",
+              "InsertionCode": "",
+              "SequenceContext": "SF_Y_RN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "150",
+              "InsertionCode": "",
+              "SequenceContext": "YR_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "153",
+              "InsertionCode": "",
+              "SequenceContext": "LL_W_LT",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "155",
+              "InsertionCode": "",
+              "SequenceContext": "WL_T_EK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "160",
+              "InsertionCode": "",
+              "SequenceContext": "EG_S_YP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "161",
+              "InsertionCode": "",
+              "SequenceContext": "GS_Y_PK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "166",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_SY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "167",
+              "InsertionCode": "",
+              "SequenceContext": "KN_S_YV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "168",
+              "InsertionCode": "",
+              "SequenceContext": "NS_Y_VN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "170",
+              "InsertionCode": "",
+              "SequenceContext": "YV_N_KK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "180",
+              "InsertionCode": "",
+              "SequenceContext": "VL_W_GI",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "187",
+              "InsertionCode": "",
+              "SequenceContext": "PP_N_SK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "188",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_KE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "193",
+              "InsertionCode": "",
+              "SequenceContext": "QQ_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "195",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "197",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_EN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "199",
+              "InsertionCode": "",
+              "SequenceContext": "NE_N_AY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "201",
+              "InsertionCode": "",
+              "SequenceContext": "NA_Y_VS",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "203",
+              "InsertionCode": "",
+              "SequenceContext": "YV_S_VV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "206",
+              "InsertionCode": "",
+              "SequenceContext": "VV_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "207",
+              "InsertionCode": "",
+              "SequenceContext": "VT_S_NY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "208",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_YN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "209",
+              "InsertionCode": "",
+              "SequenceContext": "SN_Y_NR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "210",
+              "InsertionCode": "",
+              "SequenceContext": "NY_N_RR",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "214",
+              "InsertionCode": "",
+              "SequenceContext": "RF_T_PE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "231",
+              "InsertionCode": "",
+              "SequenceContext": "RM_N_YY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "232",
+              "InsertionCode": "",
+              "SequenceContext": "MN_Y_YW",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "233",
+              "InsertionCode": "",
+              "SequenceContext": "NY_Y_WT",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "234",
+              "InsertionCode": "",
+              "SequenceContext": "YY_W_TL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "235",
+              "InsertionCode": "",
+              "SequenceContext": "YW_T_LL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "242",
+              "InsertionCode": "",
+              "SequenceContext": "GD_T_II",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "248",
+              "InsertionCode": "",
+              "SequenceContext": "EA_N_GN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "250",
+              "InsertionCode": "",
+              "SequenceContext": "NG_N_LI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "256",
+              "InsertionCode": "",
+              "SequenceContext": "PM_Y_AF",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "266",
+              "InsertionCode": "",
+              "SequenceContext": "FG_S_GI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "270",
+              "InsertionCode": "",
+              "SequenceContext": "II_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "271",
+              "InsertionCode": "",
+              "SequenceContext": "IT_S_NA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "272",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_AS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "274",
+              "InsertionCode": "",
+              "SequenceContext": "NA_S_MH",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "279",
+              "InsertionCode": "",
+              "SequenceContext": "EC_N_TK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "280",
+              "InsertionCode": "",
+              "SequenceContext": "CN_T_KC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "284",
+              "InsertionCode": "",
+              "SequenceContext": "CQ_T_PL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "290",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_SS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "291",
+              "InsertionCode": "",
+              "SequenceContext": "IN_S_SL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "292",
+              "InsertionCode": "",
+              "SequenceContext": "NS_S_LP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "295",
+              "InsertionCode": "",
+              "SequenceContext": "LP_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "297",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_IH",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "302",
+              "InsertionCode": "",
+              "SequenceContext": "PV_T_IG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "309",
+              "InsertionCode": "",
+              "SequenceContext": "PK_Y_VR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "312",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_AK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "319",
+              "InsertionCode": "",
+              "SequenceContext": "MV_T_GL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "C",
+              "ResidueNumber": "323",
+              "InsertionCode": "",
+              "SequenceContext": "LR_N_IP",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "514",
+              "InsertionCode": "",
+              "SequenceContext": "GG_W_TG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "515",
+              "InsertionCode": "",
+              "SequenceContext": "GW_T_GM",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "521",
+              "InsertionCode": "",
+              "SequenceContext": "DG_W_YG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "522",
+              "InsertionCode": "",
+              "SequenceContext": "GW_Y_GY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "524",
+              "InsertionCode": "",
+              "SequenceContext": "YG_Y_HH",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "528",
+              "InsertionCode": "",
+              "SequenceContext": "HQ_N_EQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "532",
+              "InsertionCode": "",
+              "SequenceContext": "QG_S_GY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "534",
+              "InsertionCode": "",
+              "SequenceContext": "SG_Y_AA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "540",
+              "InsertionCode": "",
+              "SequenceContext": "QK_S_TQ",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "541",
+              "InsertionCode": "",
+              "SequenceContext": "KS_T_QN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "543",
+              "InsertionCode": "",
+              "SequenceContext": "TQ_N_AI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "546",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "549",
+              "InsertionCode": "",
+              "SequenceContext": "GI_T_NK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "550",
+              "InsertionCode": "",
+              "SequenceContext": "IT_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "553",
+              "InsertionCode": "",
+              "SequenceContext": "KV_N_SV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "554",
+              "InsertionCode": "",
+              "SequenceContext": "VN_S_VI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "560",
+              "InsertionCode": "",
+              "SequenceContext": "KM_N_IQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "564",
+              "InsertionCode": "",
+              "SequenceContext": "QF_T_AV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "571",
+              "InsertionCode": "",
+              "SequenceContext": "EF_N_KL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "579",
+              "InsertionCode": "",
+              "SequenceContext": "ME_N_LN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "581",
+              "InsertionCode": "",
+              "SequenceContext": "NL_N_NK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "582",
+              "InsertionCode": "",
+              "SequenceContext": "LN_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "592",
+              "InsertionCode": "",
+              "SequenceContext": "DI_W_TY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "593",
+              "InsertionCode": "",
+              "SequenceContext": "IW_T_YN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "594",
+              "InsertionCode": "",
+              "SequenceContext": "WT_Y_NA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "595",
+              "InsertionCode": "",
+              "SequenceContext": "TY_N_AE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "604",
+              "InsertionCode": "",
+              "SequenceContext": "LE_N_ER",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "607",
+              "InsertionCode": "",
+              "SequenceContext": "ER_T_LD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "613",
+              "InsertionCode": "",
+              "SequenceContext": "HD_S_NV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "614",
+              "InsertionCode": "",
+              "SequenceContext": "DS_N_VK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "617",
+              "InsertionCode": "",
+              "SequenceContext": "VK_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "619",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_EK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "624",
+              "InsertionCode": "",
+              "SequenceContext": "VK_S_QL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "628",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_NA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "629",
+              "InsertionCode": "",
+              "SequenceContext": "KN_N_AK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "635",
+              "InsertionCode": "",
+              "SequenceContext": "IG_N_GC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "641",
+              "InsertionCode": "",
+              "SequenceContext": "EF_Y_HK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "646",
+              "InsertionCode": "",
+              "SequenceContext": "CD_N_EC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "651",
+              "InsertionCode": "",
+              "SequenceContext": "ME_S_VR",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "654",
+              "InsertionCode": "",
+              "SequenceContext": "VR_N_GT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "656",
+              "InsertionCode": "",
+              "SequenceContext": "NG_T_YD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "657",
+              "InsertionCode": "",
+              "SequenceContext": "GT_Y_DY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "D",
+              "ResidueNumber": "659",
+              "InsertionCode": "",
+              "SequenceContext": "YD_Y_P",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "6",
+              "InsertionCode": "",
+              "SequenceContext": "D_T_IC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "11",
+              "InsertionCode": "",
+              "SequenceContext": "IG_Y_HA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "14",
+              "InsertionCode": "",
+              "SequenceContext": "HA_N_NS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "15",
+              "InsertionCode": "",
+              "SequenceContext": "AN_N_ST",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "16",
+              "InsertionCode": "",
+              "SequenceContext": "NN_S_TD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "17",
+              "InsertionCode": "",
+              "SequenceContext": "NS_T_DT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "19",
+              "InsertionCode": "",
+              "SequenceContext": "TD_T_VD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "22",
+              "InsertionCode": "",
+              "SequenceContext": "VD_T_VL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "27",
+              "InsertionCode": "",
+              "SequenceContext": "EK_N_VT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "29",
+              "InsertionCode": "",
+              "SequenceContext": "NV_T_VT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "31",
+              "InsertionCode": "",
+              "SequenceContext": "TV_T_HS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "33",
+              "InsertionCode": "",
+              "SequenceContext": "TH_S_VN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "35",
+              "InsertionCode": "",
+              "SequenceContext": "SV_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "40",
+              "InsertionCode": "",
+              "SequenceContext": "ED_S_HN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "42",
+              "InsertionCode": "",
+              "SequenceContext": "SH_N_",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "60",
+              "InsertionCode": "",
+              "SequenceContext": "KC_N_IA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "64",
+              "InsertionCode": "",
+              "SequenceContext": "AG_W_LL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "68",
+              "InsertionCode": "",
+              "SequenceContext": "LG_N_PE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "79",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_WS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "80",
+              "InsertionCode": "",
+              "SequenceContext": "RS_W_SY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "81",
+              "InsertionCode": "",
+              "SequenceContext": "SW_S_YI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "82",
+              "InsertionCode": "",
+              "SequenceContext": "WS_Y_IV",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "86",
+              "InsertionCode": "",
+              "SequenceContext": "VE_T_PN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "88",
+              "InsertionCode": "",
+              "SequenceContext": "TP_N_SE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "89",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_EN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "91",
+              "InsertionCode": "",
+              "SequenceContext": "SE_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "95",
+              "InsertionCode": "",
+              "SequenceContext": "IC_Y_PG",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "102",
+              "InsertionCode": "",
+              "SequenceContext": "ID_Y_EE",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "110",
+              "InsertionCode": "",
+              "SequenceContext": "QL_S_SV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "111",
+              "InsertionCode": "",
+              "SequenceContext": "LS_S_VS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "113",
+              "InsertionCode": "",
+              "SequenceContext": "SV_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "114",
+              "InsertionCode": "",
+              "SequenceContext": "VS_S_FE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "125",
+              "InsertionCode": "",
+              "SequenceContext": "KE_S_SW",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "126",
+              "InsertionCode": "",
+              "SequenceContext": "ES_S_WP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "127",
+              "InsertionCode": "",
+              "SequenceContext": "SS_W_PN",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "129",
+              "InsertionCode": "",
+              "SequenceContext": "WP_N_HN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "131",
+              "InsertionCode": "",
+              "SequenceContext": "NH_N_TN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "132",
+              "InsertionCode": "",
+              "SequenceContext": "HN_T_NG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "133",
+              "InsertionCode": "",
+              "SequenceContext": "NT_N_GV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "136",
+              "InsertionCode": "",
+              "SequenceContext": "GV_T_AA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "140",
+              "InsertionCode": "",
+              "SequenceContext": "AC_S_HE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "145",
+              "InsertionCode": "",
+              "SequenceContext": "GK_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "146",
+              "InsertionCode": "",
+              "SequenceContext": "KS_S_FY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "148",
+              "InsertionCode": "",
+              "SequenceContext": "SF_Y_RN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "150",
+              "InsertionCode": "",
+              "SequenceContext": "YR_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "153",
+              "InsertionCode": "",
+              "SequenceContext": "LL_W_LT",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "155",
+              "InsertionCode": "",
+              "SequenceContext": "WL_T_EK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "160",
+              "InsertionCode": "",
+              "SequenceContext": "EG_S_YP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "161",
+              "InsertionCode": "",
+              "SequenceContext": "GS_Y_PK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "166",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_SY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "167",
+              "InsertionCode": "",
+              "SequenceContext": "KN_S_YV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "168",
+              "InsertionCode": "",
+              "SequenceContext": "NS_Y_VN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "170",
+              "InsertionCode": "",
+              "SequenceContext": "YV_N_KK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "180",
+              "InsertionCode": "",
+              "SequenceContext": "VL_W_GI",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "187",
+              "InsertionCode": "",
+              "SequenceContext": "PP_N_SK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "188",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_KE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "193",
+              "InsertionCode": "",
+              "SequenceContext": "QQ_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "195",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "197",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_EN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "199",
+              "InsertionCode": "",
+              "SequenceContext": "NE_N_AY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "201",
+              "InsertionCode": "",
+              "SequenceContext": "NA_Y_VS",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "203",
+              "InsertionCode": "",
+              "SequenceContext": "YV_S_VV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "206",
+              "InsertionCode": "",
+              "SequenceContext": "VV_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "207",
+              "InsertionCode": "",
+              "SequenceContext": "VT_S_NY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "208",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_YN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "209",
+              "InsertionCode": "",
+              "SequenceContext": "SN_Y_NR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "210",
+              "InsertionCode": "",
+              "SequenceContext": "NY_N_RR",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "214",
+              "InsertionCode": "",
+              "SequenceContext": "RF_T_PE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "231",
+              "InsertionCode": "",
+              "SequenceContext": "RM_N_YY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "232",
+              "InsertionCode": "",
+              "SequenceContext": "MN_Y_YW",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "233",
+              "InsertionCode": "",
+              "SequenceContext": "NY_Y_WT",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "234",
+              "InsertionCode": "",
+              "SequenceContext": "YY_W_TL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "235",
+              "InsertionCode": "",
+              "SequenceContext": "YW_T_LL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "242",
+              "InsertionCode": "",
+              "SequenceContext": "GD_T_II",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "248",
+              "InsertionCode": "",
+              "SequenceContext": "EA_N_GN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "250",
+              "InsertionCode": "",
+              "SequenceContext": "NG_N_LI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "256",
+              "InsertionCode": "",
+              "SequenceContext": "PM_Y_AF",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "266",
+              "InsertionCode": "",
+              "SequenceContext": "FG_S_GI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "270",
+              "InsertionCode": "",
+              "SequenceContext": "II_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "271",
+              "InsertionCode": "",
+              "SequenceContext": "IT_S_NA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "272",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_AS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "274",
+              "InsertionCode": "",
+              "SequenceContext": "NA_S_MH",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "279",
+              "InsertionCode": "",
+              "SequenceContext": "EC_N_TK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "280",
+              "InsertionCode": "",
+              "SequenceContext": "CN_T_KC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "284",
+              "InsertionCode": "",
+              "SequenceContext": "CQ_T_PL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "290",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_SS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "291",
+              "InsertionCode": "",
+              "SequenceContext": "IN_S_SL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "292",
+              "InsertionCode": "",
+              "SequenceContext": "NS_S_LP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "295",
+              "InsertionCode": "",
+              "SequenceContext": "LP_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "297",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_IH",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "302",
+              "InsertionCode": "",
+              "SequenceContext": "PV_T_IG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "309",
+              "InsertionCode": "",
+              "SequenceContext": "PK_Y_VR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "312",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_AK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "319",
+              "InsertionCode": "",
+              "SequenceContext": "MV_T_GL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "E",
+              "ResidueNumber": "323",
+              "InsertionCode": "",
+              "SequenceContext": "LR_N_IP",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "514",
+              "InsertionCode": "",
+              "SequenceContext": "GG_W_TG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "515",
+              "InsertionCode": "",
+              "SequenceContext": "GW_T_GM",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "521",
+              "InsertionCode": "",
+              "SequenceContext": "DG_W_YG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "522",
+              "InsertionCode": "",
+              "SequenceContext": "GW_Y_GY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "524",
+              "InsertionCode": "",
+              "SequenceContext": "YG_Y_HH",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "528",
+              "InsertionCode": "",
+              "SequenceContext": "HQ_N_EQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "532",
+              "InsertionCode": "",
+              "SequenceContext": "QG_S_GY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "534",
+              "InsertionCode": "",
+              "SequenceContext": "SG_Y_AA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "540",
+              "InsertionCode": "",
+              "SequenceContext": "QK_S_TQ",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "541",
+              "InsertionCode": "",
+              "SequenceContext": "KS_T_QN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "543",
+              "InsertionCode": "",
+              "SequenceContext": "TQ_N_AI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "546",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "549",
+              "InsertionCode": "",
+              "SequenceContext": "GI_T_NK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "550",
+              "InsertionCode": "",
+              "SequenceContext": "IT_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "553",
+              "InsertionCode": "",
+              "SequenceContext": "KV_N_SV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "554",
+              "InsertionCode": "",
+              "SequenceContext": "VN_S_VI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "560",
+              "InsertionCode": "",
+              "SequenceContext": "KM_N_IQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "564",
+              "InsertionCode": "",
+              "SequenceContext": "QF_T_AV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "571",
+              "InsertionCode": "",
+              "SequenceContext": "EF_N_KL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "579",
+              "InsertionCode": "",
+              "SequenceContext": "ME_N_LN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "581",
+              "InsertionCode": "",
+              "SequenceContext": "NL_N_NK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "582",
+              "InsertionCode": "",
+              "SequenceContext": "LN_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "592",
+              "InsertionCode": "",
+              "SequenceContext": "DI_W_TY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "593",
+              "InsertionCode": "",
+              "SequenceContext": "IW_T_YN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "594",
+              "InsertionCode": "",
+              "SequenceContext": "WT_Y_NA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "595",
+              "InsertionCode": "",
+              "SequenceContext": "TY_N_AE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "604",
+              "InsertionCode": "",
+              "SequenceContext": "LE_N_ER",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "607",
+              "InsertionCode": "",
+              "SequenceContext": "ER_T_LD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "613",
+              "InsertionCode": "",
+              "SequenceContext": "HD_S_NV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "614",
+              "InsertionCode": "",
+              "SequenceContext": "DS_N_VK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "617",
+              "InsertionCode": "",
+              "SequenceContext": "VK_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "619",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_EK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "624",
+              "InsertionCode": "",
+              "SequenceContext": "VK_S_QL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "628",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_NA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "629",
+              "InsertionCode": "",
+              "SequenceContext": "KN_N_AK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "635",
+              "InsertionCode": "",
+              "SequenceContext": "IG_N_GC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "641",
+              "InsertionCode": "",
+              "SequenceContext": "EF_Y_HK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "646",
+              "InsertionCode": "",
+              "SequenceContext": "CD_N_EC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "651",
+              "InsertionCode": "",
+              "SequenceContext": "ME_S_VR",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "654",
+              "InsertionCode": "",
+              "SequenceContext": "VR_N_GT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "656",
+              "InsertionCode": "",
+              "SequenceContext": "NG_T_YD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "657",
+              "InsertionCode": "",
+              "SequenceContext": "GT_Y_DY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "F",
+              "ResidueNumber": "659",
+              "InsertionCode": "",
+              "SequenceContext": "YD_Y_P",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "6",
+              "InsertionCode": "",
+              "SequenceContext": "D_T_IC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "11",
+              "InsertionCode": "",
+              "SequenceContext": "IG_Y_HA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "14",
+              "InsertionCode": "",
+              "SequenceContext": "HA_N_NS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "15",
+              "InsertionCode": "",
+              "SequenceContext": "AN_N_ST",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "16",
+              "InsertionCode": "",
+              "SequenceContext": "NN_S_TD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "17",
+              "InsertionCode": "",
+              "SequenceContext": "NS_T_DT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "19",
+              "InsertionCode": "",
+              "SequenceContext": "TD_T_VD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "22",
+              "InsertionCode": "",
+              "SequenceContext": "VD_T_VL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "27",
+              "InsertionCode": "",
+              "SequenceContext": "EK_N_VT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "29",
+              "InsertionCode": "",
+              "SequenceContext": "NV_T_VT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "31",
+              "InsertionCode": "",
+              "SequenceContext": "TV_T_HS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "33",
+              "InsertionCode": "",
+              "SequenceContext": "TH_S_VN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "35",
+              "InsertionCode": "",
+              "SequenceContext": "SV_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "40",
+              "InsertionCode": "",
+              "SequenceContext": "ED_S_HN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "42",
+              "InsertionCode": "",
+              "SequenceContext": "SH_N_GK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "60",
+              "InsertionCode": "",
+              "SequenceContext": "KC_N_IA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "64",
+              "InsertionCode": "",
+              "SequenceContext": "AG_W_LL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "68",
+              "InsertionCode": "",
+              "SequenceContext": "LG_N_PE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "79",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_WS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "80",
+              "InsertionCode": "",
+              "SequenceContext": "RS_W_SY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "81",
+              "InsertionCode": "",
+              "SequenceContext": "SW_S_YI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "82",
+              "InsertionCode": "",
+              "SequenceContext": "WS_Y_IV",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "86",
+              "InsertionCode": "",
+              "SequenceContext": "VE_T_PN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "88",
+              "InsertionCode": "",
+              "SequenceContext": "TP_N_SE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "89",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_EN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "91",
+              "InsertionCode": "",
+              "SequenceContext": "SE_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "95",
+              "InsertionCode": "",
+              "SequenceContext": "IC_Y_PG",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "102",
+              "InsertionCode": "",
+              "SequenceContext": "ID_Y_EE",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "110",
+              "InsertionCode": "",
+              "SequenceContext": "QL_S_SV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "111",
+              "InsertionCode": "",
+              "SequenceContext": "LS_S_VS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "113",
+              "InsertionCode": "",
+              "SequenceContext": "SV_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "114",
+              "InsertionCode": "",
+              "SequenceContext": "VS_S_FE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "125",
+              "InsertionCode": "",
+              "SequenceContext": "KE_S_SW",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "126",
+              "InsertionCode": "",
+              "SequenceContext": "ES_S_WP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "127",
+              "InsertionCode": "",
+              "SequenceContext": "SS_W_PN",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "129",
+              "InsertionCode": "",
+              "SequenceContext": "WP_N_HN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "131",
+              "InsertionCode": "",
+              "SequenceContext": "NH_N_TN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "132",
+              "InsertionCode": "",
+              "SequenceContext": "HN_T_NG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "133",
+              "InsertionCode": "",
+              "SequenceContext": "NT_N_GV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "136",
+              "InsertionCode": "",
+              "SequenceContext": "GV_T_AA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "140",
+              "InsertionCode": "",
+              "SequenceContext": "AC_S_HE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "145",
+              "InsertionCode": "",
+              "SequenceContext": "GK_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "146",
+              "InsertionCode": "",
+              "SequenceContext": "KS_S_FY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "148",
+              "InsertionCode": "",
+              "SequenceContext": "SF_Y_RN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "150",
+              "InsertionCode": "",
+              "SequenceContext": "YR_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "153",
+              "InsertionCode": "",
+              "SequenceContext": "LL_W_LT",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "155",
+              "InsertionCode": "",
+              "SequenceContext": "WL_T_EK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "160",
+              "InsertionCode": "",
+              "SequenceContext": "EG_S_YP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "161",
+              "InsertionCode": "",
+              "SequenceContext": "GS_Y_PK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "166",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_SY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "167",
+              "InsertionCode": "",
+              "SequenceContext": "KN_S_YV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "168",
+              "InsertionCode": "",
+              "SequenceContext": "NS_Y_VN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "170",
+              "InsertionCode": "",
+              "SequenceContext": "YV_N_KK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "180",
+              "InsertionCode": "",
+              "SequenceContext": "VL_W_GI",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "187",
+              "InsertionCode": "",
+              "SequenceContext": "PP_N_SK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "188",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_KE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "193",
+              "InsertionCode": "",
+              "SequenceContext": "QQ_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "195",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "197",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_EN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "199",
+              "InsertionCode": "",
+              "SequenceContext": "NE_N_AY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "201",
+              "InsertionCode": "",
+              "SequenceContext": "NA_Y_VS",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "203",
+              "InsertionCode": "",
+              "SequenceContext": "YV_S_VV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "206",
+              "InsertionCode": "",
+              "SequenceContext": "VV_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "207",
+              "InsertionCode": "",
+              "SequenceContext": "VT_S_NY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "208",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_YN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "209",
+              "InsertionCode": "",
+              "SequenceContext": "SN_Y_NR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "210",
+              "InsertionCode": "",
+              "SequenceContext": "NY_N_RR",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "214",
+              "InsertionCode": "",
+              "SequenceContext": "RF_T_PE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "231",
+              "InsertionCode": "",
+              "SequenceContext": "RM_N_YY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "232",
+              "InsertionCode": "",
+              "SequenceContext": "MN_Y_YW",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "233",
+              "InsertionCode": "",
+              "SequenceContext": "NY_Y_WT",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "234",
+              "InsertionCode": "",
+              "SequenceContext": "YY_W_TL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "235",
+              "InsertionCode": "",
+              "SequenceContext": "YW_T_LL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "242",
+              "InsertionCode": "",
+              "SequenceContext": "GD_T_II",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "248",
+              "InsertionCode": "",
+              "SequenceContext": "EA_N_GN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "250",
+              "InsertionCode": "",
+              "SequenceContext": "NG_N_LI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "256",
+              "InsertionCode": "",
+              "SequenceContext": "PM_Y_AF",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "266",
+              "InsertionCode": "",
+              "SequenceContext": "FG_S_GI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "270",
+              "InsertionCode": "",
+              "SequenceContext": "II_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "271",
+              "InsertionCode": "",
+              "SequenceContext": "IT_S_NA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "272",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_AS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "274",
+              "InsertionCode": "",
+              "SequenceContext": "NA_S_MH",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "279",
+              "InsertionCode": "",
+              "SequenceContext": "EC_N_TK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "280",
+              "InsertionCode": "",
+              "SequenceContext": "CN_T_KC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "284",
+              "InsertionCode": "",
+              "SequenceContext": "CQ_T_PL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "290",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_SS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "291",
+              "InsertionCode": "",
+              "SequenceContext": "IN_S_SL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "292",
+              "InsertionCode": "",
+              "SequenceContext": "NS_S_LP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "295",
+              "InsertionCode": "",
+              "SequenceContext": "LP_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "297",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_IH",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "302",
+              "InsertionCode": "",
+              "SequenceContext": "PV_T_IG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "309",
+              "InsertionCode": "",
+              "SequenceContext": "PK_Y_VR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "312",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_AK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "319",
+              "InsertionCode": "",
+              "SequenceContext": "MV_T_GL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "G",
+              "ResidueNumber": "323",
+              "InsertionCode": "",
+              "SequenceContext": "LR_N_IP",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "514",
+              "InsertionCode": "",
+              "SequenceContext": "GG_W_TG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "515",
+              "InsertionCode": "",
+              "SequenceContext": "GW_T_GM",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "521",
+              "InsertionCode": "",
+              "SequenceContext": "DG_W_YG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "522",
+              "InsertionCode": "",
+              "SequenceContext": "GW_Y_GY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "524",
+              "InsertionCode": "",
+              "SequenceContext": "YG_Y_HH",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "528",
+              "InsertionCode": "",
+              "SequenceContext": "HQ_N_EQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "532",
+              "InsertionCode": "",
+              "SequenceContext": "QG_S_GY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "534",
+              "InsertionCode": "",
+              "SequenceContext": "SG_Y_AA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "540",
+              "InsertionCode": "",
+              "SequenceContext": "QK_S_TQ",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "541",
+              "InsertionCode": "",
+              "SequenceContext": "KS_T_QN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "543",
+              "InsertionCode": "",
+              "SequenceContext": "TQ_N_AI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "546",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "549",
+              "InsertionCode": "",
+              "SequenceContext": "GI_T_NK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "550",
+              "InsertionCode": "",
+              "SequenceContext": "IT_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "553",
+              "InsertionCode": "",
+              "SequenceContext": "KV_N_SV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "554",
+              "InsertionCode": "",
+              "SequenceContext": "VN_S_VI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "560",
+              "InsertionCode": "",
+              "SequenceContext": "KM_N_IQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "564",
+              "InsertionCode": "",
+              "SequenceContext": "QF_T_AV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "571",
+              "InsertionCode": "",
+              "SequenceContext": "EF_N_KL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "579",
+              "InsertionCode": "",
+              "SequenceContext": "ME_N_LN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "581",
+              "InsertionCode": "",
+              "SequenceContext": "NL_N_NK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "582",
+              "InsertionCode": "",
+              "SequenceContext": "LN_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "592",
+              "InsertionCode": "",
+              "SequenceContext": "DI_W_TY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "593",
+              "InsertionCode": "",
+              "SequenceContext": "IW_T_YN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "594",
+              "InsertionCode": "",
+              "SequenceContext": "WT_Y_NA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "595",
+              "InsertionCode": "",
+              "SequenceContext": "TY_N_AE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "604",
+              "InsertionCode": "",
+              "SequenceContext": "LE_N_ER",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "607",
+              "InsertionCode": "",
+              "SequenceContext": "ER_T_LD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "613",
+              "InsertionCode": "",
+              "SequenceContext": "HD_S_NV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "614",
+              "InsertionCode": "",
+              "SequenceContext": "DS_N_VK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "617",
+              "InsertionCode": "",
+              "SequenceContext": "VK_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "619",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_EK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "624",
+              "InsertionCode": "",
+              "SequenceContext": "VK_S_QL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "628",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_NA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "629",
+              "InsertionCode": "",
+              "SequenceContext": "KN_N_AK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "635",
+              "InsertionCode": "",
+              "SequenceContext": "IG_N_GC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "641",
+              "InsertionCode": "",
+              "SequenceContext": "EF_Y_HK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "646",
+              "InsertionCode": "",
+              "SequenceContext": "CD_N_EC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "651",
+              "InsertionCode": "",
+              "SequenceContext": "ME_S_VR",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "654",
+              "InsertionCode": "",
+              "SequenceContext": "VR_N_GT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "656",
+              "InsertionCode": "",
+              "SequenceContext": "NG_T_YD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "657",
+              "InsertionCode": "",
+              "SequenceContext": "GT_Y_DY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "H",
+              "ResidueNumber": "659",
+              "InsertionCode": "",
+              "SequenceContext": "YD_Y_P",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "6",
+              "InsertionCode": "",
+              "SequenceContext": "D_T_IC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "11",
+              "InsertionCode": "",
+              "SequenceContext": "IG_Y_HA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "14",
+              "InsertionCode": "",
+              "SequenceContext": "HA_N_NS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "15",
+              "InsertionCode": "",
+              "SequenceContext": "AN_N_ST",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "16",
+              "InsertionCode": "",
+              "SequenceContext": "NN_S_TD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "17",
+              "InsertionCode": "",
+              "SequenceContext": "NS_T_DT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "19",
+              "InsertionCode": "",
+              "SequenceContext": "TD_T_VD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "22",
+              "InsertionCode": "",
+              "SequenceContext": "VD_T_VL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "27",
+              "InsertionCode": "",
+              "SequenceContext": "EK_N_VT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "29",
+              "InsertionCode": "",
+              "SequenceContext": "NV_T_VT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "31",
+              "InsertionCode": "",
+              "SequenceContext": "TV_T_HS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "33",
+              "InsertionCode": "",
+              "SequenceContext": "TH_S_VN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "35",
+              "InsertionCode": "",
+              "SequenceContext": "SV_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "40",
+              "InsertionCode": "",
+              "SequenceContext": "ED_S_HN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "42",
+              "InsertionCode": "",
+              "SequenceContext": "SH_N_GK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "60",
+              "InsertionCode": "",
+              "SequenceContext": "KC_N_IA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "64",
+              "InsertionCode": "",
+              "SequenceContext": "AG_W_LL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "68",
+              "InsertionCode": "",
+              "SequenceContext": "LG_N_PE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "79",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_WS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "80",
+              "InsertionCode": "",
+              "SequenceContext": "RS_W_SY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "81",
+              "InsertionCode": "",
+              "SequenceContext": "SW_S_YI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "82",
+              "InsertionCode": "",
+              "SequenceContext": "WS_Y_IV",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "86",
+              "InsertionCode": "",
+              "SequenceContext": "VE_T_PN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "88",
+              "InsertionCode": "",
+              "SequenceContext": "TP_N_SE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "89",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_EN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "91",
+              "InsertionCode": "",
+              "SequenceContext": "SE_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "95",
+              "InsertionCode": "",
+              "SequenceContext": "IC_Y_PG",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "102",
+              "InsertionCode": "",
+              "SequenceContext": "ID_Y_EE",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "110",
+              "InsertionCode": "",
+              "SequenceContext": "QL_S_SV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "111",
+              "InsertionCode": "",
+              "SequenceContext": "LS_S_VS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "113",
+              "InsertionCode": "",
+              "SequenceContext": "SV_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "114",
+              "InsertionCode": "",
+              "SequenceContext": "VS_S_FE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "125",
+              "InsertionCode": "",
+              "SequenceContext": "KE_S_SW",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "126",
+              "InsertionCode": "",
+              "SequenceContext": "ES_S_WP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "127",
+              "InsertionCode": "",
+              "SequenceContext": "SS_W_PN",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "129",
+              "InsertionCode": "",
+              "SequenceContext": "WP_N_HN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "131",
+              "InsertionCode": "",
+              "SequenceContext": "NH_N_TN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "132",
+              "InsertionCode": "",
+              "SequenceContext": "HN_T_NG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "133",
+              "InsertionCode": "",
+              "SequenceContext": "NT_N_GV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "136",
+              "InsertionCode": "",
+              "SequenceContext": "GV_T_AA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "140",
+              "InsertionCode": "",
+              "SequenceContext": "AC_S_HE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "145",
+              "InsertionCode": "",
+              "SequenceContext": "GK_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "146",
+              "InsertionCode": "",
+              "SequenceContext": "KS_S_FY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "148",
+              "InsertionCode": "",
+              "SequenceContext": "SF_Y_RN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "150",
+              "InsertionCode": "",
+              "SequenceContext": "YR_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "153",
+              "InsertionCode": "",
+              "SequenceContext": "LL_W_LT",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "155",
+              "InsertionCode": "",
+              "SequenceContext": "WL_T_EK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "160",
+              "InsertionCode": "",
+              "SequenceContext": "EG_S_YP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "161",
+              "InsertionCode": "",
+              "SequenceContext": "GS_Y_PK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "166",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_SY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "167",
+              "InsertionCode": "",
+              "SequenceContext": "KN_S_YV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "168",
+              "InsertionCode": "",
+              "SequenceContext": "NS_Y_VN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "170",
+              "InsertionCode": "",
+              "SequenceContext": "YV_N_KK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "180",
+              "InsertionCode": "",
+              "SequenceContext": "VL_W_GI",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "187",
+              "InsertionCode": "",
+              "SequenceContext": "PP_N_SK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "188",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_KE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "193",
+              "InsertionCode": "",
+              "SequenceContext": "QQ_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "195",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "197",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_EN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "199",
+              "InsertionCode": "",
+              "SequenceContext": "NE_N_AY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "201",
+              "InsertionCode": "",
+              "SequenceContext": "NA_Y_VS",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "203",
+              "InsertionCode": "",
+              "SequenceContext": "YV_S_VV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "206",
+              "InsertionCode": "",
+              "SequenceContext": "VV_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "207",
+              "InsertionCode": "",
+              "SequenceContext": "VT_S_NY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "208",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_YN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "209",
+              "InsertionCode": "",
+              "SequenceContext": "SN_Y_NR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "210",
+              "InsertionCode": "",
+              "SequenceContext": "NY_N_RR",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "214",
+              "InsertionCode": "",
+              "SequenceContext": "RF_T_PE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "231",
+              "InsertionCode": "",
+              "SequenceContext": "RM_N_YY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "232",
+              "InsertionCode": "",
+              "SequenceContext": "MN_Y_YW",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "233",
+              "InsertionCode": "",
+              "SequenceContext": "NY_Y_WT",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "234",
+              "InsertionCode": "",
+              "SequenceContext": "YY_W_TL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "235",
+              "InsertionCode": "",
+              "SequenceContext": "YW_T_LL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "242",
+              "InsertionCode": "",
+              "SequenceContext": "GD_T_II",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "248",
+              "InsertionCode": "",
+              "SequenceContext": "EA_N_GN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "250",
+              "InsertionCode": "",
+              "SequenceContext": "NG_N_LI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "256",
+              "InsertionCode": "",
+              "SequenceContext": "PM_Y_AF",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "266",
+              "InsertionCode": "",
+              "SequenceContext": "FG_S_GI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "270",
+              "InsertionCode": "",
+              "SequenceContext": "II_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "271",
+              "InsertionCode": "",
+              "SequenceContext": "IT_S_NA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "272",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_AS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "274",
+              "InsertionCode": "",
+              "SequenceContext": "NA_S_MH",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "279",
+              "InsertionCode": "",
+              "SequenceContext": "EC_N_TK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "280",
+              "InsertionCode": "",
+              "SequenceContext": "CN_T_KC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "284",
+              "InsertionCode": "",
+              "SequenceContext": "CQ_T_PL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "290",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_SS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "291",
+              "InsertionCode": "",
+              "SequenceContext": "IN_S_SL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "292",
+              "InsertionCode": "",
+              "SequenceContext": "NS_S_LP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "295",
+              "InsertionCode": "",
+              "SequenceContext": "LP_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "297",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_IH",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "302",
+              "InsertionCode": "",
+              "SequenceContext": "PV_T_IG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "309",
+              "InsertionCode": "",
+              "SequenceContext": "PK_Y_VR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "312",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_AK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "319",
+              "InsertionCode": "",
+              "SequenceContext": "MV_T_GL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "I",
+              "ResidueNumber": "323",
+              "InsertionCode": "",
+              "SequenceContext": "LR_N_IP",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "514",
+              "InsertionCode": "",
+              "SequenceContext": "GG_W_TG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "515",
+              "InsertionCode": "",
+              "SequenceContext": "GW_T_GM",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "521",
+              "InsertionCode": "",
+              "SequenceContext": "DG_W_YG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "522",
+              "InsertionCode": "",
+              "SequenceContext": "GW_Y_GY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "524",
+              "InsertionCode": "",
+              "SequenceContext": "YG_Y_HH",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "528",
+              "InsertionCode": "",
+              "SequenceContext": "HQ_N_EQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "532",
+              "InsertionCode": "",
+              "SequenceContext": "QG_S_GY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "534",
+              "InsertionCode": "",
+              "SequenceContext": "SG_Y_AA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "540",
+              "InsertionCode": "",
+              "SequenceContext": "QK_S_TQ",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "541",
+              "InsertionCode": "",
+              "SequenceContext": "KS_T_QN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "543",
+              "InsertionCode": "",
+              "SequenceContext": "TQ_N_AI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "546",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "549",
+              "InsertionCode": "",
+              "SequenceContext": "GI_T_NK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "550",
+              "InsertionCode": "",
+              "SequenceContext": "IT_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "553",
+              "InsertionCode": "",
+              "SequenceContext": "KV_N_SV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "554",
+              "InsertionCode": "",
+              "SequenceContext": "VN_S_VI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "560",
+              "InsertionCode": "",
+              "SequenceContext": "KM_N_IQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "564",
+              "InsertionCode": "",
+              "SequenceContext": "QF_T_AV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "571",
+              "InsertionCode": "",
+              "SequenceContext": "EF_N_KL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "579",
+              "InsertionCode": "",
+              "SequenceContext": "ME_N_LN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "581",
+              "InsertionCode": "",
+              "SequenceContext": "NL_N_NK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "582",
+              "InsertionCode": "",
+              "SequenceContext": "LN_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "592",
+              "InsertionCode": "",
+              "SequenceContext": "DI_W_TY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "593",
+              "InsertionCode": "",
+              "SequenceContext": "IW_T_YN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "594",
+              "InsertionCode": "",
+              "SequenceContext": "WT_Y_NA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "595",
+              "InsertionCode": "",
+              "SequenceContext": "TY_N_AE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "604",
+              "InsertionCode": "",
+              "SequenceContext": "LE_N_ER",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "607",
+              "InsertionCode": "",
+              "SequenceContext": "ER_T_LD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "613",
+              "InsertionCode": "",
+              "SequenceContext": "HD_S_NV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "614",
+              "InsertionCode": "",
+              "SequenceContext": "DS_N_VK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "617",
+              "InsertionCode": "",
+              "SequenceContext": "VK_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "619",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_EK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "624",
+              "InsertionCode": "",
+              "SequenceContext": "VK_S_QL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "628",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_NA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "629",
+              "InsertionCode": "",
+              "SequenceContext": "KN_N_AK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "635",
+              "InsertionCode": "",
+              "SequenceContext": "IG_N_GC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "641",
+              "InsertionCode": "",
+              "SequenceContext": "EF_Y_HK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "646",
+              "InsertionCode": "",
+              "SequenceContext": "CD_N_EC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "651",
+              "InsertionCode": "",
+              "SequenceContext": "ME_S_VR",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "654",
+              "InsertionCode": "",
+              "SequenceContext": "VR_N_GT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "656",
+              "InsertionCode": "",
+              "SequenceContext": "NG_T_YD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "657",
+              "InsertionCode": "",
+              "SequenceContext": "GT_Y_DY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "J",
+              "ResidueNumber": "659",
+              "InsertionCode": "",
+              "SequenceContext": "YD_Y_P",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "6",
+              "InsertionCode": "",
+              "SequenceContext": "D_T_IC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "11",
+              "InsertionCode": "",
+              "SequenceContext": "IG_Y_HA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "14",
+              "InsertionCode": "",
+              "SequenceContext": "HA_N_NS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "15",
+              "InsertionCode": "",
+              "SequenceContext": "AN_N_ST",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "16",
+              "InsertionCode": "",
+              "SequenceContext": "NN_S_TD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "17",
+              "InsertionCode": "",
+              "SequenceContext": "NS_T_DT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "19",
+              "InsertionCode": "",
+              "SequenceContext": "TD_T_VD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "22",
+              "InsertionCode": "",
+              "SequenceContext": "VD_T_VL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "27",
+              "InsertionCode": "",
+              "SequenceContext": "EK_N_VT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "29",
+              "InsertionCode": "",
+              "SequenceContext": "NV_T_VT",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "31",
+              "InsertionCode": "",
+              "SequenceContext": "TV_T_HS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "33",
+              "InsertionCode": "",
+              "SequenceContext": "TH_S_VN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "35",
+              "InsertionCode": "",
+              "SequenceContext": "SV_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "40",
+              "InsertionCode": "",
+              "SequenceContext": "ED_S_HN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "42",
+              "InsertionCode": "",
+              "SequenceContext": "SH_N_GK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "60",
+              "InsertionCode": "",
+              "SequenceContext": "KC_N_IA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "64",
+              "InsertionCode": "",
+              "SequenceContext": "AG_W_LL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "68",
+              "InsertionCode": "",
+              "SequenceContext": "LG_N_PE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "79",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_WS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "80",
+              "InsertionCode": "",
+              "SequenceContext": "RS_W_SY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "81",
+              "InsertionCode": "",
+              "SequenceContext": "SW_S_YI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "82",
+              "InsertionCode": "",
+              "SequenceContext": "WS_Y_IV",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "86",
+              "InsertionCode": "",
+              "SequenceContext": "VE_T_PN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "88",
+              "InsertionCode": "",
+              "SequenceContext": "TP_N_SE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "89",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_EN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "91",
+              "InsertionCode": "",
+              "SequenceContext": "SE_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "95",
+              "InsertionCode": "",
+              "SequenceContext": "IC_Y_PG",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "102",
+              "InsertionCode": "",
+              "SequenceContext": "ID_Y_EE",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "110",
+              "InsertionCode": "",
+              "SequenceContext": "QL_S_SV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "111",
+              "InsertionCode": "",
+              "SequenceContext": "LS_S_VS",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "113",
+              "InsertionCode": "",
+              "SequenceContext": "SV_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "114",
+              "InsertionCode": "",
+              "SequenceContext": "VS_S_FE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "125",
+              "InsertionCode": "",
+              "SequenceContext": "KE_S_SW",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "126",
+              "InsertionCode": "",
+              "SequenceContext": "ES_S_WP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "127",
+              "InsertionCode": "",
+              "SequenceContext": "SS_W_PN",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "129",
+              "InsertionCode": "",
+              "SequenceContext": "WP_N_HN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "131",
+              "InsertionCode": "",
+              "SequenceContext": "NH_N_TN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "132",
+              "InsertionCode": "",
+              "SequenceContext": "HN_T_NG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "133",
+              "InsertionCode": "",
+              "SequenceContext": "NT_N_GV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "136",
+              "InsertionCode": "",
+              "SequenceContext": "GV_T_AA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "140",
+              "InsertionCode": "",
+              "SequenceContext": "AC_S_HE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "145",
+              "InsertionCode": "",
+              "SequenceContext": "GK_S_SF",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "146",
+              "InsertionCode": "",
+              "SequenceContext": "KS_S_FY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "148",
+              "InsertionCode": "",
+              "SequenceContext": "SF_Y_RN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "150",
+              "InsertionCode": "",
+              "SequenceContext": "YR_N_LL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "153",
+              "InsertionCode": "",
+              "SequenceContext": "LL_W_LT",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "155",
+              "InsertionCode": "",
+              "SequenceContext": "WL_T_EK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "160",
+              "InsertionCode": "",
+              "SequenceContext": "EG_S_YP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "161",
+              "InsertionCode": "",
+              "SequenceContext": "GS_Y_PK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "166",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_SY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "167",
+              "InsertionCode": "",
+              "SequenceContext": "KN_S_YV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "168",
+              "InsertionCode": "",
+              "SequenceContext": "NS_Y_VN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "170",
+              "InsertionCode": "",
+              "SequenceContext": "YV_N_KK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "180",
+              "InsertionCode": "",
+              "SequenceContext": "VL_W_GI",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "187",
+              "InsertionCode": "",
+              "SequenceContext": "PP_N_SK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "188",
+              "InsertionCode": "",
+              "SequenceContext": "PN_S_KE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "193",
+              "InsertionCode": "",
+              "SequenceContext": "QQ_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "195",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "197",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_EN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "199",
+              "InsertionCode": "",
+              "SequenceContext": "NE_N_AY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "201",
+              "InsertionCode": "",
+              "SequenceContext": "NA_Y_VS",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "203",
+              "InsertionCode": "",
+              "SequenceContext": "YV_S_VV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "206",
+              "InsertionCode": "",
+              "SequenceContext": "VV_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "207",
+              "InsertionCode": "",
+              "SequenceContext": "VT_S_NY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "208",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_YN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "209",
+              "InsertionCode": "",
+              "SequenceContext": "SN_Y_NR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "210",
+              "InsertionCode": "",
+              "SequenceContext": "NY_N_RR",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "214",
+              "InsertionCode": "",
+              "SequenceContext": "RF_T_PE",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "231",
+              "InsertionCode": "",
+              "SequenceContext": "RM_N_YY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "232",
+              "InsertionCode": "",
+              "SequenceContext": "MN_Y_YW",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "233",
+              "InsertionCode": "",
+              "SequenceContext": "NY_Y_WT",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "234",
+              "InsertionCode": "",
+              "SequenceContext": "YY_W_TL",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "235",
+              "InsertionCode": "",
+              "SequenceContext": "YW_T_LL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "242",
+              "InsertionCode": "",
+              "SequenceContext": "GD_T_II",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "248",
+              "InsertionCode": "",
+              "SequenceContext": "EA_N_GN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "250",
+              "InsertionCode": "",
+              "SequenceContext": "NG_N_LI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "256",
+              "InsertionCode": "",
+              "SequenceContext": "PM_Y_AF",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "266",
+              "InsertionCode": "",
+              "SequenceContext": "FG_S_GI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "270",
+              "InsertionCode": "",
+              "SequenceContext": "II_T_SN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "271",
+              "InsertionCode": "",
+              "SequenceContext": "IT_S_NA",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "272",
+              "InsertionCode": "",
+              "SequenceContext": "TS_N_AS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "274",
+              "InsertionCode": "",
+              "SequenceContext": "NA_S_MH",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "279",
+              "InsertionCode": "",
+              "SequenceContext": "EC_N_TK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "280",
+              "InsertionCode": "",
+              "SequenceContext": "CN_T_KC",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "284",
+              "InsertionCode": "",
+              "SequenceContext": "CQ_T_PL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "290",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_SS",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "291",
+              "InsertionCode": "",
+              "SequenceContext": "IN_S_SL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "292",
+              "InsertionCode": "",
+              "SequenceContext": "NS_S_LP",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "295",
+              "InsertionCode": "",
+              "SequenceContext": "LP_Y_QN",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "297",
+              "InsertionCode": "",
+              "SequenceContext": "YQ_N_IH",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "302",
+              "InsertionCode": "",
+              "SequenceContext": "PV_T_IG",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "309",
+              "InsertionCode": "",
+              "SequenceContext": "PK_Y_VR",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "312",
+              "InsertionCode": "",
+              "SequenceContext": "VR_S_AK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "319",
+              "InsertionCode": "",
+              "SequenceContext": "MV_T_GL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "K",
+              "ResidueNumber": "323",
+              "InsertionCode": "",
+              "SequenceContext": "LR_N_IP",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "514",
+              "InsertionCode": "",
+              "SequenceContext": "GG_W_TG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "515",
+              "InsertionCode": "",
+              "SequenceContext": "GW_T_GM",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "521",
+              "InsertionCode": "",
+              "SequenceContext": "DG_W_YG",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "522",
+              "InsertionCode": "",
+              "SequenceContext": "GW_Y_GY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "524",
+              "InsertionCode": "",
+              "SequenceContext": "YG_Y_HH",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "528",
+              "InsertionCode": "",
+              "SequenceContext": "HQ_N_EQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "532",
+              "InsertionCode": "",
+              "SequenceContext": "QG_S_GY",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "534",
+              "InsertionCode": "",
+              "SequenceContext": "SG_Y_AA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "540",
+              "InsertionCode": "",
+              "SequenceContext": "QK_S_TQ",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "541",
+              "InsertionCode": "",
+              "SequenceContext": "KS_T_QN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "543",
+              "InsertionCode": "",
+              "SequenceContext": "TQ_N_AI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "546",
+              "InsertionCode": "",
+              "SequenceContext": "AI_N_GI",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "549",
+              "InsertionCode": "",
+              "SequenceContext": "GI_T_NK",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "550",
+              "InsertionCode": "",
+              "SequenceContext": "IT_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "553",
+              "InsertionCode": "",
+              "SequenceContext": "KV_N_SV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "554",
+              "InsertionCode": "",
+              "SequenceContext": "VN_S_VI",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "560",
+              "InsertionCode": "",
+              "SequenceContext": "KM_N_IQ",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "564",
+              "InsertionCode": "",
+              "SequenceContext": "QF_T_AV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "571",
+              "InsertionCode": "",
+              "SequenceContext": "EF_N_KL",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "579",
+              "InsertionCode": "",
+              "SequenceContext": "ME_N_LN",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "581",
+              "InsertionCode": "",
+              "SequenceContext": "NL_N_NK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "582",
+              "InsertionCode": "",
+              "SequenceContext": "LN_N_KV",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "592",
+              "InsertionCode": "",
+              "SequenceContext": "DI_W_TY",
+              "Tags": "cLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "593",
+              "InsertionCode": "",
+              "SequenceContext": "IW_T_YN",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "594",
+              "InsertionCode": "",
+              "SequenceContext": "WT_Y_NA",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "595",
+              "InsertionCode": "",
+              "SequenceContext": "TY_N_AE",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "604",
+              "InsertionCode": "",
+              "SequenceContext": "LE_N_ER",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "607",
+              "InsertionCode": "",
+              "SequenceContext": "ER_T_LD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "613",
+              "InsertionCode": "",
+              "SequenceContext": "HD_S_NV",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "614",
+              "InsertionCode": "",
+              "SequenceContext": "DS_N_VK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "617",
+              "InsertionCode": "",
+              "SequenceContext": "VK_N_LY",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "619",
+              "InsertionCode": "",
+              "SequenceContext": "NL_Y_EK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "624",
+              "InsertionCode": "",
+              "SequenceContext": "VK_S_QL",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "628",
+              "InsertionCode": "",
+              "SequenceContext": "LK_N_NA",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "629",
+              "InsertionCode": "",
+              "SequenceContext": "KN_N_AK",
+              "Tags": "nLink"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "635",
+              "InsertionCode": "",
+              "SequenceContext": "IG_N_GC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "641",
+              "InsertionCode": "",
+              "SequenceContext": "EF_Y_HK",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "646",
+              "InsertionCode": "",
+              "SequenceContext": "CD_N_EC",
+              "Tags": "nLink nLinkCysSequon"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "651",
+              "InsertionCode": "",
+              "SequenceContext": "ME_S_VR",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "654",
+              "InsertionCode": "",
+              "SequenceContext": "VR_N_GT",
+              "Tags": "nLink nLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "656",
+              "InsertionCode": "",
+              "SequenceContext": "NG_T_YD",
+              "Tags": "oLink oLinkLikely"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "657",
+              "InsertionCode": "",
+              "SequenceContext": "GT_Y_DY",
+              "Tags": "oLink oLinkTyr"
+            },
+            {
+              "Chain": "L",
+              "ResidueNumber": "659",
+              "InsertionCode": "",
+              "SequenceContext": "YD_Y_P",
+              "Tags": "oLink oLinkTyr"
+            }
+          ],
+          "resources": []
+        },
+        "notices": [
+          {
+            "brief": "Evaluation Successful",
+            "type": "Info",
+            "code": "600",
+            "message": "Evaluation Successful",
+            "scope": "Service",
+            "Messenger": "GpBuilder"
+          }
+        ]
+      },
+      "default_Build": {
+        "type": "Build",
+        "myUuid": "b3518f00-e6a5-4f4c-92fe-6d62f55cd787",
+        "outputs": {
+          "message": "",
+          "resources": [
+            {
+              "type": "Unset",
+              "locationType": "filesystem-path-unix",
+              "resourceFormat": "text/plain",
+              "resourceRole": "gpbuilder-input-file",
+              "payload": "/website/userdata/complex/gp/<pUUID>/the_input.txt",
+              "options": {},
+              "notices": null
+            }
+          ]
+        },
+        "notices": [
+          {
+            "brief": "GpBuilder running",
+            "type": "Info",
+            "code": "200",
+            "message": "GpBuilder execution started.",
+            "scope": "Service",
+            "Messenger": "GpBuilder"
+          }
+        ]
+      }
+    },
+    "procedural_options": {
+      "context": "website",
+      "force_serial_execution": false,
+      "pretty_print": false,
+      "md_minimize": false
+    }
+  },
+  "project": {
+    "pUUID": "<pUUID>",
+    "title": "GpBuilder project",
+    "comment": "",
+    "timestamp": "2026-01-12T08:40:33.868072",
+    "gems_timestamp": "2026-01-12T08:40:33.868072",
+    "type": "gp",
+    "parent_entity": "",
+    "requested_service": "Build",
+    "entity_id": "complex/GpBuilder",
+    "service_id": "",
+    "filesystem_path": "",
+    "compute_cluster_filesystem_path": "",
+    "service_dir": "",
+    "project_dir": "/website/userdata/complex/gp/<pUUID>",
+    "logs_dir": "",
+    "requesting_agent": "",
+    "site_version": "",
+    "site_branch": "",
+    "site_code_name": "",
+    "gems_version": "",
+    "gems_branch": "",
+    "md_utils_version": "",
+    "md_utils_branch": "",
+    "gmml_version": "",
+    "gmml_branch": "",
+    "gp_version": "",
+    "gp_branch": "",
+    "site_mode": "",
+    "site_host_name": "",
+    "versions_file_path": "",
+    "host_url_base_path": "",
+    "download_url_path": "",
+    "force_field": "default",
+    "parameter_version": "default",
+    "amber_version": "default",
+    "json_api_version": "0.0.1",
+    "django_project_id": "",
+    "app": "GpBuilder",
+    "force_use_this_project": false,
+    "notices": [],
+    "input_type": "PDB (chemical/pdb) & Glycan Mappings (application/json)",
+    "gpbuilder_input_file": "the_input.txt"
+  },
+  "notices": {}
+}

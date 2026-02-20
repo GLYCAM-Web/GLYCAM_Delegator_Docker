@@ -12,6 +12,30 @@ RequiredHeaders=("pdb_id" "amino_acid_chain" "glycosylation_site_pdb" "sequence_
 declare -a ParsedHeaders  ## These are in the order of the treated input file
 ParsedHeaders=("project_id" "uniprotkb_canonical_ac" "pdb_id" "amino_acid_chain" "glycosylation_site_pdb" "insertion_code" "amino_acid_pdb" "glycosylation_type" "sequence_glycam_iupac")
 
+# The values will be overwritten. What is shown here is documentation.
+#    Each Key is a key in the JSON schema
+#    Each Value is either:
+#        - One of the ParsedHeaders (see lists above)
+#        - A brief description of a field not in ParsedHeaders
+declare -A jsonMainHeaders
+jsonMainHeaders=(
+	["givenName"]="project_id"
+	["rcsb_id"]="pdb_id"
+	["pUUID"]="ProjectUUID from GEMS"
+	["glycan_mappings"]="list of glycositeData"
+	)
+declare -A glycositeData
+glycositeData=(
+	["Chain"]="amino_acid_chain"
+	["ResidueNumber"]="glycosylation_site_pdb"
+	["InsertionCode"]="insertion_code"
+	["Sequence"]="sequence_glycam_iupac"
+	["Tags"]="available but not used here"
+	)
+declare -a glycositeDataList
+glycositeDataList=() # list of JSON-Formatted glycositeData -- see printarrJSON in sysetc/functions.bash
+theArrayString=""
+
 #######################################
 ##          I/O And Usage Documentation
 #######################################
@@ -53,6 +77,7 @@ Generate a set of PDB files containing 3D structures of glycoproteins based on a
 	      -  If none of your residues have insertion codes, this column can be omitted.
 	      -  If your residues contain insertion codes, they MUST BE GIVEN. The residue cannot be uniquely
 	         identified without the IC.
+		 -  You can add the IC to the end of the residue number. For example, residue 85 with IC 'E' can be written '85E'.
 		 -  Here is a nice explanation of ICs:
 		    https://bioinformatics.stackexchange.com/questions/11587/what-is-the-aim-of-insertion-codes-in-the-pdb-file-format
 
@@ -67,10 +92,10 @@ Generate a set of PDB files containing 3D structures of glycoproteins based on a
               -  Keep it *NIX friendly (e.g., no spaces, asterisks, etc.)
               -  Use only the Basename you want for output files, no 'pdb' suffix - or your files will be named 'Basename.pdb.pdb'
               -  This name will also be used for error outputs, histories, results db, etc.
-              -  IF MISSING - the basename/project_id will be the pdb_id. See also notes on filenames.
+              -  IF MISSING - the basename/project_id will be the pdb_id. See also notes on filenames and uniprotkb_canonical_ac.
 
             uniprotkb_canonical_ac (-) : Uniprot Knowledgebase Canonical Accession identifier. 
-              -  If this IS present, and if the project_id is NOT present, then the project_id will be: 'uniprotkb_canonical_ac'_'pdb_id'
+              -  If this is present, and if the project_id is NOT present, then the project_id will be: 'uniprotkb_canonical_ac'_'pdb_id'
 	         -  For example, if uniprotkb_canonical_ac='P13671-1' and pdb_id='3T5O', project_id='P13671-1_3T5O'
 	      -  If the project_id column is populated, that project_id will not be overwritten.
 
@@ -167,58 +192,82 @@ my_gp_4,O-linked,6RUR,my_info,B,18,THR,DGlcpb1-3LFucpa1-OH
 #############################
 
 
-## Define the function that will write the JSON evaluation file for the sequence
-write_json_evaluation_file() {
-	# $1 is the Basename
-	# $2 is the glycan sequence
-	# $3 is the jsonFileName to use for output
-	FileTop="""{
+
+## Define the function that will write the JSON build file for the glycoprotein
+## There will not be a separate evaluation.
+write_json_build_file() {
+	# $1 is the output filename
+	# The array called 'jsonMainHeaders' MUST be properly populated before calling.
+	#    Needs: givenName and rcsb_id
+### Build
+#{
+#    "entity": {
+#        "type": "GlycoProtein", 
+#        "services": {
+#            "default_Build": {
+#                "type": "Build",
+#                "inputs": {
+#                    "pUUID": "<pUUID>", ## Doesn't need this if there is not a separate evaluation step
+#                    "glycan_mappings": [
+#                        {"Chain": "K", "ResidueNumber": "208", "InsertionCode": "", "Sequence": "DManpa1-OH", "Tags": ""}
+#                    ]
+#                }
+#            }
+#        }
+#    }
+#}
+#
+#jsonMainHeaders=(
+#	["givenName"]="project_id"
+#	["rcsb_id"]="pdb_id"
+#	["pUUID"]="ProjectUUID from GEMS"
+#	["glycan_mappings"]="list of glycositeData"
+#	)
+#glycositeData=(
+#	["Chain"]="amino_acid_chain"
+#	["ResidueNumber"]="glycosylation_site_pdb"
+#	["InsertionCode"]="insertion_code"
+#	["Sequence"]="sequence_glycam_iupac"
+#	["Tags"]="available but not used here"
+#	)
+#
+#if [ "${PRETTY_GLYCOSYLATION_MAPPINGS}" == "True" ] ; then
+#	theMappings="$(printarrJSON theArray 'pretty')"
+#else
+#	theMappings="$(printarrJSON theArray )"
+#fi
+	theFile="""{
     \"entity\": {
-        \"type\": \"Sequence\",
+        \"type\": \"GlycoProtein\",
+	\"procedural_options\": 
+	{
+		\"force_serial_execution\" : \"True\"
+	},
         \"services\":
             {
-                \"build\": {
-                    \"type\": \"Evaluate\",
-                    \"givenName\": \"${1}\"
+                \"${jsonMainHeaders["givenName"]}_Build\": {
+                    \"type\": \"Build\",
+                    \"givenName\": \"${jsonMainHeaders["givenName"]}\",
+                    \"inputs\": {
+                        \"rcsb_id\": \"${jsonMainHeaders["rcsb_id"]}\",
+                        \"glycan_mappings\": [
+${theArrayString}
+                        ]
+                    }
                 }
-            },
-        \"inputs\":
-            {
-                \"sequence\": {
-                    \"payload\": \"${2}\"
-                },
-                \"resources\" :[]
-            }"""
-
-	FileBottom="""
+            }
     },
-    \"prettyPrint\" : true,
-    \"mdMinimize\" : true
+    \"prettyPrint\" : true
 }
 """ 
 
-## To test reads of a failure with a notice??
-## This setting gets clobbered despite being in the input.
-# TEST_NOTICED_FAILURE="True" ## won't work; not sure why
-#if [ "${TEST_NOTICED_FAILURE}" == "True" ] ; then
-#	FileBottom=""",
-#	\"procedural_options\": {
-#           \"number_structures_hard_limit\": 0
-#        }
-#    },
-#    \"prettyPrint\" : true,
-#    \"mdMinimize\" : true
-#}
-#""" 
-#fi
-echo "Writing JSON input for generating structure files to: ${3}" >> $LOGFILE
-theFile="${FileTop}${FileBottom}"
-echo "${theFile}" > ${3}
+echo "Writing JSON input for generating structure files to: ${1}" >> $LOGFILE
+echo "${theFile}" > ${1}
 
 } # closes the function - is not part of the json
 
-## Define the function that will handle the management of the output
-manage_evaluation_output() {
+## Define the function that will handle checking the returned json, and other files, for execution status.
+manage_build_output() {
 	##  ${1} is the json reponse file
 	##  ${2} is the output directory
 	##  ${3} is the sequence provided by the user
@@ -448,15 +497,15 @@ fi
 #############################
 
 ## Read in line 1 of the input file:
-declare -a HEADERS
+declare -a inputFileHEADERS
 tmphead="$(head -n 1 ${InputFile})"
-IFS=, read -ra HEADERS <<< "${tmphead}"
+IFS=, read -ra inputFileHEADERS <<< "${tmphead}"
 
 ## Ensure that all the RequiredHeaders are present
 # RequiredHeaders="pdb_id amino_acid_chain glycosylation_site_pdb sequence_glycam_iupac"
 allthere="True"
 for rheader in ${RequiredHeaders[@]} ; do 
-	if [[ "${HEADERS[@]}" != *"${rheader}"* ]] ; then
+	if [[ "${inputFileHEADERS[@]}" != *"${rheader}"* ]] ; then
 		allthere="False"
 	fi
 done
@@ -464,32 +513,37 @@ if [ "${allthere}" == "False" ] ; then
 	echo "These are the Required Headers:"
 	echo "${RequiredHeaders[@]}"
 	echo "These are your headers:"
-	echo "${HEADERS[@]}"
+	echo "${inputFileHEADERS[@]}"
 	print_error_and_exit "All required headers are not present in the input file."
 fi
 
+
 # If 'start_aa' was used rather than 'amino_acid', change the value in
-if [[ "${HEADERS[@]}" == *"start_aa"* ]] ; then
-	echo "[INFO] : $(date) : start aa was found - changing it to the standard 'amino_acid_pdb'" | tee -a $LOGFILE
-        HEADERS=( "${HEADERS[@]/start_aa/amino_acid_pdb}" )
+declare -a outHEADERS
+if [[ "${inputFileHEADERS[@]}" == *"start_aa"* ]] ; then
+	echo "[INFO] : $(date) : start_aa was found - changing it to the standard 'amino_acid_pdb' for final output" | tee -a $LOGFILE
+        outHEADERS=( "${inputFileHEADERS[@]/start_aa/amino_acid_pdb}" )
+	useStartAA="True"
 fi
 
 ## Note which ParsedHeaders are present in the user inputs
 # ParsedHeaders="project_id uniprotkb_canonical_ac pdb_id amino_acid_chain glycosylation_site_pdb insertion_code amino_acid_pdb glycosylation_type project_id sequence_glycam_iupac"
 declare -A ParsedHeadersPresent
+declare -a outputTreatedHEADERS
 for pheader in ${ParsedHeaders[@]} ; do 
-	if [[ "${HEADERS[@]}" == *"${pheader}"* ]] ; then
+	if [[ "${outHEADERS[@]}" == *"${pheader}"* ]] ; then
 		ParsedHeadersPresent["${pheader}"]="True"
+		outputTreatedHEADERS+=("${pheader}")
 	else
 		ParsedHeadersPresent["${pheader}"]="False"
 	fi
 done
 
 ## Determine what to use for the 'project_id'.
-if [[ "${HEADERS[@]}" != *"project_id"* ]] ; then
+if [[ "${inputFileHEADERS[@]}" != *"project_id"* ]] ; then
 	echo "[INFO] : $(date) : Column 'project_id' not found in input file." | tee -a $STATUSFILE
 	ProjectIDBase='pdb_id'
-	if [[ "${HEADERS}" == *"uniprotkb_canonical_ac"* ]] ; then
+	if [[ "${inputFileHEADERS}" == *"uniprotkb_canonical_ac"* ]] ; then
 		ProjectIDBase='uniprotkb_canonical_ac'
 		echo "[INFO] : $(date) : Using uniprotkb_canonical_ac and pdb_id to form project_id." | tee -a $STATUSFILE
 	else
@@ -520,6 +574,11 @@ first="true"
 cutCols=""
 for pheader in ${ParsedHeaders[@]} ; do 
 	if [ "${ParsedHeadersPresent["${pheader}"]}" == "True" ] ; then
+		if [ "${useStartAA}" == "True" ] ; then
+			if [ "${pheader}" == "amino_acid_pdb" ] ; then
+				pheader="start_aa"
+			fi
+		fi
 		if [ "${first}" == "true" ] ; then
 			cutCols="${pheader}"
 			first="false"
@@ -532,16 +591,20 @@ done
 # Use csvcut to extract the columns into a temporary file
 #    csvcut -c column_c,column_a,column_z data.csv > new.csv
 TmpUUID="$(uuidgen -r)"
-TmpTreatedFileName="${pUUID:0:5}.csv"
+TmpTreatedFileName="${TmpUUID:0:5}.csv"
 TmpTreatedFilePath="/tmp"
-if [ "${KEEP_TEMPORARY_FILES}" == "True" ; then
+if [ "${KEEP_TEMPORARY_FILES}" == "True" ] ; then
 	TmpTreatedFilePath="${OutputDir}/logs"
 	echo "[INFO] : $(date) : The temporary (and intermediate) Treated_Input file will be saved in:" | tee -a $LOGFILE
 	echo "[INFO] : $(date) :     ${TmpTreatedFilePath}" | tee -a $LOGFILE
 fi
 TmpTreatedFileOut="${TmpTreatedFilePath}/${TmpTreatedFileName}"
 COMMAND="csvcut -c ${cutCols} ${InputFile} > ${TmpTreatedFileOut}"
-rclr "Writing a temporary input file containing Parsed Headers in a standard order" "${COMMAND}" "Temporary treated input file write."
+rclr "Writing a temporary input file containing Parsed Headers in a standard order" "${COMMAND}" "Temporary treated input file write"
+if [ "${useStartAA}" == "True" ] ; then
+	COMMAND="sed -i '1s/start_aa/amino_acid_pdb/' ${TmpTreatedFileOut}"
+	rclr "Changing start_aa in the first temporary file to amino_acid_pdb." "${COMMAND}" "Enforce use of amino_acid_pdb header"
+fi
 #
 ## Sort the file so that various statistics can be generated
 #
@@ -554,7 +617,7 @@ rclr "Sorting the temporary input file." "${COMMAND}" "Temporary treated input f
 ## Count and list the non-unique lines.
 #
 TmpDuplicatesFileName="${TmpTreatedFileName}_duplicates"
-TmpDuplicatesFileOut="${TmpTreatedFilePath}/${TmpDuplicatesFileOut}"
+TmpDuplicatesFileOut="${TmpTreatedFilePath}/${TmpDuplicatesFileName}"
 COMMAND="cat ${TmpTreatedFileOutSorted} | uniq -cd > ${TmpDuplicatesFileOut}"
 rclr "Checking for duplicate entries in the input file." "${COMMAND}" "Duplicate entries check"
 #  cat some_file_with_duplicates.csv | sort | uniq -cd  ## not exactly the workflow here, but shows the output
@@ -597,8 +660,8 @@ if [ "${numDups}" != "0" ] ; then
 fi
 #
 ## If there is not a project_id column, and there is a uniprot ID, ensure that there is a 1:1 correspondence between uniprot ID and pdb_id
-if [[ "${HEADERS[@]}" != *"project_id"* ]] ; then
-	if [[ "${HEADERS[@]}" == *"uniprotkb_canonical_ac"* ]] ; then
+if [[ "${outputTreatedHEADERS[@]}" != *"project_id"* ]] ; then
+	if [[ "${outputTreatedHEADERS[@]}" == *"uniprotkb_canonical_ac"* ]] ; then
 		TmpUniPDBTestOut="${TmpTreatedFilePath}/${TmpTreatedFileName}_non-unique_uniprot_pdb"
 		# !! This only counts multiple PDBs per uniprotID. It does not count multiple uniprotIDs per PDB. 
 		#    The latter does not matter to this software. If desired by users, the latter could be added.
@@ -637,17 +700,21 @@ while IFS=, read -ra columnrow; do
 	#
 	## Get info from and do consistency checks using the first row
 	if [ "${rowfirst}" == "true" ] ; then
-		if [ "${#HEADERS[@]}" != "${#columnrow[@]}" ] ; then
-			print_error_and_exit "#HEADERS not equal to #columnrow in treated-input generation."
+		if [ "${#outputTreatedHEADERS[@]}" != "${#columnrow[@]}" ] ; then
+			echo "#outHeaders: ${#outputTreatedHEADERS[@]}" 
+			echo "outHeaders: ${outputTreatedHEADERS[@]}" 
+			echo "#columnrow: ${#columnrow[@]}" 
+			echo "columnrow: ${columnrow[@]}" 
+			print_error_and_exit "#outputTreatedHEADERS not equal to #columnrow in treated-input generation."
 		fi
 		# ProjectIDBase can be: 'uniprotkb_canonical_ac' 'project_id' 'pdb_id'
 		pdbidLoc="-1"
 		uniprotLoc="-1"
 		numInCol="${#columnrow[@]}"
 		count="0"
-		while [ "${count}" -lt "${numInCol}}" ] ; do
-			if [ "${HEADERS[${count}]}" != "${columnrow[${count}]}" ] ; then
-				print_error_and_exit "Entry ${count} not identical for HEADERS and columnrow in treated-input generation."
+		while [ "${count}" -lt "${numInCol}" ] ; do
+			if [ "${outputTreatedHEADERS[${count}]}" != "${columnrow[${count}]}" ] ; then
+				print_error_and_exit "Entry ${count} not identical for outputTreatedHEADERS and columnrow in treated-input generation."
 			fi
 			if [ "${ProjectIDBase}" != "project_id" ] ; then
 				if [ "${columnrow[${count}]}" == "pdb_id" ] ; then
@@ -657,10 +724,11 @@ while IFS=, read -ra columnrow; do
 					uniprotLoc="${count}"
 				fi
 			fi
+			count="$((count+1))"
 		done
 		colfirst="true"
 		rowOut=""
-		for pheader in ${ParsedHeaders[@]} ; do  ## this list should be equal to or longer than HEADERS???
+		for pheader in ${ParsedHeaders[@]} ; do  ## this list should be equal to or longer than outputTreatedHEADERS???
 			if [ "${colfirst}" == "true" ] ; then
 				colfirst="false"
 				separator=""
@@ -678,7 +746,7 @@ while IFS=, read -ra columnrow; do
 	colfirst="true"
 	inColCount="0"
 	rowOut=""
-	for pheader in ${ParsedHeaders[@]} ; do  ## this list should be equal to or longer than HEADERS???
+	for pheader in ${ParsedHeaders[@]} ; do  ## this list should be equal to or longer than outputTreatedHEADERS???
 		if [ "${colfirst}" == "true" ] ; then
 			colfirst="false"
 			separator=""
@@ -715,44 +783,181 @@ while IFS=, read -ra columnrow; do
 	echo "${rowOut}" >> "${FinalTreatedInput}"
 done < "${TmpFinalFileOut}"
 
-
-
+#
 ## Record the number of unique build requests that the treated data request (bc untreated isn't reasonable to query)
 numRequestedBuilds="$(csvstat -c project_id --unique ${FinalTreatedInput})"
 result="$?"
 if [ "${result}" != "0" ] ; then
 	print_error_and_exit "Unable to count the total number of GlycoProtein projects requested."
 fi
-echo "[INFO] : $(date) : A total of valid ${numRequestedBuilds} GlycoProtein projects were found." | tee -a $LOGFILE
-
-if [ "${KEEP_TEMPORARY_FILES}" == "False" ] ; then
+echo "[INFO] : $(date) : A total of ${numRequestedBuilds} valid GlycoProtein projects were found." | tee -a $LOGFILE
+COMMAND="tail -n +2 ${FinalTreatedInput} | cut -d ',' -f1 | uniq > ${OutputDir}/provenance/Valid_Projects_List.txt"
+rclr "Generating and recording valid projects in the provenance directory." "${COMMAND}" "Valid projects list generation"
+#
+## Remove temporary files if not instructed to keep them
+if [ "${KEEP_TEMPORARY_FILES}" != "True" ] ; then
 	removeMe="${TmpTreatedFilePath}/${TmpTreatedFileName}*"
 	COMMAND="rm ${removeMe}"
 	rclr "Removing temporary files." "${COMMAND}" "Temporary file removal"
 fi
 
 
-exit 0
+#exit 0
 
+##
+## Build each input JSON and run the GP build
+##
+#
+## For each valid project id
+count=0
+## Loop over the input file contents
+while IFS=  read -r line; do
+	#
+	## grep all lines associated with the project_id
+	## Will look something like:
+	#      P27918-1_6RUR,P27918-1,6RUR,A,65,null,THR,O-linked,DGlcpb1-3LFucpa1-OH
+	#      P27918-1_6RUR,P27918-1,6RUR,B,18,null,THR,O-linked,DGlcpb1-3LFucpa1-OH
+	#      P27918-1_6RUR,P27918-1,6RUR,C,65,null,THR,O-linked,DGlcpb1-3LFucpa1-OH
+	#      P27918-1_6RUR,P27918-1,6RUR,D,18,null,THR,O-linked,DGlcpb1-3LFucpa1-OH
+	#  The individual entries have these labels
+	#      project_id,uniprotkb_canonical_ac,pdb_id,amino_acid_chain,glycosylation_site_pdb,insertion_code,amino_acid_pdb,glycosylation_type,sequence_glycam_iupac
+	thisProjectID="${line}"
+	thisProjectInputs="""$(grep ^${thisProjectID} ${FinalTreatedInput} )"""
+	echo "thisProjectID: ${thisProjectID}"
+	echo "thisProjectInputs:"
+	echo """${thisProjectInputs}"""
+	#
+	## Process the build
+	#  Grab the pdb_id
+	while IFS=, read -ra inputsLine ; do
+		thisPDBid="${inputsLine[2]}"
+		break
+	done <<< "${thisProjectInputs}"
+	echo "Working on PDB file:  ${thisPDBid} (= thisPDBid)"
+
+	# Generate the needed headers (list in comment below)
+	jsonMainHeaders["givenName"]="${thisProjectID}"
+	jsonMainHeaders["rcsb_id"]="${thisPDBid}"
+	jsonMainHeaders["pUUID"]=""
+#jsonMainHeaders=(
+#	["givenName"]="project_id"
+#	["rcsb_id"]="pdb_id"
+#	["pUUID"]="ProjectUUID from GEMS" ## Not needed here - will be assigned
+#	["glycan_mappings"]="list of glycositeData"  ## generated in next step
+#	)
+	
+	# Generate the glycositeData array (array of glycosylation sites)
+#glycositeData=(
+#	["Chain"]="amino_acid_chain"
+#	["ResidueNumber"]="glycosylation_site_pdb"
+#	["InsertionCode"]="insertion_code"
+#	["Sequence"]="sequence_glycam_iupac"
+#	["Tags"]="available but not used here"
+#	)
+#declare -A glycositeDataList
+#glycositeDataList=() # list of JSON-Formatted glycositeData -- see printarrJSON in sysetc/functions.bash
+	#  Sample data line
+	#         0         ,   1    , 2  ,3, 4, 5  , 6 ,   7    ,       8
+	#      P27918-1_6RUR,P27918-1,6RUR,B,18,null,THR,O-linked,DGlcpb1-3LFucpa1-OH
+	glycositeDataList=()
+	sitecount=0
+        first="True"
+        startnext=', '
+	if [ "${PRETTY_GLYCOSYLATION_MAPPINGS}" == "True" ] ; then
+                startnext=',\n'
+        fi
+	while IFS=, read -ra inputsLine ; do
+		if [ "${inputsLine[3]}" == "null" ] ; then 
+			glycositeData["Chain"]=""
+		else
+			glycositeData["Chain"]="${inputsLine[3]}"
+		fi
+		if [ "${inputsLine[4]}" == "null" ] ; then 
+			glycositeData["ResidueNumber"]=""
+		else
+			glycositeData["ResidueNumber"]="${inputsLine[4]}"
+		fi
+		if [ "${inputsLine[5]}" == "null" ] ; then 
+			glycositeData["InsertionCode"]=""
+		else
+			glycositeData["InsertionCode"]="${inputsLine[5]}"
+		fi
+		if [ "${inputsLine[8]}" == "null" ] ; then 
+			glycositeData["Sequence"]=""
+		else
+			glycositeData["Sequence"]="${inputsLine[8]}"
+		fi
+		glycositeData["Tags"]=""
+		echo "This is the glycosite data array:"
+		echo """${glycositeData[@]}"""
+		glySiteString="{ "
+        	first="True"
+        	for k in "Chain" "ResidueNumber" "InsertionCode" "Sequence" "Tags" ; do
+                	if [ "${first}" == "True" ] ; then
+				tmpString="$(printf "\"%s\": \"%s\"" "$k" "${glycositeData[$k]}")"
+                        	first="False"
+                	else
+				tmpString="$(printf "${startnext}\"%s\": \"%s\"" "$k" "${glycositeData[$k]}")"
+                	fi
+			glySiteString="${glySiteString} ${tmpString}" 
+        	done
+		glySiteString="${glySiteString} }" 
+		glycositeDataList[${sitecount}]="${glySiteString}"
+		#echo "This is the glycosite data list in-loop."
+		#echo """${glycositeDataList[@]}"""
+		sitecount="$((sitecount+1))"
+	done <<< "${thisProjectInputs}"
+
+	#echo "This is the glycosite data list after-loop."
+	#echo """${glycositeDataList[@]}"""
+	#echo "accessing a certain value:"
+	#echo """${glycositeDataList[3]}"""
+	#echo "here is that data accessed via integer"
+	#echo "sitecount is ${sitecount}"
+	theArrayString=""
+	i="0"
+	while [ "${i}" -lt "${sitecount}" ] ; do
+               	if [ "${i}" == "0" ] ; then
+			tmpString="${glycositeDataList[$i]}"
+               	else
+			tmpString="$(printf "${startnext} %s " "${glycositeDataList[$i]}")"
+               	fi
+		theArrayString="${theArrayString} ${tmpString}" 
+		#echo "For ${i} it is : ${glycositeDataList[${i}]}"
+		i="$((i+1))"
+	done
+	#theArrayString="${theArrayString} ]"
+
+	echo "The array string is"
+	echo """${theArrayString}"""
+	jsonMainHeaders["glycan_mappings"]="${theArrayString}"
+	#echo "json main headers are:"
+	#echo """${jsonMainHeaders[@]}"""
+	jsonOutFile="${OutputDir}/provenance/${thisProjectID}_Build_Request.json"
+	write_json_build_file "${jsonOutFile}"
+	COMMAND="delegate ${jsonOutFile}"
+	export TEST="True"
+	rclr "Delegating build for project_id: ${thisProjectID}" "${COMMAND}" "Delegation of ${thisProjectID}"
+	# process_build "${thisPDBid}" "${thisProjectID}" 
+	count="$((count+1))"
+done < "${OutputDir}/provenance/Valid_Projects_List.txt"
+
+exit 0 ## Everything below here is inspiration from previous scripts. Delete it when done then delete this line.
 
 count=0
 ## Loop over the input file contents
-while IFS= read -ra line; do
-	#echo "line is >>>${line}<<<"
+while IFS=, read -ra line; do
+	#echo "line is >>>${line[@]}<<<"
 	### Ignore first line
 	if [ "${count}" == "0" ] ; then
 		#echo "ignoring line and reading next"
 		count="$((count+1))"
 		continue
 	fi
-## Split line into args
-	linetosplit="${line//,/ }"
-	#echo "linetosplit is >>>${linetosplit}<<<"
- 	set -- ${linetosplit}
 
 	### Check for preexistence, if desired, and respond accordingly
-	Basename="${1//\"/}"
-	Sequence="${2//\"/}"
+	Basename="${line[0]}"
+	Sequence="${line[1]}"
 	if [ -z "${Sequence}" ] ; then
 		echo "[ERROR] : $(date) : Sequence is empty for ${Basename}. Ending processing. More info: ${LOGFILE_RELATIVE}." | tee -a $STATUSFILE
 		echo "The following line does not contain a Sequence. It is enclosed in triple arrows like so: >>>line<<<." >> $LOGFILE
@@ -764,12 +969,10 @@ while IFS= read -ra line; do
 	fi
 	echo "[INFO] : $(date) : Starting PDB file generation for Basename=${Basename}." >> ${STATUSFILE}
 	if generate_new_pdb_file ${OutputDir} ${Basename} ; then
-	### Run the single sequence evaluation
 		jsonFileName="${OutputDir}/provenance/${Basename}_request.json"
-		write_json_evaluation_file ${Basename} ${Sequence} ${jsonFileName}
+		write_json_build_file ${Basename} ${Sequence} ${jsonFileName}
 		jsonResponse="$(delegate ${jsonFileName} 2>&1)"
 		result="$?"
-		#result="0"
 		if [ ${result} != "0" ] ; then
 			echo "[ERROR] : $(date) : Build failed for Basename=${Basename}. Pressing on." >> ${STATUSFILE}
 			echo "Build failed for Basename=${Basename} & Glycan=${Sequence}." >> ${LOGFILE}
@@ -784,11 +987,11 @@ Trying the next one.
 			jsonResponseFileName="${OutputDir}/provenance/${Basename}_response.json"
 			echo "${jsonResponse}" > "${jsonResponseFileName}"
  		fi
-		manage_evaluation_output "${OutputDir}" "${jsonResponseFileName}" "${Sequence}"
+		manage_build_output "${OutputDir}" "${jsonResponseFileName}" 
 		##  ${2} is the json reponse file
 		##  ${1} is the output directory
 	fi
-	echo "[INFO] : $(date) : Completed attepmt to generate PDB file." >> ${STATUSFILE}
+	echo "[INFO] : $(date) : Completed attempt to generate PDB file." >> ${STATUSFILE}
 	count="$((count+1))"
 done < "${FinalTreatedInput}"
 ### Manage the output from the sequence evaluation, 
