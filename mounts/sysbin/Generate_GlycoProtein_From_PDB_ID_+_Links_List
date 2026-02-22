@@ -90,7 +90,7 @@ Generate a set of PDB files containing 3D structures of glycoproteins based on a
 
             project_id (-) : Preferred key to identify a glycoprotein build. Also called the Basename. Optional.
               -  Keep it *NIX friendly (e.g., no spaces, asterisks, etc.)
-              -  Use only the Basename you want for output files, no 'pdb' suffix - or your files will be named 'Basename.pdb.pdb'
+              -  Use only the project_id you want for output files, no 'pdb' suffix - or your files will be named 'project_id.pdb.pdb'
               -  This name will also be used for error outputs, histories, results db, etc.
               -  IF MISSING - the basename/project_id will be the pdb_id. See also notes on filenames and uniprotkb_canonical_ac.
 
@@ -159,7 +159,7 @@ my_gp_4,O-linked,6RUR,my_info,B,18,THR,DGlcpb1-3LFucpa1-OH
 !!   P13671-1,38,Thr,G36855WW,O-linked,3T5O,pdb_00003t5o,A,17,38,38,THR,THR,T,DGlcpb1-3LFucpa1-OH
 !!   P13671-1,38,Thr,G36855WW,O-linked,4E0S,pdb_00004e0s,B,17,38,38,THR,THR,T,DGlcpb1-3LFucpa1-OH
  
-   Outputs: various files
+  Outputs: various files
   
     Mostly, you will be interested in: 
     - PDB files : \${OUTPUTS_DIR}/conjugate/gp/\${OUT_SUBDIR}/PDB/
@@ -178,10 +178,15 @@ my_gp_4,O-linked,6RUR,my_info,B,18,THR,DGlcpb1-3LFucpa1-OH
       - This provenance info is also in the \${responseJSON} in the provenance directory, but that's not as easy to read.
       - Contents:
         - Comma-separated table of: (still TBD)
+
+    For those who need all the details:
+    - The workspace for generating the structures: \${WORK_DIR}/conjugate/gp/\${pUUID}/
+      - You can find the value of \${pUUID} in the \${responseJSON} in the provenance directory.
+
 """
 
-#echo "${USAGE}"
-#exit 0
+#echo "${USAGE}"  # Used when testing the usage output only.
+#exit 0           #
 
 #######################################
 ##   Code With Procedural Documentation
@@ -191,51 +196,12 @@ my_gp_4,O-linked,6RUR,my_info,B,18,THR,DGlcpb1-3LFucpa1-OH
 ##                  Functions
 #############################
 
-
-
 ## Define the function that will write the JSON build file for the glycoprotein
-## There will not be a separate evaluation.
 write_json_build_file() {
 	# $1 is the output filename
 	# The array called 'jsonMainHeaders' MUST be properly populated before calling.
 	#    Needs: givenName and rcsb_id
-### Build
-#{
-#    "entity": {
-#        "type": "GlycoProtein", 
-#        "services": {
-#            "default_Build": {
-#                "type": "Build",
-#                "inputs": {
-#                    "pUUID": "<pUUID>", ## Doesn't need this if there is not a separate evaluation step
-#                    "glycan_mappings": [
-#                        {"Chain": "K", "ResidueNumber": "208", "InsertionCode": "", "Sequence": "DManpa1-OH", "Tags": ""}
-#                    ]
-#                }
-#            }
-#        }
-#    }
-#}
-#
-#jsonMainHeaders=(
-#	["givenName"]="project_id"
-#	["rcsb_id"]="pdb_id"
-#	["pUUID"]="ProjectUUID from GEMS"
-#	["glycan_mappings"]="list of glycositeData"
-#	)
-#glycositeData=(
-#	["Chain"]="amino_acid_chain"
-#	["ResidueNumber"]="glycosylation_site_pdb"
-#	["InsertionCode"]="insertion_code"
-#	["Sequence"]="sequence_glycam_iupac"
-#	["Tags"]="available but not used here"
-#	)
-#
-#if [ "${PRETTY_GLYCOSYLATION_MAPPINGS}" == "True" ] ; then
-#	theMappings="$(printarrJSON theArray 'pretty')"
-#else
-#	theMappings="$(printarrJSON theArray )"
-#fi
+
 	theFile="""{
     \"entity\": {
         \"type\": \"GlycoProtein\",
@@ -270,7 +236,6 @@ echo "${theFile}" > ${1}
 manage_build_output() {
 	##  ${1} is the json reponse file
 	##  ${2} is the output directory
-	##  ${3} is the sequence provided by the user
 	dbOutputFile_RELATIVE=${ScriptName}_DB.csv 
 	if [ "${DATE_BUILD_DATABASE}" == "True" ] ; then
 		dbOutputFile_RELATIVE=${DATENOW}_${ScriptName}_DB.csv 
@@ -279,41 +244,22 @@ manage_build_output() {
 	echo "[INFO] : $(date) : Build DB filename: ${dbOutputFile_RELATIVE}" >> $STATUSFILE
 	echo "Build DB filename, relative to build directory: ${dbOutputFile_RELATIVE}" >> $LOGFILE
 	if [ ! -e "${dbOutputFile}" ] ; then
-        	##  - Basename , Sequence_Provided , Sequence_Processed , sequence_id , pUUID , conformerID , Result , Date_Time , Note
-		echo "#Basename,Sequence_Provided,Sequence_Processed,sequence_id,pUUID,conformerID,Result,Date_Time,Note" > "${dbOutputFile}"
+        	##  - project_id , uniprotkb_canonical_ac , pdb_id , pUUID , Result , Date_Time , Note
+		echo "#project_id,uniprotkb_canonical_ac,pdb_id,pUUID,Result,Date_Time,Note" > "${dbOutputFile}"
 	fi
-	Sequence_Provided="${3}"
 
 ##### To get the value out of a pretty-printed json file, use something like:	
 #####	grep sequence_id G00024MO_response.json | cut -d '"' -f 4
 
 AllGood="True"
 ### - From ${responseJSON} grab:
-	###   - givenName (Basename)
+	###   - givenName (project_id)
 	command="grep givenName ${2} | cut -d '\"' -f 4"
-	givenName="$( eval ${command} )"
+	project_id="$( eval ${command} )"
 	# expect 'null' if bad, but check for empty
-	if [ "${givenName}" == "null" ] || [ -z "${givenName}" ] ; then
-		echo "grep result for givenName is >>>${givenName}<<<" >> $LOGFILE
-		givenName="missing"
-		AllGood="False"
-	fi
-	###   - indexOrdered (sequence)
-	command="grep -w indexOrdered ${2} | cut -d '\"' -f 4"
-	Sequence_Processed="$( eval ${command} )"
-	# expect empty if bad
-	if [ "${Sequence_Processed}" == "null" ] || [ -z "${Sequence_Processed}" ] ; then
-		echo "grep result for indexOrdered ('Sequence_Processed') is >>>${indexOrdered}<<<" >> $LOGFILE
-		Sequence_Processed="missing"
-		AllGood="False"
-	fi
-	###   - sequence_id
-	command="grep sequence_id ${2} | cut -d '\"' -f 4"
-	sequence_id="$( eval ${command} )"
-	# expect empty if bad
-	if [ "${sequence_id}" == "null" ] || [ -z "${sequence_id}" ] ; then
-		echo "grep result for sequence_id is >>>${sequence_id}<<<" >> $LOGFILE
-		sequence_id="missing"
+	if [ "${project_id}" == "null" ] || [ -z "${project_id}" ] ; then
+		echo "grep result for givenName is >>>${project_id}<<<" >> $LOGFILE
+		project_id="missing"
 		AllGood="False"
 	fi
 	###   - pUUID
@@ -325,13 +271,13 @@ AllGood="True"
 		pUUID="missing"
 		AllGood="False"
 	fi
-	###   - conformerID
-	command="grep conformerID ${2} | cut -d '\"' -f 4"
-	conformerID="$( eval ${command} )"
+	###   - project_dir
+	command="grep project_dir ${2} | cut -d '\"' -f 4"
+	projectDir="$( eval ${command} )"
 	# expect empty if bad
-	if [ "${conformerID}" == "null" ] || [ -z "${conformerID}" ] ; then
-		echo "grep result for conformerID is >>>${conformerID}<<<" >> $LOGFILE
-		conformerID="missing"
+	if [ "${projectDir}" == "null" ] || [ -z "${projectDir}" ] ; then
+		echo "grep result for project_dir is >>>${projectDir}<<<" >> $LOGFILE
+		projectDir="missing"
 		AllGood="False"
 	fi
 
@@ -340,9 +286,9 @@ AllGood="True"
 		###   - Check for these (which will be in a notice if they exist):
 		###       set -m1 and only report the first one (V1)
 		###     - Set Result=the value for '"brief":' in the notice
-		echo "[ERROR] : $(date) : Something went wrong generating PDB file for ${Basename}" >> $STATUSFILE
-		echo "[INFO] : $(date) : Attempting to determine cause of issue with ${Basename}" >> $STATUSFILE
-		echo "Checking for notices related to failure of ${Basename}" >> $LOGFILE
+		echo "[ERROR] : $(date) : Something went wrong generating PDB file for ${project_id}" >> $STATUSFILE
+		echo "[INFO] : $(date) : Attempting to determine cause of issue with ${project_id}" >> $STATUSFILE
+		echo "Checking for notices related to failure of ${project_id}" >> $LOGFILE
 		command="grep -m1 '\"brief\":' ${2} | cut -d '\"' -f 4"
 		brief="$( eval ${command} )"
         	if [ ! -z "${brief}" ] ; then
@@ -375,45 +321,62 @@ AllGood="True"
 			Note="See ${2}"
 		fi
 	else
-		### - Try to copy 
-		###     - /work/conjugate/gp/Builds/Requested_Builds/${pUUID}/${conformer}/min-gas.pdb 
-		###     - to ${OutputDir}/PDB/${Basename}.pdb
-		command="cp /work/conjugate/gp/Builds/${pUUID}/Requested_Builds/${conformerID}/min-gas.pdb ${OutputDir}/PDB/${Basename}.pdb >> $LOGFILE 2>&1"
-		eval "${command}"
-		result="$?"
-		if [ "${result}" == "0" ] ; then
-			###   - set Result to "Finished normally"
-			Result="Finished normally"
-			###   - set Note to "-"
-			Note="-"
-	        else
-			### - If not, try the same thing with:
-			command="cp /work/conjugate/gp/Builds/${pUUID}/Requested_Builds/${conformerID}/structure.pdb ${OutputDir}/PDB/${Basename}${UNMIN_SUFFIX}.pdb >> $LOGFILE 2>&1"
+		### Look for a PDB file called glycoprotein.pdb in project_dir/outputs/samples/
+		#       This means the file is good
+		if [ -f "${projectDir}/outputs/samples/glycoprotein.pdb" ]
+			### - Try to copy 
+			###     - ${projectDir}/outputs/samples/glycoprotein.pdb ( /work/conjugate/gp/Builds/Requested_Builds/${pUUID}/${conformer}/default.pdb )
+			###     - to ${OutputDir}/PDB/${project_id}.pdb
+			command="cp /${projectDir}/outputs/samples/glycoprotein.pdb ${GoodPdbDir}/${project_id}.pdb >> $LOGFILE 2>&1"
 			eval "${command}"
 			result="$?"
 			if [ "${result}" == "0" ] ; then
-				Result="Finished incompletely"
-				Note="Minimization failed"
+				###   - all is good
+				Result="Finished normally"
+				###   - set Note to "-"
+				Note="-"
 			else
-				Result="JSON normal but no PDB"
-				Note="See /work/conjugate/gp/Builds/${pUUID}/${conformerID}/Sequence_Prep_*.log"
+				###   - something went wrong
+				Result="Could not copy output file to ${GoodPdbDir}."
+				###   - set Note to "-"
+				Note="Appeared to finish normally otherwise."
 			fi
+		### If there isn't one, look in project_dir/outputs/samples/rejected/
+		#       This means the file did not resolve
+		### - Leave a note, mark as failed "unable to resolve"
+		### - Specifically, copy the summary.txt file into some subdirectory.
+	        elif [ -f "${projectDir}/outputs/samples/rejected/glycoprotein.pdb" ]
+			Result="Failure to resolve structure"
+			Note="The following have been copied to ${BadPdbDir}: "
+			command="cp /${projectDir}/outputs/samples/rejected/glycoprotein.pdb ${BadPdbDir}/${project_id}.pdb >> $LOGFILE 2>&1"
+			eval "${command}"
+			result="$?"
+			if [ "${result}" == "0" ] ; then
+				Note="${Note} ${project_id}.pdb"
+			fi
+			
+			command="cp /${projectDir}/outputs/summary.txt ${OutputDir}/PDB/rejected/${project_id}_summary.txt >> $LOGFILE 2>&1"
+			eval "${command}"
+			result="$?"
+			if [ "${result}" == "0" ] ; then
+				Note="${Note} ${project_id}_summary.txt"
+			fi
+		else 
+			Result="Failure to complete project"
+			Note="See /work/conjugate/gp/${pUUID}"
 		fi
 	fi
 	if [[ "${Result}" == *"Failure"* ]] ; then
-		echo "[ERROR] : $(date) : Error generating PDB file ${Basename}." | tee -a $STATUSFILE
+		echo "[ERROR] : $(date) : Error generating Glycoprotein PDB file ${project_id}." | tee -a $STATUSFILE
 	elif [[ "${Result}" != "Finished normally" ]] ; then
-		echo "[WARNING] : $(date) : Abnormal completion of ${Basename} PDB file generation." | tee -a $STATUSFILE
+		echo "[WARNING] : $(date) : Abnormal completion of ${project_id} Glycoprotein PDB file generation." | tee -a $STATUSFILE
 	fi
 	if [ "${Result}" == "Finished normally" ] ; then
-		echo "[INFO] : $(date) : PDB file generation for ${Basename} finished normally." | tee -a $STATUSFILE
+		echo "[INFO] : $(date) : Glycoprotein PDB file generation for ${project_id} finished normally." | tee -a $STATUSFILE
 	fi
 	###   - copy the column entries to the DB
 	Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
-	entryString="${Basename}"
-	if [ "${PDB_DB_STRICT_MATCHING}" == "True" ] ; then
-		entryString="${Basename},${Sequence},${sequence_id}"
-	fi
+	entryString="${project_id}"
 	command="grep -c '${entryString}' ${dbOutputFile} 2>&1"
 	#echo "the command is:"
 	#echo "${command}"
@@ -423,7 +386,7 @@ AllGood="True"
 		echo "[WARNING] : $(date) : Removing duplicate entries found in database file" >> $STATUSFILE
 		echo "More than one entry for: ${entryString} found in ${dbOutputFile}" >> $LOGFILE
 		echo "Here are the entries plus any error messages: " >> $LOGFILE
-		command="grep '${entryString}{Basename},${Sequence},${sequence_id}' ${dbOutputFile} >> $LOGFILE 2>&1"
+		command="grep '${entryString}{project_id},${Sequence},${sequence_id}' ${dbOutputFile} >> $LOGFILE 2>&1"
 		command="sed -i '/${entryString}/d' ${dbOutputFile} >> $LOGFILE 2>&1"
 		eval "${command}"
 		result="$?"
@@ -441,8 +404,12 @@ AllGood="True"
 			echo "[WARNING] : $(date) : Error removing duplicate entry found in database file" >> $STATUSFILE
 		fi
 		echo "Removing them. End of duplicate entries data." >> $LOGFILE
+	elif [[ "${entryExists}" -ne '0' ]] ; then
+		echo "[WARNING] : $(date) : Error checking for duplicate entry for ${projet_id} in database file" >> $STATUSFILE
+		echo "The result of checking for a diplicate entry for  ${projet_id} in database file is: " >> $LOGFILE
+		echo "${entryExists}" $LOGFILE
 	fi
-	echo "${Basename},${Sequence_Provided},${Sequence_Processed},${sequence_id},${pUUID},${conformerID},${Result},${Date_Time},${Note}" >> "${dbOutputFile}"
+	echo "${project_id},${uniprotkb_canonical_ac},${pdb_id},${pUUID},${Result},${Date_Time},${Note}" >> "${dbOutputFile}"
 }
 
 #############################
@@ -478,9 +445,11 @@ if [ -z "${OUT_SUBDIR}" ] ; then
 	print_error_and_exit "OUT_SUBDIR not specified. Exiting. Re-run script with no arguments for USAGE."
 fi
 OutputDir="/outputs/conjugate/gp/${OUT_SUBDIR}"
+GoodPdbDir="${OutputDir}/PDB"
+BadPdbDir="${OutputDir}/PDB/rejected"
 mkdir -p "${OutputDir}/logs" || print_error_and_exit "Unable to create directory: ${OutputDir}/logs. Exiting."
 mkdir -p "${OutputDir}/provenance" || print_error_and_exit "Unable to create directory: ${OutputDir}/provenance. Exiting."
-mkdir -p "${OutputDir}/PDB" || print_error_and_exit "Unable to create directory: ${OutputDir}/PDB. Exiting."
+mkdir -p "${BadPdbDir}" || print_error_and_exit "Unable to create directory(ies): ${BadPdbDir}. Exiting."
 mkdir -p "${OutputDir}/Treated_Inputs" || print_error_and_exit "Unable to create directory: ${OutputDir}/Treated_Inputs. Exiting."
 export LOGFILE="${OutputDir}/logs/details_${DATENOW}_${ScriptName}.log"
 export LOGFILE_RELATIVE="logs/details_${DATENOW}_${ScriptName}.log"
@@ -822,8 +791,17 @@ while IFS=  read -r line; do
 	#  The individual entries have these labels
 	#      project_id,uniprotkb_canonical_ac,pdb_id,amino_acid_chain,glycosylation_site_pdb,insertion_code,amino_acid_pdb,glycosylation_type,sequence_glycam_iupac
 	thisProjectID="${line}"
-	thisProjectInputs="""$(grep ^${thisProjectID} ${FinalTreatedInput} )"""
 	echo "thisProjectID: ${thisProjectID}"
+	if [ "${OVERWRITE_OUTPUT}" == "False" ] ; then
+		echo "Checking for pre-existing Glycoprotein PDB"
+		if [ -f "${GoodPdbDir}/${thisProjectID}.pdb" ] ; then
+			echo "Found pre-existing pdb file. Skipping."
+			echo "[INFO] : $(date) : Found existing PDB file for ${thisProjectID}. Not remaking." >> $STATUSFILE
+			echo "Found existing PDB file for ${thisProjectID} and OVERWRITE_OUTPUT is not truthy. Not remaking." >> $LOGFILE
+			echo "File exists at: ${GoodPdbDir}/${thisProjectID}." >> $LOGFILE
+		fi
+	fi
+	thisProjectInputs="""$(grep ^${thisProjectID} ${FinalTreatedInput} )"""
 	echo "thisProjectInputs:"
 	echo """${thisProjectInputs}"""
 	#
