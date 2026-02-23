@@ -1,0 +1,10 @@
+uniprotkb_canonical_ac,glycosylation_site_uniprotkb,amino_acid,glytoucan_ac,glycosylation_type,pdb_id,pdb_extended_id,amino_acid_chain,glycosylation_site_pdb,start_pos,end_pos,start_aa,end_aa,site_seq,sequence_glycam_iupac
+P13671-1,38,Thr,G36855WW,O-linked,3T5O,pdb_00003t5o,A,17,38,38,THR,THR,T,DGlcpb1-3LFucpa1-OH
+Q76LX8-1,399,Ser,G36855WW,O-linked,3VN4,pdb_00003vn4,A,115,399,399,SER,SER,S,DGlcpb1-3LFucpa1-OH
+Q76LX8-1,399,Ser,G36855WW,O-linked,3VN4,pdb_00003vn4,A,115,399,399,SER,SER,S,DGlcpb1-3LFucpa1-OH
+Q76LX8-1,399,Ser,G36855WW,O-linked,3VN4,pdb_00003vn4,A,115,399,399,SER,SER,S,DGlcpb1-3LFucpa1-OH
+P13671-1,38,Thr,G36855WW,O-linked,4E0S,pdb_00004e0s,B,17,38,38,THR,THR,T,DGlcpb1-3LFucpa1-OH
+P27918-1,92,Thr,G36855WW,O-linked,6RUR,pdb_00006rur,A,65,92,92,THR,THR,T,DGlcpb1-3LFucpa1-OH
+P27918-1,272,Thr,G36855WW,O-linked,6RUR,pdb_00006rur,B,18,272,272,THR,THR,T,DGlcpb1-3LFucpa1-OH
+P27918-1,92,Thr,G36855WW,O-linked,6RUR,pdb_00006rur,C,65,92,92,THR,THR,T,DGlcpb1-3LFucpa1-OH
+P27918-1,272,Thr,G36855WW,O-linked,6RUR,pdb_00006rur,D,18,272,272,THR,THR,T,DGlcpb1-3LFucpa1-OH

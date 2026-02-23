@@ -1,13 +1,19 @@
 # Example SessionSettings.bash file
+#
+# For many of these, it is possible to set the values to variables used by the control script(s),
+# but doing so requires learning how the scripts work and the relationship of the time when this
+# file is sourced.
 
 # change the subdirectory for the output (the leading paths will not change)
+# Default: ${DATENOW} (a date-time taken at the very start of a job or set of jobs)
 export OUT_SUBDIR="YYYYMMDHHMM_test"
 
 # instruct the code to overwrite any existing output
+# Default: False
 export OVERWRITE_OUTPUT="False"
 
 # Set the suffix indicating that minimization did not occur. Set to "" to have no indication in the file name.
-# Default: "_un-min"
+# Default: "_un-minminimized"
 export UNMIN_SUFFIX="_un-minimized"
 
 # When updating the database of PDB generation attempts, use strict matching.
@@ -15,3 +21,17 @@ export UNMIN_SUFFIX="_un-minimized"
 #   Permissive matching uses only Basename
 # Default: False
 export PDB_DB_STRICT_MATCHING="True"
+
+# Keep any temporary files - useful for debugging.
+#   If set to True:
+#     -  The files will be saved in the logs subdirectory of the output.
+#     -  The names of the files will be mentioned in the LOGFILE (detailed log)
+#   If set to anything else:
+#     -  They will be saved in /tmp and removed when the container exits. 
+#     -  Their names will not be saved in any logs.
+# Default: False
+export KEEP_TEMPORARY_FILES="True"
+
+# Append a date-time (YYYY-mm-dd-HH-MM) to output file names (called "Basenames" or "Project IDs").
+# Default: False
+export APPEND_DATETIME_TO_OUTFILES="True"

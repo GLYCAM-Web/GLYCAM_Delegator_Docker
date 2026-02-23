@@ -1,5 +1,39 @@
 #!/usr/bin/env bash
 
+# Print an array as JSON-formatted keys and values
+##
+## It should be possible for this to work, but giving up for now.
+##
+#printarrJSON() { 
+#	# $1 is the array
+#	# $2, optional, is 'linear' or 'pretty'. Default: linear
+#	# 
+#	# Commas appear after each pair except the last one.
+#	#
+#	# THERE IS NO NEWLINE after the final pair, pretty or not!
+#	#     This allows addition of a comma or not according to need.
+#	#     You will need to add your own newline.
+#	echo "In printarrJSON"
+#	echo "Incoming argument 1 is:"
+#	echo """${1}"""
+#	echo "Incoming argument 2 is:"
+#	echo """${2}"""
+#	first="True"
+#	startnext=', '
+#	if [ "${2}" == "pretty" ] ; then
+#		startnext=',\n'
+#	fi
+#	declare -n __p="${1}"
+#       	for k in "${!__p[@]}"; do 
+#		if [ "${first}" == "True" ] ; then
+#			printf "\"%s\": \"%s\"" "$k" "${__p[$k]}" 
+#			first="False"
+#		else
+#			printf "${startnext}\"%s\": \"%s\"" "$k" "${__p[$k]}" 
+#		fi
+#       	done 
+#}  
+
 #  variable_is_empty VARIABLE
 variable_is_empty() {
         if [ "${1}zzz" == "zzz" ] ; then
@@ -64,3 +98,29 @@ rclr()
         	fi
 	fi
 }
+
+## Define the function that will check for preexistence of PDB file,
+##
+### - PDB files : /outputs/conjugate/gp/${OUT_SUBDIR}/ <-- this is the OutputDir
+### - If file exists
+### - Check if OVERWRITE_OUTPUT==True (env or settings)
+### - Write messages to detailed log file and respond accordingly
+generate_new_pdb_file() {
+        # $1 is the directory where the file should be (OutputDir)
+        # $2 is the Basename for the PDB file
+	# $LOGFILE must be defined by the calling script
+        if [ -e "${1}/${2}.pdb" ] ; then
+                echo "Found existing file '${1}/${2}.pdb'" >> ${LOGFILE}
+                if [ "${OVERWRITE_OUTPUT}" == "True" ] ; then
+                        echo "Overwriting existing file" >> ${LOGFILE}
+                        return 0
+                else
+                        echo "Not overwriting existing file" >> ${LOGFILE}
+                        return 1
+                fi
+        else
+                echo "Attempting to create brand-new file '${1}/${2}.pdb'" >> ${LOGFILE}
+                return 0
+        fi
+}
+
