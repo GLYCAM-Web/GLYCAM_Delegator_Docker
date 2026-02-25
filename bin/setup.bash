@@ -16,6 +16,7 @@ DelegatorDirectories=(
         ./mounts/sysetc/
         ./mounts/sysbin/
         ./input-output/inputs/
+        ./input-output/inputs/uploads
         ./input-output/tests/
         ./input-output/outputs/
         ./input-output/work/

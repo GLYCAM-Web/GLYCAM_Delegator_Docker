@@ -207,7 +207,8 @@ write_json_build_file() {
         \"type\": \"GlycoProtein\",
 	\"procedural_options\": 
 	{
-		\"force_serial_execution\" : \"True\"
+		\"force_serial_execution\" : \"True\",
+    		\"pretty_print\" : \"True\"
 	},
         \"services\":
             {
@@ -220,10 +221,10 @@ write_json_build_file() {
 ${theArrayString}
                         ]
                     }
-                }
             }
+        }
     },
-    \"prettyPrint\" : true
+    		\"prettyPrint\" : \"True\"
 }
 """ 
 
@@ -323,7 +324,7 @@ AllGood="True"
 	else
 		### Look for a PDB file called glycoprotein.pdb in project_dir/outputs/samples/
 		#       This means the file is good
-		if [ -f "${projectDir}/outputs/samples/glycoprotein.pdb" ]
+		if [ -f "${projectDir}/outputs/samples/glycoprotein.pdb" ] ; then
 			### - Try to copy 
 			###     - ${projectDir}/outputs/samples/glycoprotein.pdb ( /work/conjugate/gp/Builds/Requested_Builds/${pUUID}/${conformer}/default.pdb )
 			###     - to ${OutputDir}/PDB/${project_id}.pdb
@@ -345,7 +346,7 @@ AllGood="True"
 		#       This means the file did not resolve
 		### - Leave a note, mark as failed "unable to resolve"
 		### - Specifically, copy the summary.txt file into some subdirectory.
-	        elif [ -f "${projectDir}/outputs/samples/rejected/glycoprotein.pdb" ]
+	        elif [ -f "${projectDir}/outputs/samples/rejected/glycoprotein.pdb" ] ; then
 			Result="Failure to resolve structure"
 			Note="The following have been copied to ${BadPdbDir}: "
 			command="cp /${projectDir}/outputs/samples/rejected/glycoprotein.pdb ${BadPdbDir}/${project_id}.pdb >> $LOGFILE 2>&1"
@@ -911,12 +912,31 @@ while IFS=  read -r line; do
 	jsonMainHeaders["glycan_mappings"]="${theArrayString}"
 	#echo "json main headers are:"
 	#echo """${jsonMainHeaders[@]}"""
-	jsonOutFile="${OutputDir}/provenance/${thisProjectID}_Build_Request.json"
-	write_json_build_file "${jsonOutFile}"
-	COMMAND="delegate ${jsonOutFile}"
-	export TEST="True"
-	rclr "Delegating build for project_id: ${thisProjectID}" "${COMMAND}" "Delegation of ${thisProjectID}"
-	# process_build "${thisPDBid}" "${thisProjectID}" 
+	jsonRequestFileName="${OutputDir}/provenance/${thisProjectID}_Build_Request.json"
+	write_json_build_file "${jsonRequestFileName}"
+	COMMAND="delegate ${jsonRequestFileName}"
+	echo "[INFO] : $(date) : Starting PDB file generation for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+	echo "Starting PDB file generation for Project ID: ${thisProjectID}." >> ${LOGFILE}
+	jsonResponseFileName="${OutputDir}/provenance/${thisProjectID}_Build_Response.json"
+	jsonResponse="$(delegate ${jsonRequestFileName} 2>&1)"
+	result="$?"
+	if [ ${result} != "0" ] ; then
+		echo "[ERROR] : $(date) : Build failed for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+		echo "Build failed for Project ID: ${thisProjectID}." >> ${LOGFILE}
+		echo """The response returned, if any, appears between the rows of equals signs below.
+===============================================================================
+${jsonResponse}
+===============================================================================
+""" >> ${LOGFILE}
+	else : 
+		echo "[INFO] : $(date) : Build completed for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+		echo "Build completed for Project ID: ${thisProjectID}." >> ${LOGFILE}
+		#export TEST="True"
+	#	COMMAND="cp /work/conjugate/gp/${thisProjectID}/logs/response.json ksjdhfkjsdhlksh"
+		echo """${jsonResponse}
+""" > "${jsonResponseFileName}"
+		manage_build_output "${OutputDir}" "${jsonResponseFileName}" 
+	fi
 	count="$((count+1))"
 done < "${OutputDir}/provenance/Valid_Projects_List.txt"
 

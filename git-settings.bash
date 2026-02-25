@@ -29,8 +29,8 @@ Repos=( gems gmml gmml2 md )
 
 ####
 ## If the repo is a parent, then give path relative to the main installation directory (where Install.bash is).
-## If it is a submodule, give the path relative to the parent.
-Repo_Directories=(
+## If it is a sub-repo, the path is relative to the parent.
+Repo_Directory=(
 	["gems"]="${DEPENDENCIES_PATH}/gems"
 	["gmml"]="gmml"
 	["gmml2"]="gmml2"
@@ -40,7 +40,7 @@ Repo_Directories=(
 	["glycomimetics"]="internal/glycomimetics"
 	["gwt-md"]="internal/MD_Utils"
 )
-Repo_Is_Submodule_Of=(
+Repo_Parent=(
 	["gems"]="None"
 	["gmml"]="gems"
 	["gmml2"]="gems"
@@ -50,7 +50,27 @@ Repo_Is_Submodule_Of=(
 	["glycomimetics"]="gmwebtool"
 	["gwt-md"]="gmwebtool"
 )
-Repo_URLs=(
+Repo_Target_Hash=(
+	["gems"]="4aa2b09df45653633a4382daae491ea3ca758df9"
+	["gmml"]="c7b519c67b0cfb103eabc103f1dc4138c380152f"
+	["gmml2"]="25cdecb341d41e8e507d624e8c978f463ad220b0"
+	["md"]="ce7be879941d95ce35e29d7fb9924a2aa717d451"
+	["gm"]="4aa2b09df45653633a4382daae491ea3ca758df9"
+	["gmwebtool"]="None"
+	["glycomimetics"]="None"
+	["gwt-md"]="None"
+)
+Repo_Target_Tag=(
+	["gems"]="None"
+	["gmml"]="None"
+	["gmml2"]="None"
+	["md"]="None"
+	["gm"]="None"
+	["gmwebtool"]="None"
+	["glycomimetics"]="None"
+	["gwt-md"]="None"
+)
+Repo_URL=(
 	["gems"]="https://github.com/GLYCAM-Web/gems.git"
 	["gmml"]="https://github.com/GLYCAM-Web/gmml.git"
 	["gmml2"]="https://github.com/GLYCAM-Web/gmml2.git"
@@ -60,7 +80,7 @@ Repo_URLs=(
 	["glycomimetics"]="https://github.com/GLYCAM-Web/glycomimetics.git"
 	["gwt-md"]="https://github.com/GLYCAM-Web/MD_Utils.git"
 )
-Repo_Branches=(
+Repo_Branch=(
 	["gems"]="gems-test"
 	["gmml"]="gmml-test"
 	["gmml2"]="main"

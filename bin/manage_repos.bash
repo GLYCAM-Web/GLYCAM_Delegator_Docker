@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Only for initial cloning!
+# Manage the repos, whatever the state
 
 ScriptName="$(basename ${0})"
 if [ -z "${DATENOW}" ] ; then
@@ -17,7 +17,7 @@ source ./settings.bash
 source ./etc/functions.bash
 source ./git-settings.bash
 echo """
-If successful, these repos should be added:
+If successful, these repos should be added or updated:
    ${Repos[@]}
 Follow progress by examining:
    ${LOGFILE}
