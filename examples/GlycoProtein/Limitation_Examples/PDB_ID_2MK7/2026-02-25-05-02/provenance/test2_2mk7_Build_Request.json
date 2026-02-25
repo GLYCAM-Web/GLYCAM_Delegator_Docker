@@ -1,0 +1,28 @@
+{
+    "entity": {
+        "type": "GlycoProtein",
+	"procedural_options": 
+	{
+		"force_serial_execution" : "True",
+    		"pretty_print" : "True"
+	},
+        "services":
+          {
+                "test2_2mk7_Build": {
+                    "type": "Build",
+                    "givenName": "test2_2mk7",
+                    "inputs": {
+                        "rcsb_id": "2mk7",
+                        "glycan_mappings": [
+ {  "Chain": "A" , "ResidueNumber": "4" , "InsertionCode": "" , "Sequence": "DGalpNAca1-OH" , "Tags": "" } ,  {  "Chain": "A" , "ResidueNumber": "5" , "InsertionCode": "" , "Sequence": "DGalpNAca1-OH" , "Tags": "" }  ,  {  "Chain": "A" , "ResidueNumber": "6" , "InsertionCode": "" , "Sequence": "DGalpNAca1-OH" , "Tags": "" }  ,  {  "Chain": "A" , "ResidueNumber": "7" , "InsertionCode": "" , "Sequence": "DGalpNAca1-OH" , "Tags": "" } 
+                        ]
+                    },
+		    "options":{
+		    	"use_initial_glycosite_residue_conformation": "True"
+	            }
+                }
+          }
+    },
+    		"prettyPrint" : "True"
+}
+

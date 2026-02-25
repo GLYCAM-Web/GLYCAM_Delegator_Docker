@@ -1,0 +1,212 @@
+{
+  "entity": {
+    "type": "GlycoProtein",
+    "services": {
+      "test2_2mk7_Build": {
+        "type": "Build",
+        "givenName": "test2_2mk7",
+        "myUuid": "ed89419d-7b8b-4a4c-90c0-b871759d549a",
+        "inputs": {
+          "pUUID": "7080d091-89ec-4dd2-b7a3-c3cea6f182f1",
+          "projectDir": "/work/conjugate/gp/7080d091-89ec-4dd2-b7a3-c3cea6f182f1",
+          "uploadsPath": "",
+          "protein_file": "/work/conjugate/gp/7080d091-89ec-4dd2-b7a3-c3cea6f182f1/2mk7.pdb",
+          "force_serial_execution": true,
+          "glycan_mappings": [
+            {
+              "Chain": "A",
+              "ResidueNumber": "4",
+              "Sequence": "DGalpNAca1-OH",
+              "SequenceContext": "",
+              "InsertionCode": "",
+              "Tags": ""
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "5",
+              "Sequence": "DGalpNAca1-OH",
+              "SequenceContext": "",
+              "InsertionCode": "",
+              "Tags": ""
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "6",
+              "Sequence": "DGalpNAca1-OH",
+              "SequenceContext": "",
+              "InsertionCode": "",
+              "Tags": ""
+            },
+            {
+              "Chain": "A",
+              "ResidueNumber": "7",
+              "Sequence": "DGalpNAca1-OH",
+              "SequenceContext": "",
+              "InsertionCode": "",
+              "Tags": ""
+            }
+          ],
+          "resources": [
+            {
+              "type": "Unset",
+              "locationType": "Payload",
+              "resourceFormat": "RCSB-ID",
+              "resourceRole": "rcsb-id",
+              "payload": "2mk7",
+              "options": {},
+              "notices": null
+            },
+            {
+              "type": "Unset",
+              "locationType": "filesystem-path-unix",
+              "resourceFormat": "PDB",
+              "resourceRole": "protein-file",
+              "payload": "/work/conjugate/gp/7080d091-89ec-4dd2-b7a3-c3cea6f182f1/2mk7.pdb",
+              "options": {},
+              "notices": null
+            },
+            {
+              "type": "Unset",
+              "locationType": "Payload",
+              "resourceFormat": "python-dict",
+              "resourceRole": "glycan-mappings",
+              "payload": [
+                {
+                  "Chain": "A",
+                  "ResidueNumber": "4",
+                  "Sequence": "DGalpNAca1-OH",
+                  "SequenceContext": "",
+                  "InsertionCode": "",
+                  "Tags": ""
+                },
+                {
+                  "Chain": "A",
+                  "ResidueNumber": "5",
+                  "Sequence": "DGalpNAca1-OH",
+                  "SequenceContext": "",
+                  "InsertionCode": "",
+                  "Tags": ""
+                },
+                {
+                  "Chain": "A",
+                  "ResidueNumber": "6",
+                  "Sequence": "DGalpNAca1-OH",
+                  "SequenceContext": "",
+                  "InsertionCode": "",
+                  "Tags": ""
+                },
+                {
+                  "Chain": "A",
+                  "ResidueNumber": "7",
+                  "Sequence": "DGalpNAca1-OH",
+                  "SequenceContext": "",
+                  "InsertionCode": "",
+                  "Tags": ""
+                }
+              ],
+              "options": {},
+              "notices": null
+            }
+          ]
+        },
+        "options": {
+          "number_of_samples": "1",
+          "persist_cycles": "5",
+          "rng_seed": "6333950799258684958",
+          "overlap_rejection_threshold": "0.0",
+          "prepare_for_md": "False",
+          "use_initial_glycosite_residue_conformation": "True",
+          "move_overlapping_sidechains": "False",
+          "delete_unresolvable_glycosites": "False"
+        }
+      }
+    },
+    "responses": {
+      "test2_2mk7_Build": {
+        "type": "Build",
+        "myUuid": "ed89419d-7b8b-4a4c-90c0-b871759d549a",
+        "outputs": {
+          "message": "",
+          "resources": [
+            {
+              "type": "Unset",
+              "locationType": "filesystem-path-unix",
+              "resourceFormat": "text/plain",
+              "resourceRole": "gpbuilder-input-file",
+              "payload": "/work/conjugate/gp/7080d091-89ec-4dd2-b7a3-c3cea6f182f1/the_input.txt",
+              "options": {},
+              "notices": null
+            }
+          ]
+        },
+        "notices": [
+          {
+            "brief": "GlycoProtein running",
+            "type": "Info",
+            "code": "200",
+            "message": "GlycoProtein execution started.",
+            "scope": "Service",
+            "Messenger": "GlycoProtein"
+          }
+        ]
+      }
+    },
+    "procedural_options": {
+      "context": "default",
+      "force_serial_execution": true,
+      "pretty_print": true,
+      "md_minimize": false
+    }
+  },
+  "project": {
+    "pUUID": "7080d091-89ec-4dd2-b7a3-c3cea6f182f1",
+    "title": "GlycoProtein project",
+    "comment": "",
+    "timestamp": "2026-02-25T05:02:29.257735",
+    "gems_timestamp": "2026-02-25T05:02:29.257735",
+    "project_type": "gp",
+    "parent_entity": "Conjugate",
+    "requested_service": "project",
+    "entity_id": "glycoprotein",
+    "service_id": "gp",
+    "filesystem_path": "/work",
+    "uploads_path": "",
+    "compute_cluster_filesystem_path": "",
+    "service_dir": "/work/conjugate/gp",
+    "project_dir": "/work/conjugate/gp/7080d091-89ec-4dd2-b7a3-c3cea6f182f1",
+    "logs_dir": "/work/conjugate/gp/7080d091-89ec-4dd2-b7a3-c3cea6f182f1/logs",
+    "requesting_agent": "",
+    "has_input_files": true,
+    "site_version": "",
+    "site_branch": "",
+    "site_code_name": "",
+    "gems_version": "",
+    "gems_branch": "",
+    "md_utils_version": "",
+    "md_utils_branch": "",
+    "gmml_version": "",
+    "gmml_branch": "",
+    "gp_version": "",
+    "gp_branch": "",
+    "site_mode": "",
+    "site_host_name": "",
+    "versions_file_path": "/work/VERSIONS.sh",
+    "host_url_base_path": "",
+    "download_url_path": "",
+    "force_field": "default",
+    "parameter_version": "default",
+    "amber_version": "default",
+    "json_api_version": "0.0.1",
+    "django_project_id": "",
+    "app": "GlycoProtein",
+    "force_use_this_project": false,
+    "notices": [],
+    "pdb_project_pUUID": "",
+    "status": "submitted",
+    "gpbuilder_input_file": "the_input.txt",
+    "input_type": "PDB (chemical/pdb) & Glycan Mappings (application/json)"
+  },
+  "notices": {},
+  "prettyPrint": true
+}
+
