@@ -10,7 +10,6 @@ services:
     hostname: ${HOST_NAME}
     container_name: ${CONTAINER_NAME}
     user: ${IMG_USER_NAME}:${IMG_GROUP_NAME}
-    dns:  8.8.8.8
     env_file:
       - ${DELEGATOR_ENV_FILE}
     volumes:
