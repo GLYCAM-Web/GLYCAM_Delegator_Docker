@@ -10,10 +10,10 @@ echo "Starting to run the GlycoProtein Builder test."
 cp ./deps/share/SessionSettings.bash ./deps/share/SessionSettings.bash.testing-backup
 
 # append the SessionSettings.bash with settings needed for the test
-cat ./tests/GlycoProtein/SessionSettings.bash >> ./deps/share/SessionSettings.bash
+cat ./tests/GlycoProtein/SessionSettings_gitkeep_.bash >> ./deps/share/SessionSettings.bash
 
 # source the SessionSettings.bash so that this script knows them
-. ./tests/GlycoProtein/SessionSettings.bash
+. ./tests/GlycoProtein/SessionSettings_gitkeep_.bash
 
 # copy the inputs to a visible directory
 cp ./tests/GlycoProtein/inputs/glycoprotein_test_input.csv  ./input-output/inputs/

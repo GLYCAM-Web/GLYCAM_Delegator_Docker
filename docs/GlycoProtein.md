@@ -30,7 +30,7 @@ bash tests/GlycoProtein/run_test.bash
 
 ### Pro-tip
 
-Check out the file `tests/GlycoProtein/SessionSettings.bash` for some available control options.
+Check out the file `tests/GlycoProtein/SessionSettings_gitkeep_.bash` for some available control options.
 
 ## The USAGE statement
 
