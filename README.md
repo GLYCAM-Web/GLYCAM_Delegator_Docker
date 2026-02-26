@@ -3,6 +3,31 @@
 This software provides a standalone version of the engine used by [GLYCAM Web](www.glycam.org) to build 
 molecular models. 
 
+## Temporary hack
+
+If you have pulled this code, you need to do these things:
+
+### 1. Run the script to convert your dependencies to normal nested repos
+
+```
+bash bin/special/move_submodules_to_sub-branches.bash
+```
+
+Ignore errors about 'pathspec'. 
+
+### 2. Update your GEMS
+
+```
+cd deps/gems
+git checkout gems-test
+git pull
+cd ../../
+```
+
+### Future needs
+
+In the future a script will detect if this needs to happen and do it for you.
+
 ## Prerequisites
 
 Although not strictly required, a **Linux operating system** will be easier for you, and we will have an easier 
