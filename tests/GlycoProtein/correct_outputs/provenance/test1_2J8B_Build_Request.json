@@ -1,0 +1,35 @@
+{
+    "entity": {
+        "type": "GlycoProtein",
+	"procedural_options": 
+	{
+		"force_serial_execution" : "True",
+    		"pretty_print" : "True"
+	},
+        "services":
+          {
+                "test1_2J8B_Build": {
+                    "type": "Build",
+                    "givenName": "test1_2J8B",
+                    "inputs": {
+                        "rcsb_id": "2J8B",
+                        "glycan_mappings": [
+ {  "Chain": "A" , "ResidueNumber": "8" , "InsertionCode": "" , "Sequence": "DGlcpNAcb1-OH" , "Tags": "" } ,  {  "Chain": "A" , "ResidueNumber": "15" , "InsertionCode": "" , "Sequence": "DGlcpb1-3LFucpa1-OH" , "Tags": "" }  ,  {  "Chain": "A" , "ResidueNumber": "48" , "InsertionCode": "" , "Sequence": "DGlcpNAcb1-OH" , "Tags": "" }  ,  {  "Chain": "A" , "ResidueNumber": "60" , "InsertionCode": "" , "Sequence": "DGlcpb1-3LFucpa1-OH" , "Tags": "" } 
+                        ]
+                    },
+		    "options":{
+ "number_of_samples" : "1" ,
+"persist_cycles" : "5" ,
+"rng_seed" : "5408925415593553639" ,
+"overlap_rejection_threshold" : "0.0" ,
+"prepare_for_md" : "False" ,
+"use_initial_glycosite_residue_conformation" : "True" ,
+"move_overlapping_sidechains" : "False" ,
+"delete_unresolvable_glycosites" : "False"
+	            }
+                }
+          }
+    },
+    		"prettyPrint" : "True"
+}
+

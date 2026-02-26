@@ -35,6 +35,7 @@ glycositeData=(
 declare -a glycositeDataList
 glycositeDataList=() # list of JSON-Formatted glycositeData -- see printarrJSON in sysetc/functions.bash
 theArrayString=""
+theOptionsString=""
 
 #######################################
 ##          I/O And Usage Documentation
@@ -202,6 +203,22 @@ write_json_build_file() {
 	# The array called 'jsonMainHeaders' MUST be properly populated before calling.
 	#    Needs: givenName and rcsb_id
 
+	# Generate the options section
+	startnext=
+	theOptionsString=""
+	first="True"
+	startnext=',\n'
+	for option in ${GPB_Options[@]} ; do
+    	if [ "${first}" == "True" ] ; then
+        	tmpString="$(printf "\"%s\" : \"%s\"" "${option}" "${GPB_Options_Values[${option}]}")"
+		first="False"
+    	else
+        	tmpString="$(printf "${startnext}\"%s\" : \"%s\"" "${option}" "${GPB_Options_Values[${option}]}")"
+    	fi
+    	theOptionsString="${theOptionsString} ${tmpString}"
+	done
+
+
 	theFile="""{
     \"entity\": {
         \"type\": \"GlycoProtein\",
@@ -222,7 +239,7 @@ ${theArrayString}
                         ]
                     },
 		    \"options\":{
-		    	\"use_initial_glycosite_residue_conformation\": \"True\"
+${theOptionsString}
 	            }
                 }
           }
@@ -446,7 +463,7 @@ if [ -e "/programs/share/SessionSettings.bash" ] ; then
 	source "/programs/share/SessionSettings.bash"
 fi
 if [ -z "${OUT_SUBDIR}" ] ; then
-	print_error_and_exit "OUT_SUBDIR not specified. Exiting. Re-run script with no arguments for USAGE."
+	print_error_and_exit "OUT_SUBDIR not specified. Exiting. Re-run script with no arguments if you need to see the USAGE."
 fi
 OutputDir="/outputs/conjugate/gp/${OUT_SUBDIR}"
 GoodPdbDir="${OutputDir}/PDB"
@@ -483,10 +500,12 @@ for rheader in ${RequiredHeaders[@]} ; do
 	fi
 done
 if [ "${allthere}" == "False" ] ; then
-	echo "These are the Required Headers:"
-	echo "${RequiredHeaders[@]}"
-	echo "These are your headers:"
-	echo "${inputFileHEADERS[@]}"
+	echo "[ERROR] : $(date) : Required Headers not found in input file" | tee -a ${STATUSFILE}
+	echo "[ERROR] : $(date) : Required Headers not found in input file" > ${LOGFILE}
+	echo "These are the Required Headers:" | tee -a ${LOGFILE}
+	echo "${RequiredHeaders[@]}" | tee -a ${LOGFILE}
+	echo "These are your headers:" | tee -a ${LOGFILE}
+	echo "${inputFileHEADERS[@]}" | tee -a ${LOGFILE}
 	print_error_and_exit "All required headers are not present in the input file."
 fi
 

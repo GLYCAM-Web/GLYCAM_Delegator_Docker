@@ -63,6 +63,31 @@ export OVERWRITE_OUTPUT=\"False\"
 export UNMIN_SUFFIX=\"_un-min\"
 export DATE_BUILD_DATABASE=\"True\"
 
+declare -a GPB_Options
+declare -A GPB_Options_Values
+GPB_Options=(
+    number_of_samples
+    persist_cycles
+### by default, leave unset ###    rng_seed
+    overlap_rejection_threshold
+    prepare_for_md
+    use_initial_glycosite_residue_conformation
+    move_overlapping_sidechains
+    delete_unresolvable_glycosites
+)
+GPB_Options_Values=(
+    ["number_of_samples"]="1"
+    ["persist_cycles"]="5"
+### by default, leave unset ###    ["rng_seed"]= 
+## rng_seed is unset in the default. Can be an integer up to UINT64_MAX, e.g. "5408925415593553639"
+    ["overlap_rejection_threshold"]="0.0"
+    ["prepare_for_md"]="False"
+    ["use_initial_glycosite_residue_conformation"]="True" 
+    ["move_overlapping_sidechains"]="False"
+    ["delete_unresolvable_glycosites"]="False"
+)
+
+
 """ > ./mounts/sysetc/_autogen_config.bash
 
 if [ ! -e "./_autogen_config.bash" ] ; then

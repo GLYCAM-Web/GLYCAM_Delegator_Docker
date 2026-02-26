@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Example SessionSettings.bash file
 #
 # For many of these, it is possible to set the values to variables used by the control script(s),
@@ -35,3 +37,64 @@ export KEEP_TEMPORARY_FILES="True"
 # Append a date-time (YYYY-mm-dd-HH-MM) to output file names (called "Basenames" or "Project IDs").
 # Default: False
 export APPEND_DATETIME_TO_OUTFILES="True"
+
+# Control the behavior of the GlycoProtein Buildr
+# The array "GPB_Options" is the list of settable options. Don't change this one.
+# The right-hand sides in the associative array "GPB_Options_Values" can be changed.
+# NOTE -  you need to copy this entire block into your SessionSettings.bash file.
+#      -  the values in the array below reflect the default
+#      -  !!!!!! Important !!!!!!!
+#         Do not uncomment 'rng_seed' unless you want to set it to a specific number.
+#         If the field has any value in it, a random number is not generated.
+declare -a GPB_Options
+declare -A GPB_Options_Values
+GPB_Options=(
+# int : Number of structure samples to create in addition to the default structure.
+    number_of_samples
+# int : How long the algorithm persists in looking for a solution with a lower number of overlaps.
+    persist_cycles
+# int : Random number generator seed useful when testing for reproducibility.
+### See note ###    rng_seed
+# float : LJ repulsive potential threshold for glycan atoms; samples exceeding this are rejected.
+    overlap_rejection_threshold
+# bool : Prepare for MD simulation (creates OFF files for each output structure).
+    prepare_for_md
+# bool : Preserve chi1 and chi2 angles of protein-glycan linkages according to their initial shape.
+    use_initial_glycosite_residue_conformation
+# bool : Adjust protein sidechains if it reduces glycan overlap or increases glycan shape range.
+    move_overlapping_sidechains
+# bool : Delete glycans in samples exceeding overlap threshold to produce structures with no overlaps.
+    delete_unresolvable_glycosites
+)
+GPB_Options_Values=(
+    ["number_of_samples"]="1"
+    ["persist_cycles"]="5"
+### See note ###    ["rng_seed"]= ## is unset in the default. Can be an integer up to UINT64_MAX, e.g. "5408925415593553639"
+    ["overlap_rejection_threshold"]="0.0"
+    ["prepare_for_md"]="False"
+    ["use_initial_glycosite_residue_conformation"]="True" # This is the default here, not in the code
+    ["move_overlapping_sidechains"]="False"
+    ["delete_unresolvable_glycosites"]="False"
+)
+
+## If troubleshooting, the following code can help
+## It should print out the JSON corresponding to these inputs
+startnext=
+theOptionsString=""
+first="True"
+startnext=',\n'
+for option in ${GPB_Options[@]} ; do        
+    if [ "${first}" == "True" ] ; then
+        tmpString="$(printf "\"%s\" : \"%s\"" "${option}" "${GPB_Options_Values[${option}]}")"
+	first='False'
+    else
+        tmpString="$(printf "${startnext}\"%s\" : \"%s\""  "${option}" "${GPB_Options_Values[${option}]}")"
+    fi
+    theOptionsString="${theOptionsString} ${tmpString}"
+done
+
+echo "The string is:"
+echo """
+${theOptionsString}
+"""
+

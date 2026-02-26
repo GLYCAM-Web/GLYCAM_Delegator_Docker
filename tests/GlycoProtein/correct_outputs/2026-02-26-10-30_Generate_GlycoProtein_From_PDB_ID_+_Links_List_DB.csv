@@ -1,0 +1,3 @@
+#project_id,uniprotkb_canonical_ac,pdb_id,pUUID,Result,Date_Time,Note
+test1_2J8B,,,ccfe9261-2249-4201-9b29-23db4d3f4d5b,Failure to resolve structure,"2026-02-26_10:30:47",The following have been copied to /outputs/conjugate/gp/TEST_OF_GLYCOPROTEIN_BUILDER/PDB/rejected:  test1_2J8B.pdb test1_2J8B_summary.txt
+test2_2mk7,,,74b35883-429d-4261-ae5a-75a571c59c45,Finished normally,"2026-02-26_10:30:49",-

@@ -22,6 +22,13 @@ export GEMS_MD_TEST_WORKFLOW='False'
 ## This is useful if you just want to ensure that the correct MD code is
 ## being run and you plan to do the real MD work once that is confirmed.
 ## Setting this to true will result in bad (because too short) MD actions.
+##
+export KEEP_TEMPORARY_FILES='True'
+## Setting this to true means that all intermediate files are retained.
+## These files contain information regarding problems found in the input.
+## For example, if duplicate entries is not allowed, then the files containing
+## the list of duplicate entries will be retained.
+## If this is set to 'False', figuring out what went wrong can be a challenge.
 
 
 ## Variables that control the behavior of Docker.

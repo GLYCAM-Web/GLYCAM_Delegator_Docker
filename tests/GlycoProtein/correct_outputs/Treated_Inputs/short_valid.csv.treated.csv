@@ -1,0 +1,9 @@
+project_id,uniprotkb_canonical_ac,pdb_id,amino_acid_chain,glycosylation_site_pdb,insertion_code,amino_acid_pdb,glycosylation_type,sequence_glycam_iupac
+test1_2J8B,test1,2J8B,A,8,null,ASN,N-linked,DGlcpNAcb1-OH
+test1_2J8B,test1,2J8B,A,15,null,THR,O-linked,DGlcpb1-3LFucpa1-OH
+test1_2J8B,test1,2J8B,A,48,null,ASN,N-linked,DGlcpNAcb1-OH
+test1_2J8B,test1,2J8B,A,60,null,THR,O-linked,DGlcpb1-3LFucpa1-OH
+test2_2mk7,test2,2mk7,A,4,null,THR,O-linked,DGalpNAca1-OH
+test2_2mk7,test2,2mk7,A,5,null,THR,O-linked,DGalpNAca1-OH
+test2_2mk7,test2,2mk7,A,6,null,THR,O-linked,DGalpNAca1-OH
+test2_2mk7,test2,2mk7,A,7,null,THR,O-linked,DGalpNAca1-OH

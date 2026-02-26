@@ -1,0 +1,26 @@
+##### Glycoprotein Builder #####
+
+Produced by GMML2 (https://github.com/GLYCAM-Web/gmml2) version 1.5.1
+
+#### Input ####
+
+Filename: /work/conjugate/gp/ccfe9261-2249-4201-9b29-23db4d3f4d5b/the_input.txt
+Protein: /work/conjugate/gp/ccfe9261-2249-4201-9b29-23db4d3f4d5b/2j8b.pdb
+
+Parameter                              | Value              
+numberOfSamples                          1                  
+rngSeed                                  5408925415593553639
+prepareForMD                             false              
+persistCycles                            5                  
+overlapRejectionThreshold                0.000000           
+useInitialGlycositeResidueConformation   true               
+moveOverlappingSidechains                false              
+deleteUnresolvableGlycosites             false              
+ignoreHydrogen                           false              
+
+#### Structures ####
+
+Filename     | Status   | Highest Lennard-Jones potential | Failed glycosites  | Deleted glycosites | Moved sidechains
+default                   81894.379403                      A_8 A_15 A_48 A_60                                        
+glycoprotein   rejected   81580.073655                      A_8 A_15 A_48                                             
+
