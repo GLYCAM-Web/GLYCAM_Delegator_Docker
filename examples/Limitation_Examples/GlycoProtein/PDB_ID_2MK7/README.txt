@@ -43,8 +43,9 @@ this structure rather than the one above.
 ## What you can do
 
 For this, you can start with the structure in 2MK7. It already contains the GalNAc glycans in the
-correct orientations. You can also run MD simulations. Those will quickly put the GalNAc back where
-it should be.
+correct orientations. You can also run MD simulations. Those should quickly put the GalNAc back where
+it should be. It will move in and out of the conformations, but mostly the geometries will resemble
+those in the first image.
 
 ## For more or updated info
 
