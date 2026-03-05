@@ -48,7 +48,7 @@ echo "Cloning the repos"
 
 STEP="clone-repos"
 LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
-COM="bash bin/clone_repos.bash"
+COM="bash bin/manage_repos.bash"
 rclr "Cloning the repositories listed in git-settings.bash." "${COM}" "(${NUM}) - Repository initialization"
 NUM="$((NUM+1))"
 
