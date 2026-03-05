@@ -52,6 +52,14 @@ COM="bash bin/manage_repos.bash"
 rclr "Cloning the repositories listed in git-settings.bash." "${COM}" "(${NUM}) - Repository initialization"
 NUM="$((NUM+1))"
 
+echo "Setting an instance config for GEMS"
+
+STEP="set-gems-IC"
+LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
+COM="cp examples/configs-settings/GEMS_Instance_Config.json deps/gems/instance_config.json"
+rclr "Copying an instance config for gems." "${COM}" "(${NUM}) - GEMS instance config copy."
+NUM="$((NUM+1))"
+
 echo "Installing gems, gmml and gmml2. This can also take a while."
 
 STEP="install-gems-gmml"
