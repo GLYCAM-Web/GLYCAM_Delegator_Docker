@@ -3,25 +3,13 @@
 This software provides a standalone version of the engine used by [GLYCAM Web](www.glycam.org) to build 
 molecular models. 
 
-## Temporary hack
+## Updating
 
-If you have pulled this code, you need to do these things:
+If you have pulled this code into existing code, you should only need manage the repos.
 
-### 1. Run the script to convert your dependencies to normal nested repos
-
-```
-bash bin/special/move_submodules_to_sub-branches.bash
-```
-
-Ignore errors about 'pathspec'. 
-
-### 2. Update your GEMS
 
 ```
-cd deps/gems
-git checkout gems-test
-git pull
-cd ../../
+bash bin/manage_repos.bash
 ```
 
 ### Future needs
@@ -666,7 +654,7 @@ is grouped by Entity and Service. Sometimes Entities are grouped together into a
 ├── complex         # Entities that create complexes between separate molecules
 │   ├── ad            # Antibody-Glycan Docking 
 │   ├── gm            # Glycomimetics
-│   └── gp (+)        # Glycoprotein (technically a 'conjugate', not a 'complex'). 
+│   └── gp (*)        # Glycoprotein (technically a 'conjugate', not a 'complex'). 
 ├── mmservice       # Entities that perform generic molecular modeling Services
 │   └── md            # Molecular Dynamics 
 ├── sequence        # The Entity that performs Services based on a molecular Sequence
