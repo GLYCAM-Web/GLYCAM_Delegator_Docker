@@ -44,7 +44,7 @@ for repo in "${Repos[@]}" ; do
                         COM="git clone -b ${Repo_Branch[${repo}]} ${Repo_URL[${repo}]} ${Repo_Directory[${repo}]}"
                         rclr "About to clone parent repo: ${repo}" "${COM}" "Cloning ${repo}"
 		else 
-			COM="( cd ${Repo_Directory[${repo}]} && git pull origin ${Repo_Branch[${repo}]} )"
+			COM="( cd ${Repo_Directory[${repo}]} && git pull --no-rebase --no-edit origin ${Repo_Branch[${repo}]} )"
 			rclr "Pulling in the latest code." "${COM}" "Code updating"
                 fi
 
@@ -67,7 +67,7 @@ for repo in "${Repos[@]}" ; do
 			COM="( cd ${parentDir} && git clone -b ${Repo_Branch[${repo}]} ${Repo_URL[${repo}]} ${repoDir} )"
                 	rclr "About to clone the sub repo ${repo} of parent ${theParent}" "${COM}" "Cloning ${repo}"
 		else 
-			COM="( cd ${repoDir} && git pull origin ${Repo_Branch[${repo}]} )"
+			COM="( cd ${repoDir} && git pull --no-rebase --no-edit origin ${Repo_Branch[${repo}]} )"
 			rclr "Pulling in the latest code." "${COM}" "Code updating"
                 fi
 
