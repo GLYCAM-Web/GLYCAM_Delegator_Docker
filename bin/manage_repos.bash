@@ -63,11 +63,11 @@ for repo in "${Repos[@]}" ; do
                 if [ ! -d "${parentDir}/.git" ] ; then
                         print_error_and_exit "The parent repo should already exist. It is: ${Repo_Directory[${theParent}]}"
                 fi
-                if [ ! -d "${parentDir}/${repoDir}.git" ] ; then
+                if [ ! -d "${parentDir}/${repoDir}/.git" ] ; then
 			COM="( cd ${parentDir} && git clone -b ${Repo_Branch[${repo}]} ${Repo_URL[${repo}]} ${repoDir} )"
                 	rclr "About to clone the sub repo ${repo} of parent ${theParent}" "${COM}" "Cloning ${repo}"
 		else 
-			COM="( cd ${repoDir} && git pull --no-rebase --no-edit origin ${Repo_Branch[${repo}]} )"
+			COM="( cd ${parentDir}/${repoDir} && git pull --no-rebase --no-edit origin ${Repo_Branch[${repo}]} )"
 			rclr "Pulling in the latest code." "${COM}" "Code updating"
                 fi
 
