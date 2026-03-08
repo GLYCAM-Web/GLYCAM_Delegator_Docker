@@ -3,19 +3,6 @@
 This software provides a standalone version of the engine used by [GLYCAM Web](www.glycam.org) to build 
 molecular models. 
 
-## Updating
-
-If you have pulled this code into existing code, you should only need manage the repos.
-
-
-```
-bash bin/manage_repos.bash
-```
-
-### Future needs
-
-In the future a script will detect if this needs to happen and do it for you.
-
 ## Prerequisites
 
 Although not strictly required, a **Linux operating system** will be easier for you, and we will have an easier 
@@ -53,6 +40,10 @@ Alternately, go to [the repo](https://github.com/GLYCAM-Web/GLYCAM_Delegator_Doc
 cd GLYCAM_Delegator_Docker
 ./Install.bash
 ```
+
+## Updating
+
+After pulling in new code, you should just need to run the install script again (see just above).
 
 ## Key Concepts
 

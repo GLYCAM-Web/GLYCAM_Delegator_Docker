@@ -91,6 +91,7 @@ rclr()
         	if [ "${returnVal}" != "0" ] ; then
                 	echo "...${DidWhat} failed with code ${returnVal}.  Exiting" >> ${LOGFILE}
                 	echo "[ERROR] : $(date) : ${DidWhat} failed with code ${returnVal}" >> ${STATUSFILE}
+			echo "Something went wrong. Exiting. Please check logs."
                 	exit 1
         	else
                 	echo "...${DidWhat} completed on $(date)" >> ${LOGFILE}

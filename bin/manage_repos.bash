@@ -43,34 +43,41 @@ for repo in "${Repos[@]}" ; do
                 if [ ! -d "${Repo_Directory[${repo}]}/.git" ] ; then
                         COM="git clone -b ${Repo_Branch[${repo}]} ${Repo_URL[${repo}]} ${Repo_Directory[${repo}]}"
                         rclr "About to clone parent repo: ${repo}" "${COM}" "Cloning ${repo}"
+		else 
+			COM="( cd ${Repo_Directory[${repo}]} && git pull --no-rebase --no-edit origin ${Repo_Branch[${repo}]} )"
+			rclr "Pulling in the latest code." "${COM}" "Code updating"
                 fi
 
 		targetHash="${Repo_Target_Hash[${repo}]}"
 		if [ "${targetHash}" == "None" ] ; then
 			continue  
 		fi
-
 		theHash="$(cd ${Repo_Directory[${repo}]} && git rev-parse HEAD )"
 		if [ "${theHash}" != "${targetHash}" ] ; then
-			COM="( cd ${Repo_Directory[${repo}]} && git revert ${targetHash} --no-edit )"
+			COM="( cd ${Repo_Directory[${repo}]} && git reset --hard ${targetHash})"
 			rclr "Ensuring that the repo is on the target hash." "${COM}" "Target hash setting"
 		fi
         else
 		parentDir="${Repo_Directory[${theParent}]}"
+		repoDir="${Repo_Directory[${repo}]}"
                 if [ ! -d "${parentDir}/.git" ] ; then
                         print_error_and_exit "The parent repo should already exist. It is: ${Repo_Directory[${theParent}]}"
                 fi
-		COM="( cd ${parentDir} && git clone -b ${Repo_Branch[${repo}]} ${Repo_URL[${repo}]} ${Repo_Directory[${repo}]} )"
-                rclr "About to clone the sub repo ${repo} of parent ${theParent}" "${COM}" "Cloning ${repo} as sub repo"
+                if [ ! -d "${parentDir}/${repoDir}/.git" ] ; then
+			COM="( cd ${parentDir} && git clone -b ${Repo_Branch[${repo}]} ${Repo_URL[${repo}]} ${repoDir} )"
+                	rclr "About to clone the sub repo ${repo} of parent ${theParent}" "${COM}" "Cloning ${repo}"
+		else 
+			COM="( cd ${parentDir}/${repoDir} && git pull --no-rebase --no-edit origin ${Repo_Branch[${repo}]} )"
+			rclr "Pulling in the latest code." "${COM}" "Code updating"
+                fi
 
 		targetHash="${Repo_Target_Hash[${repo}]}"
 		if [ "${targetHash}" == "None" ] ; then
 			continue
 		fi
-
 		theHash="$( cd ${parentDir}/${Repo_Directory[${repo}]} && git rev-parse HEAD )"
 		if [ "${theHash}" != "${targetHash}" ] ; then
-			COM="( cd ${parentDir}/${Repo_Directory[${repo}]} && git revert ${targetHash} --no-edit )"
+			COM="( cd ${parentDir}/${Repo_Directory[${repo}]} && git reset --hard ${targetHash} )"
 			rclr "Ensuring that the repo is on the target hash." "${COM}" "Target hash setting"
 		fi
         fi
