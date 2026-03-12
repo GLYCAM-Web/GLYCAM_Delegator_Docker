@@ -61,7 +61,7 @@ DOCKER_COMPOSE_COMPILE_FILE="./docker-compose.compiler.yml"
 DOCKER_COMPOSE_RUN_FILE="./docker-compose.run.yml"
 ##
 export FROM_IMAGE="python:3.9.17-bullseye"
-export IMAGE_NAME="glycam-web-${SERVICE}"
+export IMAGE_NAME="${PREFIX}-glycam-web-${SERVICE}"
 export IMAGE_TAG="1.0_blf_2026-01-12-03" 
 export DOCKERFILE_DIR="./images/delegator"
 export DOCKERFILE="Dockerfile"

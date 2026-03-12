@@ -21,7 +21,13 @@ fi
 export CONTAINER_NAME="${CONTAINER_NAME}_interactive"
 
 # Second, run docker compose up.
-COMMAND="docker compose --file ${DOCKER_COMPOSE_RUN_FILE} run --rm delegator /bin/bash"
+COMMAND="""
+docker compose \
+	--file ${DOCKER_COMPOSE_RUN_FILE} \
+        -p ${PREFIX}-run-command \
+	run --rm delegator \
+	/bin/bash
+"""
 ( ${COMMAND} ) || {  print_error_and_exit "ERROR RUNNING DELEGATOR interactive IMAGE" ; } 
 
 
