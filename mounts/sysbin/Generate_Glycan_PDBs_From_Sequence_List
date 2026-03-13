@@ -84,8 +84,8 @@ Generate a set of PDB files containing 3D structures of glycoproteins based on a
 generate_new_pdb_file() {
 	# $1 is the directory where the file should be (OutputDir)
 	# $2 is the Basename for the PDB file
-	if [ -e "${1}/${2}.pdb" ] ; then
-		echo "Found existing file '${1}/${2}.pdb'" >> ${LOGFILE}
+	if [ -e "${1}/PDB/${2}.pdb" ] ; then
+		echo "Found existing file '${1}/PDB/${2}.pdb'" >> ${LOGFILE}
 		if [ "${OVERWRITE_OUTPUT}" == "True" ] ; then
 			echo "Overwriting existing file" >> ${LOGFILE}
 			return 0
@@ -94,7 +94,7 @@ generate_new_pdb_file() {
 			return 1
 		fi
 	else
-		echo "Attempting to create brand-new file '${1}/${2}.pdb'" >> ${LOGFILE}
+		echo "Attempting to create brand-new file '${1}/PDB/${2}.pdb'" >> ${LOGFILE}
 		return 0
 	fi
 }
