@@ -1,6 +1,6 @@
 # GlycoProtein Builder Docs
 
-## Can be run either interactively or as a command.
+## This tool can be run either interactively or as a command.
 
 ### As a command:
 
@@ -31,6 +31,21 @@ bash tests/GlycoProtein/run_test.bash
 ### Pro-tip
 
 Check out the file `tests/GlycoProtein/SessionSettings_gitkeep_.bash` for some available control options.
+
+### Spelling
+
+Question: Is it 'aglycon' or 'aglycone'?  
+
+Answer: Yes. American-style spelling prefers 'aglycon' while British/European prefers 'aglycone'. As with
+        'color'/'colour' and all the rest, it will be ok either way.
+
+## Additional information
+
+See these files:
+
+    GlycoProtein_Additional_Help.md   ## Common problems and sources of help and information
+    GlycoProtein*_autogen*            ## Help information automatically generated from source code
+                                      ##     The stars in the filename are wildcards
 
 ## The USAGE statement
 
