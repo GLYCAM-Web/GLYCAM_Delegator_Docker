@@ -1,25 +1,86 @@
 #!/usr/bin/env bash
 
+# Name of the document to be written from this file
+Document_Name="GlycoProtein_Error_Details.md"
+# What to include in the docs in what order
+declare -A Docs_Order
+Docs_Order=(
+#####    do we need -A? can just be list of strings?
+	["Error_Numbers"]
+	["Error_Briefs"]
+	["Error_Meanings"]
+	["Source_File_and_Line"]
+	["Error_Generic_Text"]
+)
+
+# What to include in brief error reports (to stdout, usually, during processing)
+declare -A Brief_Report_Contents
+Brief_Report_Contents=(
+	["1"]=["Error_Numbers"]
+	["2"]=["Error_Briefs"]
+	["3"]=["Error_Meanings"]
+)
+More_Info_Text="Please see the GLYCAM_Delegator_Docker/docs directory for more information."
+
 declare -A Error_Briefs
 declare -A Error_Meanings
 declare -A Error_Generic_Text
 declare -A Source_File_and_Line
 declare -A Error_Grep_Strings
 
-
+# Because the name of this script should be an argument to the doc-writing script, it is $1, not $0, below.
+Docs_Preamble="""
 # Common GlycoProtein Builder User Errors
-# This is not a comprehensive list, but it comprises the main errors that a user is likely to see.
-#
-#Please see the file `GlycoProtein_Error_Details.md` for the exact error text as well as the location of 
-#the error in the source code.
-#
-#This file was generated with assistance from Gemini AI.
-#
-#In the following table, a number in square brackets indicates a common error with a fix that might be 
-#easy for you. Please see the bottom of this file for details.
-## | Missing Element Definition [1]      | The element designation is unknown. [1]                                    |
-## [1] A workaround for this error is to remove all HETATM and ANISOU cards from the PDB file before processing.
 
+This is not a comprehensive list, but it comprises the main errors that a user is likely to see.
+
+
+## Main file contents overview
+
+Beneath this preamble, for every error covered in this document, you will find:
+
+- Error number
+- The information reported by this code: Error Brief and Error Meaning.
+- Path to the GMML2 source file where the error originates and the specific line in that file.
+- A generic representation of the raw text supplied by GMML2 when it throws the error.
+
+If you need grep strings for the error messages thrown by GMML2, see this file:
+      ${1}
+The most likely location for the file is: \`GLYCAM_Delegator_Docker/mounts/sysetc\`
+
+## Possible solutions for some non-obvious messages
+
+The following table contains common error with a fix that might be easy for a normal user but that might not
+be obvious to a normal user. For example, the error \"Empty Sequence\" has a simple and obvious meaning and
+an equally simple and obvious solution. However, \"Missing Element Definition\", while understandable, does
+not have a simple and obvious solution. This section, while not comprehensive, aims to help users with fixes
+to errors in the latter category. In some cases, the fixes might not make intuitive sense, and please just 
+accept that.  If the suggested solution does not work for you, please let us know.
+
+If you need help, or to let us know something, please visit our GitHub page and either submit an issue or 
+join a discussion.
+
+
+### Possible workarounds for certain errors
+
+- Missing Element Definition - The element designation is unknown. 
+    - A workaround for this error is to remove all HETATM and ANISOU cards from the PDB file before processing.
+    - Parts of the Glycam_Delegator_Docker might do this for you, but if your workflow is individualized, you
+      might need to carry out this workaround for yourself.
+- Missing Target Glycosite Residue - The residue to be glycosylated could not be found.
+    - If you are gathering data from an mmCIF file, it is important to ensure that amino acid residues to be
+      glycosylated are present in the coordinates section. Residues might lack coordiates but be reported in 
+      the file. For example, the experimenter might have been able to report the entire protein sequence but 
+      was unable to obtain experimental coordinates for some of the residues. This tool must have coordiates 
+      for any amino acids to be glycosylated. 
+    - If glycosylating such a residue is important to you, there are methods for estimating a likely set of 
+      coordinates for it. Please be sure to learn the likelihood that the coordinates are accurte. But, if it 
+      has coordinates, this tool will attempt to glycosylate it.
+
+
+
+This file was generated with assistance from Gemini AI.
+"""
 
 Error_Briefs=(
    ["501"]=["Incorrect Site Identifier Format"]
