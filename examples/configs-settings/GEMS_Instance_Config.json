@@ -1,0 +1,28 @@
+{
+  "date": "2026-02-13T00:00:11.000",
+  "hosts": {
+    "localhost": {
+      "contexts": [
+        "Standalone",
+	"CB",
+	"GP"
+      ],
+      "host": "localhost"
+    }
+  },
+  "default_local_parameters": {
+    "Default": {
+      "numProcs": "4"
+    }
+  },
+  "filesystem_paths": {
+    "Standalone": "/outputs",
+    "CB": "/work",
+    "GP": "/work"
+  },
+  "secure_inputs_paths": {
+    "Standalone": "/inputs",
+    "CB": "/inputs",
+    "GP": "/inputs/uploads"
+  }
+}

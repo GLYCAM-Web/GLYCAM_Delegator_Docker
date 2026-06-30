@@ -20,5 +20,13 @@ services:
       - ${TESTS_PATH}:/tests/
       - ${OUTPUTS_PATH}:/outputs/
     command: bash -c "${COMPILER_COMMAND}"
+    networks: 
+      this-network:
+
+
+networks:
+  this-network:
+    name: ${CONTAINER_NAME}-network
+
 
 

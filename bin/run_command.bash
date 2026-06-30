@@ -28,12 +28,22 @@ export RUN_COMMAND="${theCommand}"
 export CONTAINER_NAME="${CONTAINER_NAME}_running-command"
 
 # Second, run docker compose up.
-COMMAND="docker compose --file ${DOCKER_COMPOSE_RUN_FILE}  up delegator"
+COMMAND="""
+docker compose \
+        --file ${DOCKER_COMPOSE_RUN_FILE}  \
+        -p ${PREFIX}-run-command \
+        up delegator
+"""
 ( ${COMMAND} ) || {  print_error_and_exit "ERROR UPPING RUN command IMAGE" ; } 
 echo "container is up"
 
 # Third, once done compiling then run docker compose down.
-COMMAND="docker compose --file ${DOCKER_COMPOSE_RUN_FILE} down"
+COMMAND="""
+docker compose \
+        --file ${DOCKER_COMPOSE_RUN_FILE} \
+        -p ${PREFIX}-run-command \
+        down
+"""
 ( ${COMMAND} ) || {  print_error_and_exit "ERROR DOWNING RUN command IMAGE" ; }
 
 # EXIT_SUCCESS

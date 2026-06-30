@@ -13,10 +13,14 @@
 
 ####
 ## Arrays used to control the repos - see the array contents below.
-declare -A Repo_Directories             # Path, relative to this code, where the repo should go
-declare -A Repo_Is_Submodule_Of         # If this repo is a submodule, who is the main repo?
-declare -A Repo_URLs                    # Where the repo should be cloned/pulled from.
-declare -A Repo_Branches                # The specific branch to pull.
+declare -A Repo_Directory    # Path, relative to this code, where the repo should go
+declare -A Repo_Parent       # If this repo is a submodule, who is the main repo?
+declare -A Repo_URL          # Where the repo should be cloned/pulled from.
+declare -A Repo_Branch       # The specific branch to pull.
+declare -A Repo_Target_Hash  # The has supported in this version
+declare -A Repo_Target_Tag   # The tag associated with the supported hash
+
+## DEPENDENCIES_PATH is set in settings.bash
 
 ####
 ## For now, only a few are pulled. This list can be altered in the local git settings file.
@@ -54,7 +58,7 @@ Repo_Target_Hash=(
 	["gems"]="4aa2b09df45653633a4382daae491ea3ca758df9"
 	["gmml"]="c7b519c67b0cfb103eabc103f1dc4138c380152f"
 	["gmml2"]="25cdecb341d41e8e507d624e8c978f463ad220b0"
-	["md"]="ce7be879941d95ce35e29d7fb9924a2aa717d451"
+	["md"]="1040e36b1725611a6e8a69b5c51ba4b80b511ba3"
 	["gm"]="4aa2b09df45653633a4382daae491ea3ca758df9"
 	["gmwebtool"]="None"
 	["glycomimetics"]="None"

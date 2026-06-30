@@ -23,5 +23,14 @@ services:
       - ${TESTS_PATH}:/tests/
       - ${OUTPUTS_PATH}:/outputs/
     command: "${RUN_COMMAND}"
+    networks: 
+      this-network:
+
+
+networks:
+  this-network:
+    name: ${CONTAINER_NAME}-network
+
+
 
 
