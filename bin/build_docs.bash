@@ -79,7 +79,7 @@ while [ "${the_number}" -le "${Max_Err_Number}" ] ; do
 ${the_number}
 ${Error_Briefs[${the_number}]}
 ${Error_Meanings[${the_number}]}
-\`${Error_Log_Files[${the_number}]}\`
+\`${Work_Dir_Log_File}\`
 \`${Source_File_and_Lines[${the_number}]}\`
 \`${Error_Generic_Text[${the_number}]}\`
 """ >> "docs/${Document_Name}"
