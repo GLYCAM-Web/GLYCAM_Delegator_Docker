@@ -42,11 +42,11 @@ Max_Err_Number="527"
 # Text to be used when directing the user to additional information.
 More_Info_Text="Please see the GLYCAM_Delegator_Docker/docs directory for more information."
 #
-# Log file to query (if there are more, a rewrite is needed)
-Work_Dir_Log_File="${Work_Directory}/gpBuilder.log"
-# Log file to write results to
-Proj_Dir_Log_File="${Project_Directory}/Error_log.txt"
-#
+## Log file to query (if there are more, a rewrite is needed)
+#Work_Dir_Log_File="${Work_Directory}/gpBuilder.log"
+## Log file to write results to
+#Proj_Dir_Log_File="${Project_Directory}/Error_log.txt"
+##
 ##############################################################################################################
 
 ##############################################################################################################
