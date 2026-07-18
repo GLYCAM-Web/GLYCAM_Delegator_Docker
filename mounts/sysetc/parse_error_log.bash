@@ -8,23 +8,28 @@
 # The following locations must also be passed to this script as arguments. See below for details.
 # The locations must be visible inside the container.
 #
-#       ${read_me}   :  Log file possibly containing error messages
-#       ${write_me}  :  Log file where results should be written if there are any
+#       ${Read_From}   :  Log file possibly containing error messages
+#       ${Write_To}  :  Log file where results should be written if there are any
 #                       This file will not be created if there are no error messages
 #                       !!! The path to this file must already exist!
 #
 # The following might also be generated if you use the procedure below and if there is a problem 
 # with running this script:
 #
-#       ${write_me}.stderr  :  Standard error (if any) from the call to this script.
+#       ${Write_To}.stderr  :  Standard error (if any) from the call to this script.
 #                              It will be up to the calling function to remove this file if it is
 #                              empty or should be removed for some other reason.
 #
 # Error messages generated here are intended for use at runtime will include the following information:
 #
+#       Total number of errors (integer -ge zero)
+#
+#    For each error, these will be returned:
+#
 #       Error_Numbers
 #       Error_Briefs
 #       Error_Meanings
+#       Source_Code_Text (the original text returned by the source code)
 #
 # How those get used will depend on the code using them.
 #
@@ -39,22 +44,28 @@
 #
 # 1. Create a mapfile to contain the results:
 #
-#    the_db_file="/sysetc/wrapper_error_db_file.bash"    # replace with the actual file
-#    read_me="/path/to/the/work/dir/log.file"            # from inside the container
-#    write_me="/path/to/project/dir/error_logs/log.file" # from inside the container
+#    First gather the inputs:
 #
-#    # note .............. v v  both of these arrows are needed.
-#    mapfile -t error_data < <( /sysetc/build_error.bash \
-#    "${the_db_file}" \
-#    "${read_me}" \
-#    "${write_me}" \
-#    2>> "${write_me}.stderr" )
+#        the_db_file="/sysetc/wrapper_error_db_file.bash"    # replace with the actual file
+#        Read_From="/path/to/the/work/dir/log.file"            # from inside the container
+#        Write_To="/path/to/project/dir/error_logs/log.file" # from inside the container
+#
+#        # note .............. v v  both of these arrows are needed.
+#        mapfile -t error_data < <( /sysetc/build_error.bash \
+#        "${the_db_file}" \
+#        "${Read_From}" \
+#        "${Write_To}" \
+#        2>> "${Write_To}.stderr" )
 #
 #
-#    # You can do it all on one line, if you prefer:
-# mapfile -t error_data < <( /sysetc/build_error.bash "${the_db_file}" "${read_me}" "${write_me}" 2>> "${write_me}.stderr" )
+#    You can do it all on one line, if you prefer:
+#
+# mapfile -t error_data < <( /sysetc/build_error.bash "${the_db_file}" "${Read_From}" "${Write_To}" 2>> "${Write_To}.stderr" )
+#
 # 
-# 2. Check **IMMEDIATELY** after the mapfile line above for the return
+# 2. Check **IMMEDIATELY** after the mapfile line above for the return 
+#
+#       this is how you tell if this script failed.
 #
 #       ## ${PIPESTATUS[0]} is the return values for build_error.bash 
 #       ## ${PIPESTATUS[1]} is for the mapfile creation
@@ -62,39 +73,55 @@
 #
 # 3. Check if the script failed
 #
+#    do whatever makes sense in your code, possibly along the lines of:
+#
 #       if (( script_exit_code != 0 )); then
 #           echo "Build error reporting script failed with exit code: $script_exit_code"
 #           echo "If any error message (from the script) was returned it will be found here:"
-#           echo "${write_me}.stderr"
+#           echo "${Write_To}.stderr"
 #       else
-#           if [ -e "${write_me}.stderr" ] ; then
-#               rm "${write_me}.stderr"
+#           if [ -e "${Write_To}.stderr" ] ; then
+#               rm "${Write_To}.stderr"
 #           fi
 #       fi
 #
 # 4. Accessing the results is easy.
 #
-#       echo "the error number is  :  ${error_data[0]}"
-#       echo "the error brief is   :   ${error_data[1]}"
-#       echo "the error meaning is : ${error_data[2]}"
+#       number_of_errors="${error_data[0]}"
+#       ## Have the code report something like "${number_of_errors} errors were reported."
+#       counter="0"
+#       while [ "${counter}" -lt "${number_of_errors}" ] ; do
+#           count_base="$((4*counter))"
+#           error_code="${error_data["$((count_base+1))"]}"
+#           error_brief="${error_data["$((count_base+2))"]}"
+#           error_meaning="${error_data["$((count_base+3))"]}"
+#           source_code_message="${error_data["$((count_base+4))"]}"
+#           counter="$((counter+1))"
+#       done
 #
 ##############################################################################################################
 
 if [ -z "${1}" ] ; then
+	echo "1"
 	echo "256"
 	echo "Script cannot execute"
+	echo "Something is stopping the error parsing script ${0} from running."
 	echo "The path to the error database file must be provided." 
 	exit 1
 fi
 if [ -z "${2}" ] ; then
+	echo "1"
 	echo "256"
 	echo "Script cannot execute"
+	echo "Something is stopping the error parsing script ${0} from running."
 	echo "The path to the file that might contain errors must be provided." 
 	exit 1
 fi
 if [ -z "${3}" ] ; then
+	echo "1"
 	echo "256"
 	echo "Script cannot execute"
+	echo "Something is stopping the error parsing script ${0} from running."
 	echo "The path to the file that should contain error reports must be provided." 
 	exit 1
 fi
@@ -110,51 +137,66 @@ Number_of_Errors="$( grep -c -E "${ALL_ERROR_GREP}" ${Read_From} )"
 
 if [ "${Number_of_Errors}" -eq "0" ] ; then
 	echo "0"
-	echo "No Errors Found"
-	echo "No error log will be written."
 	exit 0
 fi
 
 touch "${Write_To}" 
 result="$?"
 if [ "${result}" -ne "0" ] ; then
+	echo "1"
 	echo "256"
 	echo "Script cannot execute"
+	echo "Something is stopping the error parsing script ${0} from running."
 	echo "Unable to write to the output file >>>${Write_To}<<<." 
 	exit "${result}"
 fi
 
 tries=0
 errors_found=0
-error_number="${Min_Err_Number}"
+error_code="${Min_Err_Number}"
 
+# Tell the receiving script how many errors to expect.
+echo "${Number_of_Errors}"
 
-while [ "${error_number}" -le "${Max_Err_Number}" ] ; do
-        if grep -q -E "${Error_Grep_Strings[${error_number}]}" ${Read_From} ; then
+while [ "${error_code}" -le "${Max_Err_Number}" ] ; do
+        if grep -q -E "${Error_Grep_Strings[${error_code}]}" ${Read_From} ; then
         	echo """---
-Error number ${error_number} detected: ${Error_Briefs[${error_number}]}
-${Error_Meanings[${error_number}]}
+Error number ${error_code} detected: ${Error_Briefs[${error_code}]}
+${Error_Meanings[${error_code}]}
 The original error text from the log file follows.""" >> "${Write_To}"
-                grep -E "${Error_Grep_Strings[${error_number}]}" ${Read_From} >> "${Write_To}"
-		if [ "${Number_of_Errors}" -eq "1" ] ; then
-			echo "${error_number}"
-			echo "${Error_Briefs[${error_number}]}"
-			echo "${Error_Meanings[${error_number}]}"
-			exit 0
+                # reference:  grep -E "${Error_Grep_Strings[${error_code}]}" ${Read_From} >> "${Write_To}"
+		Source_Text="$( grep -E "${Error_Grep_Strings[${error_code}]}" ${Read_From} )"
+		Number_of_occurrences="$( grep -c -E "${Error_Grep_Strings[${error_code}]}" ${Read_From} )"
+		if [ "${Number_of_occurrences}" -gt "1" ] ; then
+			echo "256"
+			echo "Failed to parse errors"
+			echo "Something went wrong trying to grep for errors."
+			echo "Unexpectedly found two versions of the same error in the log file."
+			exit 1
 		fi
+		echo "${Source_Text}" >> "${Write_To}"
+		# Return the error information to the caller
+		echo "${error_code}"
+		echo "${Error_Briefs[${error_code}]}"
+		echo "${Error_Meanings[${error_code}]}"
+		echo "${Source_Text}"
 		errors_found="$((errors_found+1))"
 	fi
-        error_number="$((error_number + 1))"
+        error_code="$((error_code + 1))"
 	tries="$((tries+1))"
-	if [ "${tries}" -gt 100 ] ; then
+	if [ "${tries}" -gt "${Number_of_Errors}" ] ; then
 		echo "256"
-		echo "Error parsing failure"
+		echo "Failed to parse errors"
 		echo "Something went wrong trying to grep for errors."
+		echo "Got to ${tries} tries without finding ${Number_of_Errors} errors."
 		exit 1
 	fi
 done
 
-echo "299"
-echo "Multiple Errors Found"
-echo "See ${Write_To} for details"
-exit 0
+if [ "${errors_found}" -ne "${Number_of_Errors}" ] ; then
+	echo "256"
+	echo "Failed to parse errors"
+	echo "Something went wrong trying to grep for errors."
+	echo "Grepped for all errors without finding the expectd ${Number_of_Errors} errors."
+	exit 1
+fi

@@ -40,6 +40,7 @@ RUN echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-15 main" >> 
 		graphviz-dev \
 		libeigen3-dev \
 		swig4.0 \
+		time \
                 zip \
 	&& rm -rf /var/lib/apt/lists/*
 

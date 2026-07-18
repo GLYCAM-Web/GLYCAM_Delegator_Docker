@@ -72,19 +72,22 @@ GPB_Options=(
     overlap_rejection_threshold
     prepare_for_md
     use_initial_glycosite_residue_conformation
+    force_glycosite_rotamer_variety
     move_overlapping_sidechains
     delete_unresolvable_glycosites
 )
 GPB_Options_Values=(
-    ["number_of_samples"]="1"
+    ["number_of_samples"]="5"
     ["persist_cycles"]="5"
 ### by default, leave unset ###    ["rng_seed"]= 
 ## rng_seed is unset in the default. Can be an integer up to UINT64_MAX, e.g. "5408925415593553639"
     ["overlap_rejection_threshold"]="0.0"
     ["prepare_for_md"]="False"
-    ["use_initial_glycosite_residue_conformation"]="True" 
-    ["move_overlapping_sidechains"]="False"
+    ["use_initial_glycosite_residue_conformation"]="False" 
+    ["force_glycosite_rotamer_variety"]="True"
+    ["move_overlapping_sidechains"]="True"
     ["delete_unresolvable_glycosites"]="False"
+    ["num_threads"]="${GEMS_NUMBER_THREADS}"
 )
 
 
