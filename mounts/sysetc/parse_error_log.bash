@@ -33,11 +33,6 @@
 #
 # How those get used will depend on the code using them.
 #
-# Multiple Errors
-#
-#     If multiple errors are detected, the Error Number is '299'. The individual errors will be written
-#     to the Error_log.txt file in the project directory.
-#
 #########################################
 #
 # How to use this script
@@ -51,7 +46,7 @@
 #        Write_To="/path/to/project/dir/error_logs/log.file" # from inside the container
 #
 #        # note .............. v v  both of these arrows are needed.
-#        mapfile -t error_data < <( /sysetc/build_error.bash \
+#        mapfile -t error_data < <( /sysetc/parse_error_log.bash \
 #        "${the_db_file}" \
 #        "${Read_From}" \
 #        "${Write_To}" \
@@ -60,7 +55,7 @@
 #
 #    You can do it all on one line, if you prefer:
 #
-# mapfile -t error_data < <( /sysetc/build_error.bash "${the_db_file}" "${Read_From}" "${Write_To}" 2>> "${Write_To}.stderr" )
+# mapfile -t error_data < <( /sysetc/parse_error_log.bash "${the_db_file}" "${Read_From}" "${Write_To}" 2>> "${Write_To}.stderr" )
 #
 # 
 # 2. Check **IMMEDIATELY** after the mapfile line above for the return 

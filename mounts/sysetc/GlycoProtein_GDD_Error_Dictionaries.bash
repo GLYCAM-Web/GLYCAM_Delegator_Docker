@@ -34,7 +34,7 @@ declare -A Error_Meanings         # Sentence length user-friendly meaning of the
 # The is relevant to the database, but is primarily useful for the documentation generation.
 # Minimum and maximum numbers assigned to errors here.
 Min_Err_Number="500"
-Max_Err_Number="507"
+Max_Err_Number="509"
 #
 # Text to be used when directing the user to additional information.
 More_Info_Text="Please see the GLYCAM_Delegator_Docker/docs directory for more information."
@@ -62,6 +62,8 @@ Error_Briefs=(
    ["505"]="No PDB Files Produced"
    ["506"]="Some PDB Files Missing"
    ["507"]="Unexpected Entry"
+   ["508"]="No Available Sites"
+   ["509"]="Cannot Rescue Build"
 )
 Error_Meanings=(
    ["500"]="The program finished without errors, but the result is probably undesirable."
@@ -72,6 +74,8 @@ Error_Meanings=(
    ["505"]="The project completed but no PDB files were found."
    ["506"]="The project completed but the expected number of PDB files was not found."
    ["507"]="The value of an entry or other variable is unexpected."
+   ["508"]="There are no sites available for glycosylation."
+   ["509"]="Unable to find a remedy for the previous failed build."
 )
 
 

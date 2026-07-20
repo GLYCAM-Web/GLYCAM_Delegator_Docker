@@ -34,7 +34,7 @@ glycositeData=(
 	["Tags"]="available but not used here"
 	)
 declare -a glycositeDataList
-glycositeDataList=() # list of JSON-Formatted glycositeData -- see printarrJSON in sysetc/functions.bash
+export glycositeDataList=() # list of JSON-Formatted glycositeData -- see printarrJSON in sysetc/functions.bash
 theArrayString=""
 theOptionsString=""
 
@@ -42,14 +42,8 @@ theOptionsString=""
 #
 # If there are no resolved PDBs, but there are some sites that always resolved, set a boolean.
 RescueResolvableSites="False" 
-#
-# If no resolved PDB can be found, the following will hold information about resolved sites, if any.
-declare -A resolvedGlycositeData
-glycositeResolvedData=(
-	["Chain"]="amino_acid_chain"
-	["ResidueNumber"]="glycosylation_site_pdb"
-	["InsertionCode"]="insertion_code"
-	)
+MaxRescueCycles="1" ## make this configurable in the futire
+RescueCycles="0" 
 #
 ##########################################################
 
@@ -269,7 +263,91 @@ echo "${theFile}" > ${1}
 
 } # closes the function - is not part of the json
 
+process_the_build()
+{
+	## 
+	# This function processes an individual build or a rescue build.
+	# To this function those are identical processes
+	##
 
+	##
+	# Some debugging options - uncomment temporarily if needed.
+	echo "This is the glycosite data list after-loop."
+	echo """${glycositeDataList[@]}"""
+	echo "accessing a certain value:"
+	echo """${glycositeDataList[3]}"""
+	echo "here is that data accessed via integer"
+	echo "sitecount is ${sitecount}"
+	##
+
+        ##
+	# Build input for the part of the JSON that holds glycosite info
+	theArrayString=""
+	i="0"
+	while [ "${i}" -lt "${sitecount}" ] ; do
+               	if [ "${i}" == "0" ] ; then
+			tmpString="${glycositeDataList[$i]}"
+               	else
+			tmpString="$(printf "${startnext} %s " "${glycositeDataList[$i]}")"
+               	fi
+		theArrayString="${theArrayString} ${tmpString}" 
+		#echo "For ${i} it is : ${glycositeDataList[${i}]}"
+		i="$((i+1))"
+	done
+	#theArrayString="${theArrayString} ]"
+	echo "The array string is"
+	echo """${theArrayString}"""
+	jsonMainHeaders["glycan_mappings"]="${theArrayString}"
+	#echo "json main headers are:"
+	#echo """${jsonMainHeaders[@]}"""
+	##
+
+	##
+	# Build the file to be delegated
+	jsonRequestFileName="${OutputDir}/provenance/${thisProjectID}_Build_Request.json"
+	if [ "${RescueResolvableSites}" == "True" ] ; then
+		jsonRequestFileName="${OutputDir}/provenance/${thisProjectID}_rescue_Build_Request.json"
+	fi
+	write_json_build_file "${jsonRequestFileName}"
+	##
+
+	##
+	# Build the file to be delegated, delegate it, and save the results.
+	# If all that worked, call the script that manages output
+	echo "[INFO] : $(date) : Starting PDB file generation for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+	echo "Starting PDB file generation for Project ID: ${thisProjectID}." >> ${LOGFILE}
+	jsonResponseFileName="${OutputDir}/provenance/${thisProjectID}_Build_Response.json"
+	if [ "${RescueResolvableSites}" == "True" ] ; then
+		jsonResponseFileName="${OutputDir}/provenance/${thisProjectID}_rescue_Build_Response.json"
+	fi
+	jsonResponse="$(delegate ${jsonRequestFileName} 2>&1)"
+	result="$?"
+	if [ ${result} != "0" ] ; then
+		echo "[ERROR] : $(date) : Build failed for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+		echo "Build failed for Project ID: ${thisProjectID}." >> ${LOGFILE}
+		echo """The response returned, if any, appears between the rows of equals signs below.
+===============================================================================
+${jsonResponse}
+===============================================================================
+""" >> ${LOGFILE}
+	else : 
+		echo "[INFO] : $(date) : Build completed for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+		echo "Build completed for Project ID: ${thisProjectID}." >> ${LOGFILE}
+		#export TEST="True"
+	#	typical JSON file location:  /work/conjugate/gp/${thisProjectID}/logs/response.json 
+		echo """${jsonResponse}
+""" > "${jsonResponseFileName}"
+		## 
+		# Mange the output
+		echo "about to manage the output"
+		. /sysetc/GlycoProtein_manage_build_output.bash 
+	fi
+} # close process_the_build
+
+
+###############################################################################
+# The processing of the input file starts here
+###############################################################################
 #############################
 ##           Setup And Checks
 #############################
@@ -308,10 +386,12 @@ GoodPdbDir="${OutputDir}/PDB"
 SamplesGoodPdbDir="${OutputDir}/PDB/all_samples"
 SamplesBadPdbDir="${OutputDir}/PDB/all_samples/rejected"
 BadPdbDir="${SamplesBadPdbDir}" 
+SummariesDir="${OutputDir}/PDB/all_samples/summaries"
 mkdir -p "${OutputDir}/logs" || print_error_and_exit "Unable to create directory: ${OutputDir}/logs. Exiting."
 mkdir -p "${OutputDir}/provenance" || print_error_and_exit "Unable to create directory: ${OutputDir}/provenance. Exiting."
 #mkdir -p "${BadPdbDir}" || print_error_and_exit "Unable to create directory(ies): ${BadPdbDir}. Exiting."
 mkdir -p "${SamplesBadPdbDir}" || print_error_and_exit "Unable to create directory(ies): ${SamplesBadPdbDir}. Exiting."
+mkdir -p "${SummariesDir}" || print_error_and_exit "Unable to create directory(ies): ${SummariesDir}. Exiting."
 mkdir -p "${OutputDir}/Treated_Inputs" || print_error_and_exit "Unable to create directory: ${OutputDir}/Treated_Inputs. Exiting."
 export LOGFILE="${OutputDir}/logs/details_${DATENOW}_${ScriptName}.log"
 export LOGFILE_RELATIVE="logs/details_${DATENOW}_${ScriptName}.log"
@@ -657,6 +737,9 @@ fi
 count=0
 ## Loop over the input file contents
 while IFS=  read -r line; do
+	# Reset the rescue parameters for the new project
+	RescueCycles=0
+	RescueResolvableSites="False"
 	#
 	## grep all lines associated with the project_id
 	## Will look something like:
@@ -668,6 +751,7 @@ while IFS=  read -r line; do
 	#      project_id,uniprotkb_canonical_ac,pdb_id,amino_acid_chain,glycosylation_site_pdb,insertion_code,amino_acid_pdb,glycosylation_type,sequence_glycam_iupac
 	thisProjectID="${line}"
 	echo "thisProjectID: ${thisProjectID}"
+	skipme="False"
 	if [ "${OVERWRITE_OUTPUT}" == "False" ] ; then
 		echo "Checking for pre-existing Glycoprotein PDB"
 		if [ -f "${GoodPdbDir}/${thisProjectID}.pdb" ] ; then
@@ -675,7 +759,12 @@ while IFS=  read -r line; do
 			echo "[INFO] : $(date) : Found existing PDB file for ${thisProjectID}. Not remaking." >> $STATUSFILE
 			echo "Found existing PDB file for ${thisProjectID} and OVERWRITE_OUTPUT is not truthy. Not remaking." >> $LOGFILE
 			echo "File exists at: ${GoodPdbDir}/${thisProjectID}." >> $LOGFILE
+			skipme="True"
 		fi
+	fi
+	if [ "${skipme}" == "True" ] ; then
+		## I think this was not happening before...
+		continue
 	fi
 	thisProjectInputs="""$(grep ^${thisProjectID} ${FinalTreatedInput} )"""
 	echo "thisProjectInputs:"
@@ -713,6 +802,7 @@ while IFS=  read -r line; do
 	#  Sample data line
 	#         0         ,   1    , 2  ,3, 4, 5  , 6 ,   7    ,       8
 	#      P27918-1_6RUR,P27918-1,6RUR,B,18,null,THR,O-linked,DGlcpb1-3LFucpa1-OH
+
 	glycositeDataList=()
 	sitecount=0
         first="True"
@@ -762,59 +852,68 @@ while IFS=  read -r line; do
 		sitecount="$((sitecount+1))"
 	done <<< "${thisProjectInputs}"
 
-	#echo "This is the glycosite data list after-loop."
-	#echo """${glycositeDataList[@]}"""
-	#echo "accessing a certain value:"
-	#echo """${glycositeDataList[3]}"""
-	#echo "here is that data accessed via integer"
-	#echo "sitecount is ${sitecount}"
-	theArrayString=""
-	i="0"
-	while [ "${i}" -lt "${sitecount}" ] ; do
-               	if [ "${i}" == "0" ] ; then
-			tmpString="${glycositeDataList[$i]}"
-               	else
-			tmpString="$(printf "${startnext} %s " "${glycositeDataList[$i]}")"
-               	fi
-		theArrayString="${theArrayString} ${tmpString}" 
-		#echo "For ${i} it is : ${glycositeDataList[${i}]}"
-		i="$((i+1))"
-	done
-	#theArrayString="${theArrayString} ]"
-
-	echo "The array string is"
-	echo """${theArrayString}"""
-	jsonMainHeaders["glycan_mappings"]="${theArrayString}"
-	#echo "json main headers are:"
-	#echo """${jsonMainHeaders[@]}"""
-	jsonRequestFileName="${OutputDir}/provenance/${thisProjectID}_Build_Request.json"
-	write_json_build_file "${jsonRequestFileName}"
-	COMMAND="delegate ${jsonRequestFileName}"
-	echo "[INFO] : $(date) : Starting PDB file generation for Project ID: ${thisProjectID}." >> ${STATUSFILE}
-	echo "Starting PDB file generation for Project ID: ${thisProjectID}." >> ${LOGFILE}
-	jsonResponseFileName="${OutputDir}/provenance/${thisProjectID}_Build_Response.json"
-	jsonResponse="$(delegate ${jsonRequestFileName} 2>&1)"
-	result="$?"
-	if [ ${result} != "0" ] ; then
-		echo "[ERROR] : $(date) : Build failed for Project ID: ${thisProjectID}." >> ${STATUSFILE}
-		echo "Build failed for Project ID: ${thisProjectID}." >> ${LOGFILE}
-		echo """The response returned, if any, appears between the rows of equals signs below.
-===============================================================================
-${jsonResponse}
-===============================================================================
-""" >> ${LOGFILE}
-	else : 
-		echo "[INFO] : $(date) : Build completed for Project ID: ${thisProjectID}." >> ${STATUSFILE}
-		echo "Build completed for Project ID: ${thisProjectID}." >> ${LOGFILE}
-		#export TEST="True"
-	#	typical JSON file location:  /work/conjugate/gp/${thisProjectID}/logs/response.json 
-		echo """${jsonResponse}
-""" > "${jsonResponseFileName}"
-		# try doing it like the following so that all needed info is available.
-		. /sysetc/GlycoProtein_manage_build_output.bash 
-		# If necessary, do it this way with N different inputs (N, -ge 5, is not known at the moment)
-		## /sysetc/GlycoProtein_manage_build_output.bash "${OutputDir}" "${jsonResponseFileName}" "${GoodPdbDir}"
-	fi
+################# 
+#  Where build processing used to happen:
+#  From here
+#################
+#	#echo "This is the glycosite data list after-loop."
+#	#echo """${glycositeDataList[@]}"""
+#	#echo "accessing a certain value:"
+#	#echo """${glycositeDataList[3]}"""
+#	#echo "here is that data accessed via integer"
+#	#echo "sitecount is ${sitecount}"
+#	theArrayString=""
+#	i="0"
+#	while [ "${i}" -lt "${sitecount}" ] ; do
+#               	if [ "${i}" == "0" ] ; then
+#			tmpString="${glycositeDataList[$i]}"
+#               	else
+#			tmpString="$(printf "${startnext} %s " "${glycositeDataList[$i]}")"
+#               	fi
+#		theArrayString="${theArrayString} ${tmpString}" 
+#		#echo "For ${i} it is : ${glycositeDataList[${i}]}"
+#		i="$((i+1))"
+#	done
+#	#theArrayString="${theArrayString} ]"
+#
+#	echo "The array string is"
+#	echo """${theArrayString}"""
+#	jsonMainHeaders["glycan_mappings"]="${theArrayString}"
+#	#echo "json main headers are:"
+#	#echo """${jsonMainHeaders[@]}"""
+#	jsonRequestFileName="${OutputDir}/provenance/${thisProjectID}_Build_Request.json"
+#	write_json_build_file "${jsonRequestFileName}"
+#	COMMAND="delegate ${jsonRequestFileName}"
+#	echo "[INFO] : $(date) : Starting PDB file generation for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+#	echo "Starting PDB file generation for Project ID: ${thisProjectID}." >> ${LOGFILE}
+#	jsonResponseFileName="${OutputDir}/provenance/${thisProjectID}_Build_Response.json"
+#	jsonResponse="$(delegate ${jsonRequestFileName} 2>&1)"
+#	result="$?"
+#	if [ ${result} != "0" ] ; then
+#		echo "[ERROR] : $(date) : Build failed for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+#		echo "Build failed for Project ID: ${thisProjectID}." >> ${LOGFILE}
+#		echo """The response returned, if any, appears between the rows of equals signs below.
+#===============================================================================
+#${jsonResponse}
+#===============================================================================
+#""" >> ${LOGFILE}
+#	else : 
+#		echo "[INFO] : $(date) : Build completed for Project ID: ${thisProjectID}." >> ${STATUSFILE}
+#		echo "Build completed for Project ID: ${thisProjectID}." >> ${LOGFILE}
+#		#export TEST="True"
+#	#	typical JSON file location:  /work/conjugate/gp/${thisProjectID}/logs/response.json 
+#		echo """${jsonResponse}
+#""" > "${jsonResponseFileName}"
+#		# try doing it like the following so that all needed info is available.
+#		. /sysetc/GlycoProtein_manage_build_output.bash 
+#		# If necessary, do it this way with N different inputs (N, -ge 5, is not known at the moment)
+#		## /sysetc/GlycoProtein_manage_build_output.bash "${OutputDir}" "${jsonResponseFileName}" "${GoodPdbDir}"
+#	fi
+#############
+#  To here
+#############
+	echo "Build setup complete. About to process the build."
+	process_the_build
 	count="$((count+1))"
 done < "${OutputDir}/provenance/Valid_Projects_List.txt"
 
