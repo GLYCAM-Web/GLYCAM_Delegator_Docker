@@ -2,8 +2,8 @@
 
 echo "at top of GP output manager"
 echo "the db output file name is >>>${dbOutputFile}<<<"
-echo "Top: RescueCycles is >>>${RescueCycles}<<<"
-echo "Top: MaxRescueCycles is >>>${MaxRescueCycles}<<<"
+#echo "Top: RescueCycles is >>>${RescueCycles}<<<"
+#echo "Top: MaxRescueCycles is >>>${MaxRescueCycles}<<<"
 
 ##
 # This script is meant to be sourced as if it is source code.
@@ -86,7 +86,9 @@ fi
 ##
 # Set a Prefix to use if the JSON response is bad
 #
-Prefix="${thisProjectID},${uniprotkb_canonical_ac},${pdb_id},unknown"
+Prefix="${thisProjectID},${the_uniprotkb_canonical_ac},${the_pdb_id},unknown"
+#echo "The Prefix is:"
+#echo "${Prefix}"
 
 GoodJSON="True"
 
@@ -241,7 +243,7 @@ if [ "${numberSamples}" == "null" ] || [ -z "${numberSamples}" ] ; then
 	Meaning="An expected value was not found so was set to its default."
 	Text="Setting number of samples to one because not set in this file: ${jsonResponseFileName}"
 	Removed_Site=""
-	Note="Providing a number of samples is not strictly necessary, but recommended."
+	Note="Providing a number of samples recommended but is not strictly necessary."
         echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 	numberSamples="1"
 elif  [[ ! "${numberSamples}" =~ ^[0-9]+$ ]] ; then
@@ -256,7 +258,7 @@ elif  [[ ! "${numberSamples}" =~ ^[0-9]+$ ]] ; then
 	Meaning="${Error_Meanings[${Code}]}"
 	Text="The number of samples is not an integer. It is >>>${numberSamples}<<< See: ${jsonResponseFileName}"
 	Removed_Site=""
-	Note="Setting the number to one. If problems happen later, this might be why."
+	Note="Setting the number to one. This might cause problems later."
         echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 	numberSamples="1"
 fi
@@ -266,7 +268,9 @@ fi
 ##
 # Set a Prefix to use now that the pUUID is known and the project_id is known to be sane
 #
-Prefix="${project_id},${uniprotkb_canonical_ac},${pdb_id},${pUUID}"
+Prefix="${project_id},${the_uniprotkb_canonical_ac},${the_pdb_id},${pUUID}"
+#echo "The Prefix is now:"
+#echo "${Prefix}"
 #
 ###
 #
@@ -332,9 +336,9 @@ echo "about to check PDB Files in GP output manager"
 #                  :  0 -le N -lt numberSamples
 #
 
-echo "checking on number of samples"
+#echo "checking on number of samples"
 if [ "${numberSamples}" -eq "0" ] ; then 
-	echo "is number of samples 0 ?"
+#	echo "is number of samples 0 ?"
 	From_File="${projectDir}/outputs/default.pdb"
 	To_File="${GoodPdbDir}/${OutFileBaseBare}.pdb"
 	if [ -f "${From_File}" ] ; then
@@ -355,7 +359,7 @@ if [ "${numberSamples}" -eq "0" ] ; then
         	echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 	fi
 elif [ "${numberSamples}" -eq "1" ] ; then 
-	echo "is number of samples 1 ?"
+#	echo "is number of samples 1 ?"
 	Good_From_File="${projectDir}/outputs/samples/glycoprotein.pdb"
 	Good_To_File="${GoodPdbDir}/${OutFileBaseBare}.pdb"
 	Bad_From_File="${projectDir}/outputs/samples/rejected/glycoprotein.pdb"
@@ -385,11 +389,11 @@ elif [ "${numberSamples}" -eq "1" ] ; then
 	fi
 
 else 
-	echo "is number of samples -gt 1 ?"
+#	echo "is number of samples -gt 1 ?"
 	counter="0"
 	goodCopied="False"
 	while [ "${counter}" -lt "${numberSamples}" ] ; do
-		echo "the counter is ${counter}"
+#		echo "the counter is ${counter}"
 		From_GP_Name="${counter}_glycoprotein.pdb"
 		Sample_GP_Name="${OutFileBase}_${counter}.pdb"
 		Good_From_File="${projectDir}/outputs/samples/${From_GP_Name}"
@@ -397,7 +401,7 @@ else
 		Good_Samples_To_File="${GoodPdbDir}/all_samples/${Sample_GP_Name}"
 		Bad_To_File="${SamplesBadPdbDir}/${Sample_GP_Name}"
 		if [ -f "${Good_From_File}" ] ; then
-			echo "we found a good 'from' file"
+#			echo "we found a good 'from' file"
 			result="$(copy_or_log_error ${Good_From_File} ${Good_Samples_To_File})"
 			if [ "${result}" == "copy" ] ; then
 				NumberGoodPDBs="$((NumberGoodPDBs+1))"
@@ -413,14 +417,14 @@ else
 				fi
 			fi
 		elif [ -f "${Bad_From_File}" ] ; then
-			echo "we found a bad 'from' file"
+#			echo "we found a bad 'from' file"
 			result="$(copy_or_log_error ${Bad_From_File} ${Bad_To_File})"
 			if [ "${result}" == "copy" ] ; then
 				NumberBadPDBs="$((NumberBadPDBs+1))"
 				BadPDBIndexes+=("${counter}")
 			fi
 		else
-			echo "the file is missing"
+#			echo "the file is missing"
 			NumberMissingPDBs="$((NumberMissingPDBs+1))"
 			MissingPDBIndexes+=("${counter}")
 		fi
@@ -455,7 +459,7 @@ elif [ "${totalPDBs}" -lt "${numExpectedPDBs}" ] ; then
 	Text="Only ${totalPDBs} of the ${numberExpectedPDBs} were generated at all (resolved or not)."
 	Meaning="${Error_Meanings[${Code}]}"
 	Removed_Site=""
-	Note="If you got a 'resolved' PDB file, you should check it carefully."
+	Note="Check any 'resolved' PDB file carefully."
        	echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 elif [ "${totalPDBs}" -gt "${numExpectedPDBs}" ] ; then
 	Result="Failure to complete project"
@@ -465,13 +469,13 @@ elif [ "${totalPDBs}" -gt "${numExpectedPDBs}" ] ; then
 	Meaning="${Error_Meanings[${Code}]}"
 	Text="Only ${numberExpectedPDBs} were requested, but ${totalPDBs} were produced. Something went wrong."
 	Removed_Site=""
-	Note="If you got a 'resolved' PDB file, you should check it carefully."
+	Note="Check any 'resolved' PDB file carefully."
        	echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 else
 	# Messages for resolved structures
-	echo "the number of pdbs matches the number expected?"
+#	echo "the number of pdbs matches the number expected?"
 	if [ "${NumberGoodPDBs}" -gt "0" ] ; then
-		echo "num good is ${NumberGoodPDBs} num expected is ${numExpectedPDBs}"
+#		echo "num good is ${NumberGoodPDBs} num expected is ${numExpectedPDBs}"
 		if [ "${NumberGoodPDBs}" -eq "${numExpectedPDBs}" ] ; then
 			Result="Finished normally"
        			Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
@@ -481,7 +485,7 @@ else
 			Text="All requested samples resolved."
 			Removed_Site=""
 			Note="-"
-			echo "about to write to the db"
+#			echo "about to write to the db"
        			echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 		else
 			Result="Finished normally"
@@ -492,12 +496,12 @@ else
 			Text="${NumberGoodPDBs} of the requested samples resolved."
 			Removed_Site=""
 			Note="-"
-			echo "about to write to the db"
+#			echo "about to write to the db"
        			echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 		fi
 	# Messages for unresolved structures
 	elif [ "${NumberBadPDBs}" -gt "0" ] ; then
-		echo "num bad is ${NumberBadPDBs} num expected is ${numExpectedPDBs}"
+#		echo "num bad is ${NumberBadPDBs} num expected is ${numExpectedPDBs}"
 		if [ "${NumberBadPDBs}" -eq "${numExpectedPDBs}" ] ; then
 			Result="Finished normally"
        			Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
@@ -507,7 +511,7 @@ else
 			Text="All of the requested samples generated rejected PDB files."
 			Removed_Site=""
 			Note="-"
-			echo "about to write to the db"
+#			echo "about to write to the db"
 echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 			## Consider rescuing if possible
 			RescueResolvableSites="True"
@@ -520,7 +524,7 @@ echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Rem
 			Text="${NumberBadPDBs} of the ${numberExpectedPDBs} requested samples generated rejected PDB files."
 			Removed_Site=""
 			Note="-"
-			echo "about to write to the db"
+#			echo "about to write to the db"
        			echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 		fi
 	fi
@@ -566,7 +570,7 @@ else
 	Result="Reporting GMML2 Errors"
 	Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
 	Removed_Site=""
-	Note="To learn more, the docs folder and the project directory: ${projectDir}, particularly gpBuilder.log and gpBuilder.err"
+	Note="More info can be found in the docs folder and the project directory: ${projectDir}. See particularly gpBuilder.log and gpBuilder.err"
 	#
 	# Loop through the other errors and save them as needed.
 	counter="0"
@@ -581,7 +585,7 @@ else
 	done
 fi
 
-echo "about to see about rescuing the build in GP output manager"
+#echo "about to see about rescuing the build in GP output manager"
 # NumberGoodPDBs="0"
 # NumberBadPDBs="0"
 # NumberMissingPDBs="0"
@@ -598,16 +602,16 @@ echo "about to see about rescuing the build in GP output manager"
 if [ "${RescueResolvableSites}" == "True" ] ; then
 if [ "${RescueCycles}" -ge "${MaxRescueCycles}" ] ; then
 	RescueResolvableSites="False"
-	Result="Maximum Rescue Tries Reached"
-	Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
-	Code="-1"
-	Brief="General Information"
-	Meaning="-"
-	Text="The maximum allowed rescue attempts, ${MaxRescueCycles}, has been reached."
-	Removed_Site="-"
-	Note="-"
-	echo "about to write to the db"
-	echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
+#	Result="Maximum Rescue Tries Reached"
+#	Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
+#	Code="-1"
+#	Brief="General Information"
+#	Meaning="-"
+#	Text="The maximum allowed rescue attempts, ${MaxRescueCycles}, has been reached."
+#	Removed_Site="-"
+#	Note="-"
+#	echo "about to write to the db"
+#	echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 fi
 fi
 # If there were no resolved PDB files build a list to be used by the parent
@@ -625,12 +629,17 @@ if [ "${RescueResolvableSites}" == "True" ] ; then
        		echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 		RescueResolvableSites="False"
 	else
-		COM="grep rejected ${File} | sed 's/   /,/g' | tr -s ',' | cut -d ',' -f4 | tr -s ' ' | tr ' ' '\\n' | sort | uniq | grep -v \"^$\""
-		the_Sites=( $( eval "${COM}" ) )
-		numRejected="${#the_Sites[@]}"
+		COM="grep rejected ${File} | sed 's/   /,/g' | tr -s ',' | cut -d ',' -f4 | tr -s ' ' | tr ' ' '\\n' | sort | grep -v \"^$\""
+		all_the_Sites=( $( eval "${COM}" ) )
+		echo "all the Sites is : >>>${all_the_Sites[@]}<<<"
+# original was:	COM="grep rejected ${File} | sed 's/   /,/g' | tr -s ',' | cut -d ',' -f4 | tr -s ' ' | tr ' ' '\\n' | sort | uniq | grep -v \"^$\""
+		mapfile -t the_uniq_Sites< <(printf "%s\n" "${all_the_Sites[@]}" | sort -u)
+		#the_uniq_Sites=( $( uniq <<< "${all_the_Sites[@]}"  ) )
+		echo "the uniq Sites is : >>>${the_uniq_Sites[@]}<<<"
+		numRejected="${#the_uniq_Sites[@]}"
 		echo "there were ${sitecount} requested sites." >> $LOGFILE
 		echo "there are ${numRejected} rejected sites. They are:" >> $LOGFILE
-		echo "${the_Sites[@]}" >> $LOGFILE
+		echo "${the_uniq_Sites[@]}" >> $LOGFILE
 		if [ "${numRejected}" -eq "${sitecount}" ] ; then
 			Result="Failure to rescue resolved sites"
        			Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
@@ -668,18 +677,19 @@ if [ "${RescueResolvableSites}" == "True" ] ; then
 	Meaning="-"
 	Text="Attempting to rescue the build using sites that resolved in every sample."
 	Removed_Site=""
-	Note="Of the original ${sitecount} sites, ${numGood} are eligible for rescue."
+	Note="The number of the of the original ${sitecount} sites that are eligible for rescue is: ${numGood}."
        	echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 	i="0"
 	newNum="0"
 	declare -A newList
+	declare -A newSites
 	##
 	# The following is an all-to-all search. There is probably a faster way. Feel free to implement it.
 	while [ "${i}" -lt "${sitecount}" ] ; do
 		sitematch="No"
 		# if this glycositeDataList entry contains the Chain, Residue Number and Insertion Code 
 		# for any of the rejected sites, then remove it from the array.
-		for site in ${the_Sites[@]} ; do
+		for site in ${the_uniq_Sites[@]} ; do
 			IFS='_' read -r chain resNum IC <<< "$site"
 			match="Yes"
 			if [[ ${glycositeDataList[$i]} !=  *"\"Chain\": \"${chain}\""* ]] ; then
@@ -697,6 +707,7 @@ if [ "${RescueResolvableSites}" == "True" ] ; then
 			fi
 	        done
 		if [ "${sitematch}" == "Yes" ] ; then
+			number_Fails="$(grep -o "${the_match}" <<< "${all_the_Sites[@]}" | wc -l)"
 			Result="Attempting Rescue"
        			Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
 			Code="-1"
@@ -704,10 +715,11 @@ if [ "${RescueResolvableSites}" == "True" ] ; then
 			Meaning="-"
 			Text="Removing failed site."
 			Removed_Site="${the_match}"
-			Note="-"
+			Note="Failed in this many samples: ${number_Fails}"
 echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
 		else
 			newList[${newNum}]="${glycositeDataList[$i]}"
+			newSites[${newNum}]="${the_match}"
 			newNum="$(( newNum+1 ))"
 		fi
                 i="$((i+1))"
@@ -719,26 +731,38 @@ echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Rem
 #   	     glycositeDataList["${key}"]="${newList["${key}"]}"
 #        done
 
-	echo "Bottom: RescueCycles is >>>${RescueCycles}<<<"
-	echo "Bottom: MaxRescueCycles is >>>${MaxRescueCycles}<<<"
-	echo "sitecount is ${sitecount} and newNum is ${newNum} (they should NOT be equal)"
-	echo "newList is:"
-	echo "${newList[@]}"
+#	echo "Bottom: RescueCycles is >>>${RescueCycles}<<<"
+#	echo "Bottom: MaxRescueCycles is >>>${MaxRescueCycles}<<<"
+#	echo "sitecount is ${sitecount} and newNum is ${newNum} (they should NOT be equal)"
+#	echo "newList is:"
+#	echo "${newList[@]}"
 	i=0
 	while [ "${i}" -lt "${sitecount}" ] ; do
 		if [ "${i}" -lt "${newNum}" ] ; then
-			echo "setting glycositeDataList[${i}] to >>>${newList[${i}]}"
+#			echo "setting glycositeDataList[${i}] to >>>${newList[${i}]}"
 			glycositeDataList[${i}]="${newList[${i}]}"
 		else
-			echo "unsetting glycositeDataList[${i}]"
+#			echo "unsetting glycositeDataList[${i}]"
 			unset -v "glycositeDataList[${i}]"
 		fi
 		i="$((i+1))"
 	done
 	sitecount="${newNum}"
-	echo "sitecount is ${sitecount} and newNum is ${newNum} (they should be equal)"
-	echo "glycositeDataList is :"
-	echo "${glycositeDataList[@]}"
+#	echo "sitecount is ${sitecount} and newNum is ${newNum} (they should be equal)"
+#	echo "glycositeDataList is :"
+#	echo "${glycositeDataList[@]}"
+	##
+	## Leave a note about the site(s) that passed
+	Result="Attempting Rescue"
+       	Date_Time="$(date +\"%Y-%m-%d_%H:%M:%S\")"
+	Code="-1"
+	Brief="General Information"
+	Meaning="-"
+	Text="List of sites for rescue attempt."
+	Removed_Site="-"
+	Note="${newSites[@]}"
+	echo "${Prefix},${Result},${Date_Time},${Code},${Brief},${Meaning},${Text},${Removed_Site},${Note}" >> "${dbOutputFile}"
+	##
 	export glycositeDataList
 	process_the_build
 fi

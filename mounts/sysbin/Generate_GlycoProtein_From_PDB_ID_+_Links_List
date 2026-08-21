@@ -620,6 +620,8 @@ fi
 ## Generate the final treated input file
 FinalTreatedInput="${OutputDir}/Treated_Inputs/$(basename ${InputFile}).treated.csv" 
 rowfirst="true"
+the_uniprotkb_cannonical_ac="None"
+the_pdb_id="None"
 declare -a columnrow
 while IFS=, read -ra columnrow; do
 	#
@@ -641,14 +643,14 @@ while IFS=, read -ra columnrow; do
 			if [ "${outputTreatedHEADERS[${count}]}" != "${columnrow[${count}]}" ] ; then
 				print_error_and_exit "Entry ${count} not identical for outputTreatedHEADERS and columnrow in treated-input generation."
 			fi
-			if [ "${ProjectIDBase}" != "project_id" ] ; then
-				if [ "${columnrow[${count}]}" == "pdb_id" ] ; then
-					pdbidLoc="${count}"
-				fi
-				if [ "${columnrow[${count}]}" == "uniprotkb_canonical_ac" ] ; then
-					uniprotLoc="${count}"
-				fi
+			#if [ "${ProjectIDBase}" != "project_id" ] ; then
+			if [ "${columnrow[${count}]}" == "pdb_id" ] ; then
+				pdbidLoc="${count}"
 			fi
+			if [ "${columnrow[${count}]}" == "uniprotkb_canonical_ac" ] ; then
+				uniprotLoc="${count}"
+			fi
+			#fi
 			count="$((count+1))"
 		done
 		colfirst="true"
@@ -705,7 +707,21 @@ while IFS=, read -ra columnrow; do
 		fi
 		rowOut="${rowOut}${copymetofile}"
 	done
+## Grab some info for the summary file
+#echo "getting info for the summary file"
+#echo "uniprotLoc = ${uniprotLoc}"
+#echo "pdbidLoc = ${pdbidLoc}"
+if [ "${uniprotLoc}" != "-1" ] ; then
+	the_uniprotkb_canonical_ac="${columnrow[${uniprotLoc}]}" 
+	#echo "the_uniprotkb_canonical_ac=>>>${the_uniprotkb_canonical_ac}<<<"
+fi
+if [ "${pdbidLoc}" != "-1" ] ; then
+	the_pdb_id="${columnrow[${pdbidLoc}]}" 
+	#echo "the_pdb_id=>>>${the_pdb_id}<<<"
+fi
+
 	echo "${rowOut}" >> "${FinalTreatedInput}"
+
 done < "${TmpFinalFileOut}"
 
 #

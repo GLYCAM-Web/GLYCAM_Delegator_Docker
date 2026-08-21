@@ -66,7 +66,7 @@ Error_Briefs=(
    ["509"]="Cannot Rescue Build"
 )
 Error_Meanings=(
-   ["500"]="The program finished without errors, but the result is probably undesirable."
+   ["500"]="The program finished without errors but the result is probably undesirable."
    ["501"]="This code is used when there is not a pre-defined code."
    ["502"]="The JSON Respose either was not received or was not recorded."
    ["503"]="The JSON Response is missing one or more critical pieces of data."
