@@ -76,6 +76,18 @@ COM="bash bin/build_conda-amber.bash"
 rclr "Installing AmberTools using Conda" "${COM}" "(${NUM}) - AmberTools installation"
 NUM="$((NUM+1))"
 
+STEP="build-gdd-docs"
+LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
+COM="bash bin/build_docs.bash mounts/sysetc/GlycoProtein_GDD_Error_Dictionaries.bash"
+rclr "Building the automatically generated GDD docs." "${COM}" "(${NUM}) - Automated GDD docs generation"
+NUM="$((NUM+1))"
+
+STEP="build-gp-gmml2-docs"
+LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
+COM="bash bin/build_docs.bash mounts/sysetc/GlycoProtein_GMML2_Error_Dictionaries.bash"
+rclr "Building the automatically generated GP GMML2 docs." "${COM}" "(${NUM}) - Automated GP GMML2 docs generation"
+NUM="$((NUM+1))"
+
 ## Template for adding more
 #STEP="short-name"
 #LOGFILE="./logs/details_${DATE}_${NUM}_${STEP}.log"
